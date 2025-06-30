@@ -1,4 +1,4 @@
-import { GLOBALTYPES, DeleteData } from '../actions/globalTypes'
+import { GLOBALTYPES, DeleteData } from './globalTypes'
 import { postDataAPI, getDataAPI, deleteDataAPI } from '../../utils/fetchData'
 
 export const MESS_TYPES = {
