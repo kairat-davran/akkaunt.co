@@ -9,7 +9,9 @@ export const POST_TYPES = {
     GET_POSTS: 'GET_POSTS',
     UPDATE_POST: 'UPDATE_POST',
     GET_POST: 'GET_POST',
-    DELETE_POST: 'DELETE_POST'
+    DELETE_POST: 'DELETE_POST',
+    GET_SAVED_POSTS: 'GET_SAVED_POSTS',
+    UPDATE_SAVED_PAGE: 'UPDATE_SAVED_PAGE',
 }
 
 export const createPost = ({ content, images, auth, socket }) => async (dispatch) => {
@@ -80,6 +82,28 @@ export const getPosts = (token) => async (dispatch) => {
         })
     }
 }
+
+export const getSavedPosts = (token, page = 1, limit = 9) => async (dispatch) => {
+  try {
+    const res = await getDataAPI(`getSavePosts?page=${page}&limit=${limit}`, token);
+
+    dispatch({
+      type: POST_TYPES.GET_SAVED_POSTS,
+      payload: {
+        posts: res.data.savePosts,
+        result: res.data.result,
+        page,
+      },
+    });
+  } catch (err) {
+    dispatch({
+      type: GLOBALTYPES.ALERT,
+      payload: {
+        error: err.response?.data?.msg || 'Failed to load saved posts',
+      },
+    });
+  }
+};
 
 export const updatePost = ({ content, images, auth, status, socket }) => async (dispatch) => {
   let media = [];

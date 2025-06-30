@@ -17,7 +17,7 @@ import Status from './Status';
 import SuggestionsSection from './SuggestionsSection';
 
 const Posts = () => {
-  const homePosts = useSelector(state => state.homePosts);
+  const homePosts = useSelector(state => state.posts);
   const auth = useSelector(state => state.auth);
   const theme = useSelector(state => state.theme);
   const dispatch = useDispatch();

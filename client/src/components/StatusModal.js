@@ -4,7 +4,7 @@ import { GLOBALTYPES } from '../redux/actions/globalTypes'
 import { createPost, updatePost } from '../redux/actions/postAction'
 import imageCompression from 'browser-image-compression'
 import Icons from './Icons'
-import { imageShow, videoShow } from '../utils/mediaShow'
+import { imageShow } from '../utils/mediaShow'
 
 const StatusModal = () => {
     const auth = useSelector(state => state.auth)
@@ -75,14 +75,34 @@ const StatusModal = () => {
         const width = videoRef.current.clientWidth;
         const height = videoRef.current.clientHeight;
 
-        refCanvas.current.setAttribute("width", width)
-        refCanvas.current.setAttribute("height", height)
+        refCanvas.current.setAttribute("width", width);
+        refCanvas.current.setAttribute("height", height);
 
-        const ctx = refCanvas.current.getContext('2d')
-        ctx.drawImage(videoRef.current, 0, 0, width, height)
-        let URL = refCanvas.current.toDataURL()
-        setImages([...images, {camera: URL}])
-    }
+        const ctx = refCanvas.current.getContext("2d");
+        ctx.drawImage(videoRef.current, 0, 0, width, height);
+
+        refCanvas.current.toBlob(async (blob) => {
+            const file = new File([blob], `photo_${Date.now()}.jpg`, {
+            type: 'image/jpeg'
+            });
+
+            try {
+            const compressedFile = await imageCompression(file, {
+                maxSizeMB: 1,
+                maxWidthOrHeight: 1920,
+                useWebWorker: true
+            });
+
+            setImages((prev) => [...prev, compressedFile]);
+            } catch (err) {
+            console.error("Capture compression error:", err);
+            dispatch({
+                type: GLOBALTYPES.ALERT,
+                payload: { error: "Image compression failed." }
+            });
+            }
+        }, 'image/jpeg');
+    };
 
     const handleStopStream = () => {
         tracks.stop()
@@ -151,18 +171,10 @@ const StatusModal = () => {
                                         img.camera ? imageShow(img.camera, theme)
                                         : img.url
                                             ?<>
-                                                {
-                                                    img.url.match(/video/i)
-                                                    ? videoShow(img.url, theme) 
-                                                    : imageShow(img.url, theme)
-                                                }
+                                                { imageShow(img.url, theme) }
                                             </>
                                             :<>
-                                                {
-                                                    img.type.match(/video/i)
-                                                    ? videoShow(URL.createObjectURL(img), theme) 
-                                                    : imageShow(URL.createObjectURL(img), theme)
-                                                }
+                                                { imageShow(URL.createObjectURL(img), theme) }
                                             </>
                                     }
                                     <span onClick={() => deleteImages(index)}>&times;</span>
@@ -192,7 +204,7 @@ const StatusModal = () => {
                                 <div className="file_upload">
                                     <i className="fas fa-image" />
                                     <input type="file" name="file" id="file"
-                                    multiple accept="image/*,video/*" onChange={handleChangeImages} />
+                                    multiple accept="image/*" onChange={handleChangeImages} />
                                 </div>
                             </>
                         }

@@ -31,8 +31,6 @@ const Posts = ({ auth, id, dispatch }) => {
         setInitialLoad(false)
         setLoad(false)
       })
-
-    // Do not reset posts here
   }, [auth.token, id, dispatch, page])
 
   const handleLoadMore = async () => {

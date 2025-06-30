@@ -9,7 +9,9 @@ export const POST_TYPES = {
     GET_POSTS: 'GET_POSTS',
     UPDATE_POST: 'UPDATE_POST',
     GET_POST: 'GET_POST',
-    DELETE_POST: 'DELETE_POST'
+    DELETE_POST: 'DELETE_POST',
+    GET_SAVED_POSTS: 'GET_SAVED_POSTS',
+    UPDATE_SAVED_PAGE: 'UPDATE_SAVED_PAGE',
 }
 
 export const createPost = ({content, images, auth, socket}) => async (dispatch) => {
