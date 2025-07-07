@@ -72,7 +72,7 @@ const Header = ({ navigation }) => {
   return (
     <View style={styles.headerWrapper}>
       <View style={styles.row}>
-        <Text style={styles.logo}>akaunt</Text>
+        <Text style={styles.logo}>akkaunt</Text>
 
         <View style={styles.actions}>
           <TouchableOpacity onPress={() => dispatch({ type: GLOBALTYPES.STATUS, payload: true })}>

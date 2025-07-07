@@ -66,45 +66,23 @@ const BazarScreen = () => {
     <SafeAreaView style={styles.wrapper}>
       <View style={styles.headerBar}>
         <View style={styles.headerContent}>
-          <Text style={styles.heading}>🛍️ Bazar</Text>
-          <View style={styles.headerActions}>
+          <Text style={styles.heading}>🛍️ <Text style={styles.headingText}>Bazar</Text></Text>
+
+          <View style={styles.headerIcons}>
             <TouchableOpacity
+              style={styles.headerIconBtn}
               onPress={() => dispatch({ type: GLOBALTYPES.STATUS, payload: { type: 'bazar' } })}
-              style={styles.iconButton}
             >
-              <MaterialIcons name="add-box" size={26} color="#000" />
+              <MaterialIcons name="add-box" size={26} color="#1a1a1a" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setShowDropdown(!showDropdown)}>
               <Image
-                source={{ uri: auth.user.avatar || 'https://randomuser.me/api/portraits/men/10.jpg' }}
+                source={{ uri: auth.user.avatar }}
                 style={styles.profileAvatar}
               />
             </TouchableOpacity>
           </View>
         </View>
-
-        {showDropdown && (
-          <View style={styles.dropdown}>
-            <TouchableOpacity
-              style={styles.dropdownItem}
-              onPress={() => {
-                setShowDropdown(false);
-                navigation.navigate('SellerProfile', { userId: auth.user._id });
-              }}
-            >
-              <Text style={styles.dropdownText}>My Listings</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.dropdownItem}
-              onPress={() => {
-                setShowDropdown(false);
-                navigation.navigate('SellerProfile', { userId: auth.user._id });
-              }}
-            >
-              <Text style={styles.dropdownText}>Edit Profile</Text>
-            </TouchableOpacity>
-          </View>
-        )}
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterBar}>
           {categories.map(cat => (
@@ -121,8 +99,31 @@ const BazarScreen = () => {
         </ScrollView>
       </View>
 
+      {showDropdown && (
+        <View style={styles.dropdownFixed}>
+          <TouchableOpacity
+            style={styles.dropdownItem}
+            onPress={() => {
+              setShowDropdown(false);
+              navigation.navigate('SellerProfile', { userId: auth.user._id });
+            }}
+          >
+            <Text style={styles.dropdownText}>My Listings</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.dropdownItem}
+            onPress={() => {
+              setShowDropdown(false);
+              navigation.navigate('EditProfile');
+            }}
+          >
+            <Text style={styles.dropdownText}>Edit Profile</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       <TextInput
-        placeholder="Search marketplace..."
+        placeholder="Search bazar..."
         value={searchTerm}
         onChangeText={setSearchTerm}
         style={styles.searchInput}
@@ -158,34 +159,33 @@ const styles = StyleSheet.create({
 
   headerContent: {
     paddingHorizontal: 16,
-    paddingBottom: 10,
+    paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
 
   heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1d3557',
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    letterSpacing: -0.3,
   },
 
-  headerActions: {
+  headingText: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#1a1a1a',
+  },
+
+  headerIcons: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 10,
   },
 
-  postButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginRight: 10,
-  },
-
-  postButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+  headerIconBtn: {
+    padding: 6,
   },
 
   profileAvatar: {
@@ -196,14 +196,15 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
 
-  dropdown: {
+  dropdownFixed: {
     position: 'absolute',
-    top: 70,
-    right: 10,
+    top: 80, // Adjust as needed
+    right: 16,
     backgroundColor: '#fff',
     borderRadius: 6,
     paddingVertical: 6,
     width: 160,
+    zIndex: 9999,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -241,17 +242,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#e5e5e5',
     marginRight: 10,
     elevation: Platform.OS === 'android' ? 1 : 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowOffset: { width: 0, height: 1 },
-        shadowRadius: 2,
-      },
-      web: {
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-      },
-    }),
   },
 
   activeFilter: {

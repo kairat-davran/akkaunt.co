@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
     },
     avatar: {
         type: String,
-        default: 'https://akaunt-media.s3.us-west-2.amazonaws.com/profile+photo.jpg'
+        default: 'https://akaunt-media.s3.us-west-2.amazonaws.com/profile+default+photo.jpg'
     },
     role: {type: String, default: 'user'},
     gender: {type: String, default: 'male'},

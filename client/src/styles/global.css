@@ -29,13 +29,22 @@ code {
 }
 
 .main {
-    max-width: 1000px;
+    /* max-width: 1000px;
     width: 100%;
-    margin: auto;
+    margin: auto; */
+    margin-left: 250px;
+    padding: 2rem;
+    max-width: calc(100% - 250px);
 }
 
 img {
     object-fit: cover;
+}
+
+.mode {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* ---------- AUTH ---------- */
@@ -47,6 +56,9 @@ img {
 /* ---------- HEADER ---------- */
 @import url("./header.css");
 
+/* ---------- SIDEBAR ---------- */
+@import url("./sidebar.css");
+
 /* ---------- AVATAR ---------- */
 @import url("./avatar.css");
 
@@ -55,6 +67,12 @@ img {
 
 /* ---------- HOME ---------- */
 @import url("./home.css");
+
+/* ---------- Discover ---------- */
+@import url("./discover.css");
+
+/* ---------- Events ---------- */
+@import url("./events.css");
 
 /* ---------- Status Modal ---------- */
 @import url("./status_modal.css");
@@ -77,6 +95,11 @@ img {
 
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
+    .main {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 1rem;
+    }
     .header .menu {
         position: absolute;
         top: calc(100vh - 50px);
@@ -105,10 +128,4 @@ img {
     .header .logo h1 {
         font-size: 1.5rem;
     }
-}
-
-.mode {
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
 }

@@ -23,7 +23,10 @@ function App() {
   useEffect(() => {
     dispatch(refreshToken());
 
-    const socket = io(BASE_URL);
+    const socket = io(BASE_URL, {
+      transports: ['websocket', 'polling'],
+      withCredentials: true
+    });
     dispatch(setSocket(socket));
     return () => socket.disconnect();
   }, [dispatch]);

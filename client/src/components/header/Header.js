@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Menu from './Menu'
-import Search from './Search'
+import SearchHeader from './SearchHeader'
 
 function Header() {
     
@@ -14,7 +14,7 @@ function Header() {
                     onClick={() => window.scrollTo({top: 0})}>akkaunt</h1>
                 </Link>
 
-                <Search />
+                <SearchHeader />
 
                 <Menu />
             </nav>

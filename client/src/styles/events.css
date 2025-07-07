@@ -1,0 +1,132 @@
+/* General Layout */
+.events-screen {
+  background-color: #fafbfc;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+/* Tabs */
+.events-tabs {
+  padding-left: 0;
+}
+
+.events-tabs .events-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 30px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  color: #495057;
+  background-color: #f1f3f5;
+  border: none;
+  margin-right: 0.5rem;
+}
+
+.events-tabs .events-tab-btn:hover {
+  background-color: #dee2e6;
+}
+
+.events-tabs .events-tab-btn.active {
+  background-color: #0d6efd;
+  color: white;
+}
+
+/* Event Card */
+.event-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-4px);
+}
+
+.event-card img {
+  height: 180px;
+  object-fit: cover;
+  width: 100%;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.card-body {
+  padding: 1.2rem;
+}
+
+/* Buttons */
+.event-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.event-buttons > button {
+  margin-left: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn .material-icons {
+  font-size: 20px;
+  margin-right: 0.4rem;
+}
+
+.btn-sm .material-icons {
+  font-size: 18px;
+}
+
+/* Modal Overlay */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* Modal Content Box */
+.modal-content {
+  width: 100%;
+  max-width: 500px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+/* Modal Form Fields */
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* Modal Buttons */
+.modal-content button {
+  min-width: 100px;
+}
+
+/* Material Icon Base */
+.material-icons {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation, Routes, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import Header from '../components/header/Header';
+// import Header from '../components/header/Header';
 import StatusModal from '../components/StatusModal';
 import SocketClient from '../SocketClient';
 import CallModal from '../components/message/CallModal';
@@ -12,6 +12,7 @@ import Login from '../pages/login';
 import Register from '../pages/register';
 import PageRender from '../customRouter/PageRender';
 import PrivateRouter from '../customRouter/PrivateRouter';
+import Sidebar from '../components/header/Sidebar';
 
 const AppRouter = () => {
   const { pathname } = useLocation();
@@ -29,12 +30,12 @@ const AppRouter = () => {
     <>
       <input type="checkbox" id="theme" />
       <div className={`App ${(status || modal) && 'mode'}`}>
+        {/* {auth.token && !hideHeader && <Header />} */}
+        {auth.token && !hideHeader && <Sidebar />}
+        {status && <StatusModal />}
+        {auth.token && <SocketClient />}
+        {call && <CallModal />}
         <div className="main">
-          {auth.token && !hideHeader && <Header />}
-          {status && <StatusModal />}
-          {auth.token && <SocketClient />}
-          {call && <CallModal />}
-
           <Routes>
             <Route path="/" element={auth.token ? <Home /> : <Login />} />
             <Route path="/register" element={<Register />} />

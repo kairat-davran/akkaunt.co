@@ -9,7 +9,7 @@ const Status = () => {
 
     return (
         <div className="status my-3 d-flex">
-            <Avatar src={auth.user.avatar} size="big-avatar" />
+            <Avatar src={auth.user.avatar} size="big-avatar" marginRight={5} />
 
             <button className="statusBtn flex-fill"
             onClick={() => dispatch({ type: GLOBALTYPES.STATUS, payload: true })}>

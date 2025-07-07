@@ -1,50 +1,67 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { DISCOVER_TYPES, getDiscoverPosts } from '../redux/actions/discoverAction'
-import LoadIcon from "../images/loading.gif"
-import PostThumb from '../components/PostThumb'
-import LoadMoreBtn from '../components/LoadMoreBtn'
-import { getDataAPI } from '../utils/fetchData'
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { DISCOVER_TYPES, getDiscoverPosts } from '../redux/actions/discoverAction';
+import { getDataAPI } from '../utils/fetchData';
+import LoadIcon from '../images/loading.gif';
+import { useNavigate } from 'react-router-dom';
 
 const Discover = () => {
-    const auth = useSelector(state => state.auth)
-    const discover = useSelector(state => state.discover)
-    const dispatch = useDispatch()
+  const auth = useSelector(state => state.auth);
+  const discover = useSelector(state => state.discover);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [loadMore, setLoadMore] = useState(false);
 
-    const [load, setLoad] = useState(false)
-
-    useEffect(() => {
-        if(!discover.firstLoad){
-            dispatch(getDiscoverPosts(auth.token))
-        }
-    },[dispatch, auth.token, discover.firstLoad])
-
-    const handleLoadMore = async () => {
-        setLoad(true)
-        const res = await getDataAPI(`post_discover?num=${discover.page * 9}`, auth.token)
-        dispatch({type: DISCOVER_TYPES.UPDATE_POST, payload: res.data})
-        setLoad(false)
+  useEffect(() => {
+    if (!discover.firstLoad) {
+      dispatch(getDiscoverPosts(auth.token));
     }
+  }, [dispatch, auth.token, discover.firstLoad]);
 
-    return (
-        <div>
-            {
-                discover.loading
-                ? <img src={LoadIcon} alt="loading" className="d-block mx-auto my-4" />
-                : <PostThumb posts={discover.posts} result={discover.result} />
-            }
+  const handleLoadMore = async () => {
+    setLoadMore(true);
+    const res = await getDataAPI(`post_discover?num=${discover.page * 9}`, auth.token);
+    dispatch({ type: DISCOVER_TYPES.UPDATE_POST, payload: res.data });
+    setLoadMore(false);
+  };
 
-            {
-                load && <img src={LoadIcon} alt="loading" className="d-block mx-auto" />
-            }
+  return (
+    <div className="discover-page">
+      {discover.loading && <img src={LoadIcon} alt="loading" className="loading" />}
 
-            {
-                !discover.loading &&
-                <LoadMoreBtn result={discover.result} page={discover.page}
-                load={load} handleLoadMore={handleLoadMore} />
-            }
-        </div>
-    )
-}
+      <div className="grid-layout">
+        {discover.posts.map((post, i) => {
+          const isTall = i % 6 === 2 || i % 6 === 5;
+          return (
+            <div
+              key={post._id}
+              className={`grid-item ${isTall ? 'tall' : ''}`}
+              onClick={() => navigate(`/post/${post._id}`)}
+            >
+              <img src={post.images[0]?.url} alt="post" />
+              <div className="overlay">
+                <div className="icon-info">
+                  <span className="material-icons">favorite_border</span>
+                  <span>{post.likes.length}</span>
+                </div>
+                <div className="icon-info">
+                  <span className="material-icons">chat_bubble_outline</span>
+                  <span>{post.comments.length}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
-export default Discover
+      {loadMore && <img src={LoadIcon} alt="loading" className="loading" />}
+      {!discover.loading && (
+        <button className="load-more" onClick={handleLoadMore}>
+          Load More
+        </button>
+      )}
+    </div>
+  );
+};
+
+export default Discover;

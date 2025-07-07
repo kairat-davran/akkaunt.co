@@ -5,7 +5,7 @@ import { GLOBALTYPES } from '../../redux/actions/globalTypes';
 import UserCard from '../UserCard';
 import LoadIcon from '../../images/loading.gif'
 
-const Search = () => {
+const SearchHeader = () => {
     const [search, setSearch] = useState('')
     const [users, setUsers] = useState([])
 
@@ -68,4 +68,4 @@ const Search = () => {
     )
 }
 
-export default Search
+export default SearchHeader

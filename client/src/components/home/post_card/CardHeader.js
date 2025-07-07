@@ -31,7 +31,7 @@ const CardHeader = ({post}) => {
     return (
         <div className="card_header">
             <div className="d-flex">
-                <Avatar src={post.user.avatar} size="big-avatar" />
+                <Avatar src={post.user.avatar} size="big-avatar" marginRight={10} />
 
                 <div className="card_name">
                     <h6 className="m-0">

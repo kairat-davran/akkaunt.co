@@ -1,5 +1,5 @@
 {
-  "name": "akaunt",
+  "name": "akkaunt",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -38,7 +38,8 @@
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "expo-module-scripts": "^4.1.8"
   },
   "private": true
 }

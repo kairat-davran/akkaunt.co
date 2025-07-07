@@ -57,7 +57,7 @@ const BazarModal = ({ visible, onClose }) => {
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.overlay}>
         <View style={styles.modal}>
-          <Text style={styles.title}>New Marketplace Item</Text>
+          <Text style={styles.title}>New Bazar Item</Text>
           {['title', 'price', 'location', 'category', 'description'].map((field, idx) => (
             <TextInput
               key={idx}
