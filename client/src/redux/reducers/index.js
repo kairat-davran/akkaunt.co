@@ -15,10 +15,12 @@ import message from "./messageReducer"
 import online from "./onlineReducer"
 import call from "./callReducer"
 import events from "./eventReducer"
+import bazar from './bazarReducer';
 
 export default combineReducers({
     auth,
     alert,
+    bazar,
     theme,
     profile,
     status,

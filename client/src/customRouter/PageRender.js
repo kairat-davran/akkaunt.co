@@ -14,16 +14,23 @@ const generatePage = (pageName) => {
 }
 
 const PageRender = () => {
-    const {page, id} = useParams()
-    const auth = useSelector(state => state.auth)
-    
+    const { page, subpage, id } = useParams();
+    const auth = useSelector(state => state.auth);
+
+    if (!auth.token) return null;
+
     let pageName = "";
-    if(auth.token) {
-        if(id) {
-            pageName = `${page}/[id]`
+
+    if (page && subpage && id) {
+        pageName = `${page}/${subpage}/[id]`;
+    } else if (page && id) {
+        if (page === 'bazar' && id === 'create') {
+            pageName = `${page}/create`;
         } else {
-            pageName = `${page}`
+            pageName = `${page}/[id]`;
         }
+    } else if (page) {
+        pageName = `${page}`;
     }
     return generatePage(pageName)
 }

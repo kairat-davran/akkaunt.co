@@ -68,6 +68,9 @@ img {
 /* ---------- HOME ---------- */
 @import url("./home.css");
 
+/* ---------- Bazar ---------- */
+@import url("./bazar.css");
+
 /* ---------- Discover ---------- */
 @import url("./discover.css");
 

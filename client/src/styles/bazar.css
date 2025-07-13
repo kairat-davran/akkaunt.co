@@ -1,0 +1,179 @@
+/* Bazar Screen Container */
+.bazar-screen {
+  background-color: #fafbfc;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+/* Header Title */
+.bazar-screen h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+/* Avatar */
+.bazar-avatar {
+  width: 38px;
+  height: 38px;
+  margin: 0 20px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+.bazar-avatar:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+}
+
+/* Category Tabs */
+.bazar-tabs {
+  padding-left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bazar-tab-btn {
+  padding: 0.5rem 1.2rem;
+  border-radius: 30px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  color: #495057;
+  background-color: #f1f3f5;
+  border: none;
+  cursor: pointer;
+}
+
+.bazar-tab-btn:hover {
+  background-color: #dee2e6;
+}
+
+.bazar-tab-btn.active {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+/* Search Bar */
+.bazar-filters {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #dee2e6;
+  padding: 1rem;
+}
+
+.bazar-filters input {
+  border-radius: 8px;
+}
+
+.bazar-filters button {
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+/* Item Card Style */
+.bazar-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  background-color: #fff;
+  height: 100%;
+  cursor: pointer;
+}
+
+.bazar-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Spinner Centering */
+.spinner-border {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+/* Responsive Grid Tweaks */
+@media (max-width: 768px) {
+  .col-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .bazar-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .bazar-card img {
+    height: 160px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 991px) {
+  .col-md-4 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  .bazar-card img {
+    height: 170px;
+  }
+}
+
+@media (min-width: 992px) {
+  .col-lg-3 {
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+}
+
+/* Create Item & Item Detail Styling */
+.create-item-form input,
+.create-item-form textarea,
+.create-item-form select {
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.create-item-form .btn {
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.create-item-form .progress {
+  border-radius: 6px;
+  height: 6px;
+  background-color: #e9ecef;
+}
+
+.create-item-form .progress-bar {
+  border-radius: 6px;
+}
+
+.item-detail {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.item-detail img {
+  max-height: 400px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+}
+
+.item-detail h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.item-detail p {
+  margin-bottom: 0.5rem;
+}
+
+.item-detail .btn {
+  margin-top: 1.5rem;
+}

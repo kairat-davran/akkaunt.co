@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
-import { logout } from '../../redux/actions/authAction';
-import { GLOBALTYPES } from '../../redux/actions/globalTypes';
 import Avatar from '../Avatar';
 import NotifyModal from '../NotifyModal';
 import SearchSide from './SearchSide';
@@ -17,9 +15,8 @@ const MenuSide = () => {
   ];
 
   const auth = useSelector(state => state.auth);
-  const theme = useSelector(state => state.theme);
+  // const theme = useSelector(state => state.theme);
   const notify = useSelector(state => state.notify);
-  const dispatch = useDispatch();
   const { pathname } = useLocation();
 
   const [openSearch, setOpenSearch] = useState(false);
@@ -89,27 +86,10 @@ const MenuSide = () => {
         )}
       </Link>
 
-      {/* Avatar dropdown */}
-      <div className="nav-link avatar-dropdown dropdown">
+      <Link to={`/profile/${auth.user._id}`} className={`nav-link ${isActive(`/profile/${auth.user._id}`)}`}>
         <Avatar src={auth.user.avatar} size="medium-avatar" />
         <span className="label">Profile</span>
-        <div className="dropdown-content">
-          <Link to={`/profile/${auth.user._id}`}>Profile</Link>
-          <div
-            onClick={() => dispatch({ type: GLOBALTYPES.THEME, payload: !theme })}
-            style={{ cursor: 'pointer', padding: '5px 0' }}
-          >
-            {theme ? 'Light mode' : 'Dark mode'}
-          </div>
-          <div className="dropdown-divider" />
-          <div
-            onClick={() => dispatch(logout())}
-            style={{ cursor: 'pointer', padding: '5px 0' }}
-          >
-            Logout
-          </div>
-        </div>
-      </div>
+      </Link>
 
       {/* 🔲 Sliding Panels */}
       {openSearch && (

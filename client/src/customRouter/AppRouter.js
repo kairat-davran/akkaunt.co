@@ -41,6 +41,7 @@ const AppRouter = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/:page" element={<PrivateRouter><PageRender /></PrivateRouter>} />
             <Route path="/:page/:id" element={<PrivateRouter><PageRender /></PrivateRouter>} />
+            <Route path="/:page/:subpage/:id" element={<PrivateRouter><PageRender /></PrivateRouter>}/>
           </Routes>
         </div>
       </div>

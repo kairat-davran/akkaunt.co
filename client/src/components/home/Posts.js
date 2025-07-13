@@ -8,7 +8,11 @@ import { getDataAPI } from '../../utils/fetchData'
 import { POST_TYPES } from '../../redux/actions/postAction'
 
 const Posts = () => {
-    const homePosts = useSelector(state => state.homePosts)
+    const homePosts = useSelector(state => state.homePosts || {
+        posts: [],
+        result: 0,
+        page: 1,
+    });
     const auth = useSelector(state => state.auth)
     const theme = useSelector(state => state.theme)
     const dispatch = useDispatch()

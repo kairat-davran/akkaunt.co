@@ -5,13 +5,6 @@
   margin: auto;
 }
 
-/* Loader image */
-.loading {
-  display: block;
-  margin: 20px auto;
-  width: 40px;
-}
-
 /* Grid layout: 3 columns, fixed height rows */
 .grid-layout {
   display: grid;

@@ -9,6 +9,7 @@ import Saved from '../../components/profile/Saved'
 import EditProfile from '../../components/profile/EditProfile'
 import Followers from '../../components/profile/Followers'
 import Following from '../../components/profile/Following'
+import Settings from '../../components/profile/Settings'
 
 const Profile = () => {
   const profile = useSelector(state => state.profile)
@@ -22,6 +23,7 @@ const Profile = () => {
   const [onEdit, setOnEdit] = useState(false)
   const [showFollowers, setShowFollowers] = useState(false)
   const [showFollowing, setShowFollowing] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
 
   const [userData, setUserData] = useState([])
 
@@ -63,6 +65,7 @@ const Profile = () => {
         setShowFollowers={setShowFollowers}
         showFollowing={showFollowing}
         setShowFollowing={setShowFollowing}
+        setShowSettings={setShowSettings}
       />
 
       {auth.user._id === id && (
@@ -82,6 +85,8 @@ const Profile = () => {
       }
 
       {onEdit && <EditProfile setOnEdit={setOnEdit} />}
+
+      {showSettings && <Settings setShowSettings={setShowSettings} setOnEdit={setOnEdit} />}
 
       {showFollowers &&
         <Followers

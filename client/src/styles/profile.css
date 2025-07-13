@@ -1,193 +1,355 @@
-.profile{
-    width: 100%;
-    min-height: 100vh;
+.profile {
+  width: 100%;
+  min-height: 100vh;
 }
+
 .profile_back {
-    display: none;
+  display: none;
 }
 
 @media (max-width: 1024px) {
-    .profile_back {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 15px 20px;
-        font-size: 18px;
-        cursor: pointer;
-        background-color: white;
-        border-bottom: 1px solid #ddd;
-        color: #333;
-        font-weight: 500;
-    }
-    .profile_back i {
-        font-size: 1.2rem;
-    }
-}
-/* ------ Info ---------- */
-.info{
-    width: 100%;
-    max-width: 800px;
-    margin: auto;
-    padding: 20px 10px;
-}
-.info_container{
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
-.info_content{
-    min-width: 250px;
-    max-width: 550px;
-    width: 100%;
-    flex: 1;
-    opacity: 0.7;
-    margin: 0 15px;
-}
-.info_content_title{
+  .profile_back {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-}
-.info_content_title h2{
-    font-size: 2rem;
-    font-weight: 400;
-    transform: translateY(4px);
-    flex: 3;
-}
-.info_content_title button{
-    flex: 2;
-}
-.info_container .follow_btn{
-    color: teal;
+    gap: 10px;
+    padding: 15px 20px;
+    font-size: 18px;
     cursor: pointer;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    color: #333;
+    font-weight: 500;
+  }
+
+  .profile_back i {
+    font-size: 1.2rem;
+  }
 }
-.info_container .follow_btn span:hover{
-    text-decoration: underline;
+
+/* ------ Info ---------- */
+.info {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+  padding: 20px 10px;
+}
+
+.info_container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.info_content {
+  min-width: 250px;
+  max-width: 550px;
+  width: 100%;
+  flex: 1;
+  opacity: 0.7;
+  margin: 0 15px;
+}
+
+.info_content_title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.info_content_title h2 {
+  font-size: 2rem;
+  font-weight: 400;
+  transform: translateY(4px);
+  margin: 0;
+  flex: 1;
+}
+
+.info_content_title button {
+  flex-shrink: 0;
+}
+
+.info_container .follow_btn {
+  color: teal;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.info_container .follow_btn span {
+  margin-right: 10px;
+}
+
+.info_container .follow_btn span:hover {
+  text-decoration: underline;
+}
+
+.text-danger {
+  color: crimson;
+}
+
+.m-0 {
+  margin: 0;
 }
 
 /* -------------- Profile Edit ------------ */
-.edit_profile{
-    position: fixed;
-    top:0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background: #0008;
-    z-index: 9;
-    overflow: auto;
+.edit_profile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #0008;
+  z-index: 9;
+  overflow: auto;
 }
-.edit_profile form{
-    max-width: 450px;
-    width: 100%;
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    margin: 20px auto;
+
+.edit_profile form {
+  max-width: 450px;
+  width: 100%;
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  margin: 20px auto;
 }
-.edit_profile .btn_close{
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+
+.edit_profile .btn_close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 }
-.edit_profile .info_avatar{
-    width: 150px;
-    height: 150px;
-    overflow: hidden;
-    border-radius: 50%;
-    position: relative;
-    margin: 15px auto;
-    border: 1px solid #ddd;
-    cursor: pointer;
+
+.edit_profile .info_avatar {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 50%;
+  position: relative;
+  margin: 15px auto;
+  border: 1px solid #ddd;
+  cursor: pointer;
 }
-.edit_profile .info_avatar img{
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
+
+.edit_profile .info_avatar img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
-.edit_profile .info_avatar span{
-    position: absolute;
-    bottom: -100%;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    text-align: center;
-    color: orange;
-    transition: 0.3s ease-in-out;
-    background: #fff5;
+
+.edit_profile .info_avatar span {
+  position: absolute;
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  text-align: center;
+  color: orange;
+  transition: 0.3s ease-in-out;
+  background: #fff5;
 }
-.edit_profile .info_avatar:hover span{
-    bottom: -15%;
+
+.edit_profile .info_avatar:hover span {
+  bottom: -15%;
 }
-.edit_profile .info_avatar #file_up{
-    position: absolute;
-    top:0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
+
+.edit_profile .info_avatar #file_up {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  opacity: 0;
+}
+
+::-webkit-file-upload-button {
+  cursor: pointer;
+}
+
+/* -------------- Settings ------------ */
+.settings {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings_icon {
+  font-size: 1.3rem;
+  color: #555;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: color 0.2s ease;
+}
+
+.settings_icon:hover {
+  color: #007BFF;
+}
+
+.settings_box {
+  background: #fff;
+  width: 360px;
+  max-width: 90%;
+  padding: 25px 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.3s ease;
+}
+
+.settings_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.settings_header h4 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.settings_close {
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.settings_close:hover {
+  color: crimson;
+}
+
+.settings_section {
+  margin-bottom: 20px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.settings_item {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.settings_item:hover {
+  background: #f9f9f9;
+}
+
+.settings_item.danger {
+  color: crimson;
+}
+
+.settings_icon_item {
+  margin-right: 12px;
+  width: 22px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.settings_input {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.language_select {
+  margin-left: auto;
+  font-size: 14px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {
     opacity: 0;
-}
-::-webkit-file-upload-button{
-    cursor: pointer;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* ----------- Follow ------- */
-.follow{
-    position: fixed;
-    top:0;
-    left: 0;
-    background: #0008;
-    width: 100%;
-    height: 100vh;
-    z-index: 4;
+.follow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #0008;
+  width: 100%;
+  height: 100vh;
+  z-index: 4;
 }
-.follow_box{
-    width: 350px;
-    border: 1px solid #222;
-    border-radius: 5px;
-    background: white;
-    padding: 20px 10px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+
+.follow_box {
+  width: 350px;
+  border: 1px solid #222;
+  border-radius: 5px;
+  background: white;
+  padding: 20px 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
-.follow_content{
-    width: 100%;
-    height: 350px;
-    overflow: auto;
+
+.follow_content {
+  width: 100%;
+  height: 350px;
+  overflow: auto;
 }
-.follow_box .close{
-    position: absolute;
-    top: 0;
-    right: 3px;
-    font-size: 3rem;
-    cursor: pointer;
+
+.follow_box .close {
+  position: absolute;
+  top: 0;
+  right: 3px;
+  font-size: 3rem;
+  cursor: pointer;
 }
 
 /* --------- Save Tab ----------- */
-.profile_tab{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+.profile_tab {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
-.profile_tab button{
-    outline: none;
-    border: none;
-    background: white;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 1.2rem;
-    padding: 5px 20px;
-    margin: 0 25px;
-    opacity: 0.5;
+
+.profile_tab button {
+  outline: none;
+  border: none;
+  background: white;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 5px 20px;
+  margin: 0 25px;
+  opacity: 0.5;
+  cursor: pointer;
 }
-.profile_tab button.active{
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #000;
-    opacity: 0.8;
+
+.profile_tab button.active {
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  opacity: 0.8;
 }
