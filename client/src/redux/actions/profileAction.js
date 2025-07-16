@@ -6,6 +6,7 @@ import { createNotify, removeNotify } from "./notifyAction"
 export const PROFILE_TYPES = {
     LOADING: 'LOADING',
     GET_USER: 'GET_PROFILE_USER',
+    GET_USERS_BY_SEARCH: 'GET_USERS_BY_SEARCH',
     FOLLOW: 'FOLLOW',
     UNFOLLOW: 'UNFOLLOW',
     GET_ID: 'GET_PROFILE_ID',
@@ -17,7 +18,6 @@ export const getProfileUsers = ({id, auth}) => async (dispatch) => {
     dispatch({type: PROFILE_TYPES.GET_ID, payload: id})
 
     try {
-        dispatch({type: PROFILE_TYPES.LOADING, payload: true})
         const res = getDataAPI(`/user/${id}`, auth.token)
         const res1 = getDataAPI(`/user_posts/${id}`, auth.token)
         
@@ -34,7 +34,6 @@ export const getProfileUsers = ({id, auth}) => async (dispatch) => {
             payload: {...posts.data, _id: id, page: 2}
         })
 
-        dispatch({type: PROFILE_TYPES.LOADING, payload: false})
     } catch (err) {
         dispatch({
             type: GLOBALTYPES.ALERT,
@@ -42,6 +41,36 @@ export const getProfileUsers = ({id, auth}) => async (dispatch) => {
         })
     }
 }
+
+// userAction.js
+export const getUsers = (token, search = '') => async (dispatch) => {
+  if (!search.trim()) {
+    return dispatch({
+      type: PROFILE_TYPES.GET_USERS_BY_SEARCH,
+      payload: []
+    });
+  }
+
+  try {
+    const query = new URLSearchParams();
+    if (search) query.append('search', search);
+
+    const res = await getDataAPI(`users?${query.toString()}`, token);
+
+    dispatch({
+      type: PROFILE_TYPES.GET_USERS_BY_SEARCH,
+      payload: res.data.users
+    });
+
+  } catch (err) {
+    dispatch({
+      type: GLOBALTYPES.ALERT,
+      payload: {
+        error: err.response?.data?.msg || 'Failed to search users'
+      }
+    });
+  }
+};
 
 export const updateProfileUser = ({userData, avatar, auth}) => async (dispatch) => {
     if(!userData.fullname)

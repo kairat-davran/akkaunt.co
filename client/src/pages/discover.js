@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { DISCOVER_TYPES, getDiscoverPosts } from '../redux/actions/discoverAction';
-import { getDataAPI } from '../utils/fetchData';
-import LoadIcon from '../images/loading.gif';
+import { getDiscoverPosts } from '../redux/actions/discoverAction';
 import { useNavigate } from 'react-router-dom';
+import { patchDataAPI } from '../utils/fetchData';
 
 const Discover = () => {
   const auth = useSelector(state => state.auth);
@@ -13,49 +12,80 @@ const Discover = () => {
   const [loadMore, setLoadMore] = useState(false);
 
   useEffect(() => {
-    if (!discover.firstLoad) {
-      dispatch(getDiscoverPosts(auth.token));
+    if (auth.token && !discover.firstLoad) {
+      dispatch(getDiscoverPosts(auth.token, 1));
     }
   }, [dispatch, auth.token, discover.firstLoad]);
 
   const handleLoadMore = async () => {
+    if (loadMore || discover.loading) return;
     setLoadMore(true);
-    const res = await getDataAPI(`post_discover?num=${discover.page * 9}`, auth.token);
-    dispatch({ type: DISCOVER_TYPES.UPDATE_POST, payload: res.data });
+    await dispatch(getDiscoverPosts(auth.token, discover.page));
     setLoadMore(false);
+  };
+
+  const handleResetDiscover = async () => {
+    try {
+      await patchDataAPI('reset_discover', null, auth.token);
+      dispatch(getDiscoverPosts(auth.token, 1));
+    } catch (err) {
+      alert('Failed to reset discover');
+    }
   };
 
   return (
     <div className="discover-page">
-      {discover.loading && <img src={LoadIcon} alt="loading" className="loading" />}
+      {discover.loading && discover.page === 1 && (
+        <div className="text-center py-5">
+          <div className="spinner-border text-primary" role="status" />
+        </div>
+      )}
 
-      <div className="grid-layout">
-        {discover.posts.map((post, i) => {
-          const isTall = i % 6 === 2 || i % 6 === 5;
-          return (
-            <div
-              key={post._id}
-              className={`grid-item ${isTall ? 'tall' : ''}`}
-              onClick={() => navigate(`/post/${post._id}`)}
-            >
-              <img src={post.images[0]?.url} alt="post" />
-              <div className="overlay">
-                <div className="icon-info">
-                  <span className="material-icons">favorite_border</span>
-                  <span>{post.likes.length}</span>
-                </div>
-                <div className="icon-info">
-                  <span className="material-icons">chat_bubble_outline</span>
-                  <span>{post.comments.length}</span>
+      {discover.posts.length === 0 && !discover.loading ? (
+        <div className="discover-empty">
+          <p className="discover-message">
+            🎉 You’ve seen all new content. Check back later!
+          </p>
+          <button onClick={handleResetDiscover} className="reset-btn">
+            🔁 Reset Discover
+          </button>
+        </div>
+      ) : (
+        <div className="grid-layout">
+          {discover.posts.map((post, i) => {
+            let layoutClass = '';
+            if (i % 10 === 2) layoutClass = 'tall right';
+            else if (i % 10 === 5) layoutClass = 'tall left';
+
+            return (
+              <div
+                key={post._id}
+                className={`grid-item ${layoutClass}`}
+                onClick={() => navigate(`/post/${post._id}`)}
+              >
+                <img src={post.images[0]?.url} alt="post" />
+                <div className="overlay">
+                  <div className="icon-info">
+                    <span className="material-icons">favorite_border</span>
+                    <span>{post.likes.length}</span>
+                  </div>
+                  <div className="icon-info">
+                    <span className="material-icons">chat_bubble_outline</span>
+                    <span>{post.comments.length}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
-      {loadMore && <img src={LoadIcon} alt="loading" className="loading" />}
-      {!discover.loading && (
+      {loadMore &&
+        <div className="text-center py-5">
+          <div className="spinner-border text-primary" role="status" />
+        </div>
+      }
+      {!discover.loading && discover.result >= 10 && (
         <button className="load-more" onClick={handleLoadMore}>
           Load More
         </button>

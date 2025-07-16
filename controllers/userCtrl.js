@@ -10,6 +10,25 @@ const userCtrl = {
             return res.status(500).json({msg: err.message})
         }
     },
+    searchUsers: async (req, res) => {
+        try {
+            const keyword = req.query.search || '';
+            const regex = new RegExp(keyword, 'i');
+
+            const users = await Users.find({
+            $or: [
+                { username: regex },
+                { fullname: regex }
+            ]
+            })
+            .limit(10)
+            .select("fullname username avatar");
+
+            res.json({ users });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
     getUser: async (req, res) => {
         try {
             const user = await Users.findById(req.params.id).select("-password")

@@ -23,6 +23,11 @@ const profileReducer = (state = initialState, action) => {
                     ? [] : [action.payload.user])]
                 // users: [...state.users, action.payload.user]
             };
+        case PROFILE_TYPES.GET_USERS_BY_SEARCH:
+            return {
+                ...state,
+                users: action.payload,
+            };
         case PROFILE_TYPES.FOLLOW:
             return {
                 ...state,

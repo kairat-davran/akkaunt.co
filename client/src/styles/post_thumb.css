@@ -1,14 +1,14 @@
-/* === Desktop default: flex layout === */
+/* === Desktop default: centered flex layout === */
 .post_thumb {
-  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin: 15px 0;
+  gap: 8px;
+  padding: 8px;
 }
 
-/* === Mobile & Tablet: 3-column responsive square grid === */
+/* === Mobile & Tablet: 3-column grid layout === */
 @media (max-width: 1023px) {
   .post_thumb {
     display: grid;
@@ -23,16 +23,24 @@
   }
 }
 
+/* === Individual Post Link Box === */
 .post_thumb_display {
   width: 100%;
   max-width: 300px;
   position: relative;
   cursor: pointer;
   overflow: hidden;
+  border-radius: 8px;
+  background-color: #000; /* fallback */
+  transition: transform 0.2s;
 }
 
-.post_thumb_display img,
-.post_thumb_display video {
+.post_thumb_display:hover {
+  transform: scale(1.01);
+}
+
+/* === Image (or video if added back later) === */
+.post_thumb_display img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -41,24 +49,32 @@
 
 .post_thumb_menu {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(0, 0, 0, 0.4);
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 25px;
+  font-size: 16px;
+  font-weight: bold;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .post_thumb_display:hover .post_thumb_menu {
   opacity: 1;
+  pointer-events: auto;
 }
 
-.post_thumb_menu i {
-  font-size: 1.2rem;
-  color: white;
-  margin: 0 10px;
+.icon-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+}
+
+.material-icons {
+  font-size: 20px;
 }

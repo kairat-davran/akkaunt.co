@@ -1,52 +1,39 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import { getDataAPI } from '../../utils/fetchData';
-import { GLOBALTYPES } from '../../redux/actions/globalTypes';
 import UserCard from '../UserCard';
-import LoadIcon from '../../images/loading.gif'
+import { getUsers } from '../../redux/actions/profileAction';
 
 const SearchSide = () => {
-  const [search, setSearch] = useState('')
-  const [users, setUsers] = useState([])
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const { users } = useSelector(state => state.profile);
 
   const auth = useSelector(state => state.auth)
   const dispatch = useDispatch()
-  const [load, setLoad] = useState(false)
 
-  const handleSearch = async (e) => {
-      e.preventDefault()
-      if(!search) return;
-
-      try {
-          setLoad(true)
-          const res = await getDataAPI(`search?username=${search}`, auth.token)
-          setUsers(res.data.users)
-          setLoad(false)
-      } catch (err) {
-          dispatch({
-              type: GLOBALTYPES.ALERT, payload: {error: err?.response?.data?.msg || err.message}
-          })
-      }
-  }
+  useEffect(() => {
+    if (searchKeyword.trim()) {
+      dispatch(getUsers(auth.token, searchKeyword.trim()));
+    }
+  }, [dispatch, auth.token, searchKeyword]);
 
   const handleClose = () => {
-      setSearch('')
-      setUsers([])
+      setSearchKeyword('');
+      dispatch(getUsers(auth.token, ''));
   }
 
   return (
-    <form className="search-panel" onSubmit={handleSearch}>
+    <form className="search-panel">
       <input
         type="text"
         name="search"
-        value={search}
+        value={searchKeyword}
         id="search"
         className="search-panel__input"
         title="Enter to Search"
-        onChange={e => setSearch(e.target.value.toLowerCase().replace(/ /g, ''))}
+        onChange={e => setSearchKeyword(e.target.value.toLowerCase().replace(/ /g, ''))}
       />
 
-      <div className="search-panel__icon" style={{ opacity: search ? 0 : 0.3 }}>
+      <div className="search-panel__icon" style={{ opacity: searchKeyword ? 0 : 0.3 }}>
         <span className="material-icons">search</span>
         <span>Enter to Search</span>
       </div>
@@ -59,12 +46,8 @@ const SearchSide = () => {
         &times;
       </div>
 
-      <button type="submit" style={{ display: 'none' }}>Search</button>
-
-      {load && <img className="search-panel__loading" src={LoadIcon} alt="loading" />}
-
       <div className="search-panel__results">
-        {search && users.map(user => (
+        {searchKeyword && users.map(user => (
           <UserCard
             key={user._id}
             user={user}

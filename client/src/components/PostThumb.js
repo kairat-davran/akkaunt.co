@@ -6,33 +6,39 @@ const PostThumb = ({ posts, result, initialLoad }) => {
   const theme = useSelector(state => state.theme)
 
   if (!initialLoad && result === 0 && posts.length === 0) {
-    return <h2 className="text-center text-danger">No Posts</h2>
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '200px' }}>
+        <h4 className="text-muted" style={{ fontWeight: 500, fontSize: '1.5rem' }}>
+          No Posts Found
+        </h4>
+      </div>
+    )
   }
 
   return (
     <div className="post_thumb">
       {posts.map(post => (
-        <Link key={post._id} to={`/post/${post._id}`} className="post_thumb_display">
-          {post.images[0].url.match(/\.(mp4|webm)$/)
-            ? (
-              <video
-                src={post.images[0].url}
-                alt="video"
-                muted
-                playsInline
-                preload="metadata"
-                style={{ filter: theme ? 'invert(1)' : 'invert(0)' }}
-              />
-            ) : (
-              <img
-                src={post.images[0].url}
-                alt="post"
-                style={{ filter: theme ? 'invert(1)' : 'invert(0)' }}
-              />
-            )}
+        <Link
+          key={post._id}
+          to={`/post/${post._id}`}
+          className="post_thumb_display"
+        >
+          <img
+            src={post.images[0].url}
+            alt="post"
+            style={{
+              filter: theme ? 'invert(1)' : 'invert(0)'
+            }}
+          />
           <div className="post_thumb_menu">
-            <i className="far fa-heart">{post.likes.length}</i>
-            <i className="far fa-comment">{post.comments.length}</i>
+            <div className="icon-info">
+              <span className="material-icons">favorite_border</span>
+              <span>{post.likes.length}</span>
+            </div>
+            <div className="icon-info">
+              <span className="material-icons">chat_bubble_outline</span>
+              <span>{post.comments.length}</span>
+            </div>
           </div>
         </Link>
       ))}

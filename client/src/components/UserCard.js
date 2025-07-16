@@ -50,7 +50,7 @@ const UserCard = ({children, user, border, handleClose, setShowFollowers, setSho
                     <Avatar src={user.avatar} size="big-avatar" marginRight={5} />
 
                     <div className="ml-1" style={{transform: 'translateY(-2px)'}}>
-                        <span className="d-block">{user.username}</span>
+                        <span className="d-block">@{user.username}</span>
                         
                         <small style={{opacity: 0.7}}>
                             {

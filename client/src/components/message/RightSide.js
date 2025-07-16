@@ -8,9 +8,8 @@ import { GLOBALTYPES } from '../../redux/actions/globalTypes'
 import { imageShow, videoShow } from '../../utils/mediaShow'
 import { imageUpload } from '../../utils/imageUpload'
 import { addMessage, getMessages, loadMoreMessages, deleteConversation } from '../../redux/actions/messageAction'
-import LoadIcon from '../../images/loading.gif'
 
-const RightSide = ({ setIsLeftOpen }) => {
+const RightSide = () => {
     const auth = useSelector(state => state.auth)
     const message = useSelector(state => state.message)
     const theme = useSelector(state => state.theme)
@@ -241,7 +240,9 @@ const RightSide = ({ setIsLeftOpen }) => {
                    {
                        loadMedia && 
                        <div className="chat_row you_message">
-                           <img src={LoadIcon} alt="loading"/>
+                           <div className="text-center py-5">
+                                <div className="spinner-border text-primary" role="status" />
+                            </div>
                        </div>
                    }
 

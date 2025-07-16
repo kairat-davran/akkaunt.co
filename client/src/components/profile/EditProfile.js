@@ -6,11 +6,11 @@ import { updateProfileUser } from '../../redux/actions/profileAction'
 
 const EditProfile = ({setOnEdit}) => {
     const initState = {
-        fullname: '', mobile: '', address: '', website: '', story: '', gender: ''
+        fullname: '', mobile: '', website: '', story: '', gender: ''
     }
 
     const [userData, setUserData] = useState(initState)
-    const { fullname, mobile, address, website, story, gender } = userData
+    const { fullname, mobile, website, story, gender } = userData
 
     const [avatar, setAvatar] = useState('')
 
@@ -43,12 +43,8 @@ const EditProfile = ({setOnEdit}) => {
 
     return (
         <div className="edit_profile">
-            <button className="btn btn-danger btn-close"
-            onClick={() => setOnEdit(false)}>
-                Close
-            </button>
-
             <form onSubmit={handleSubmit}>
+                <span className="edit_close" onClick={() => setOnEdit(false)}>&times;</span>
                 <div className="info_avatar">
                     <img src={avatar ? URL.createObjectURL(avatar) : auth.user.avatar}
                     alt="avatar" style={{filter: theme ? 'invert(1)' : 'invert(0)'}} />
@@ -75,12 +71,6 @@ const EditProfile = ({setOnEdit}) => {
                 <div className="form_group">
                     <label htmlFor="mobile">Mobile</label>
                     <input type="text" name="mobile" value={mobile}
-                    className="form-control" onChange={handleInput} />
-                </div>
-
-                <div className="form_group">
-                    <label htmlFor="address">Address</label>
-                    <input type="text" name="address" value={address}
                     className="form-control" onChange={handleInput} />
                 </div>
 

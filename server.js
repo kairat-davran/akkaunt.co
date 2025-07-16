@@ -83,3 +83,12 @@ const port = process.env.PORT || 5000
 http.listen(port, () => {
     console.log('Server is running on port', port)
 })
+
+// === CRON JOB: Reset seenDiscoverPosts Monthly ===
+const cron = require('node-cron');
+const clearSeenDiscoverMonthly = require('./cronJobs/clearSeenDiscover');
+
+cron.schedule('0 3 1 * *', async () => {
+    console.log('[CRON] 🕒 Running monthly reset for seenDiscoverPosts...');
+    await clearSeenDiscoverMonthly();
+});

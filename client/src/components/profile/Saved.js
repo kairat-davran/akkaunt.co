@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import PostThumb from '../PostThumb'
-import LoadIcon from '../../images/loading.gif'
 import LoadMoreBtn from '../LoadMoreBtn'
 import { getDataAPI } from '../../utils/fetchData'
 import { GLOBALTYPES } from '../../redux/actions/globalTypes'
@@ -13,36 +12,35 @@ const Saved = ({ auth, dispatch }) => {
   const [initialLoad, setInitialLoad] = useState(true)
 
   useEffect(() => {
-    setLoad(true)
-    setInitialLoad(true)
+    const fetchInitialPosts = async () => {
+      setLoad(true)
+      setInitialLoad(true)
 
-    getDataAPI(`getSavePosts?limit=${page * 9}`, auth.token)
-      .then(res => {
+      try {
+        const res = await getDataAPI(`getSavePosts?limit=9&page=1`, auth.token)
         setSavePosts(res.data.savePosts)
         setResult(res.data.result)
-        setInitialLoad(false)
-        setLoad(false)
-      })
-      .catch(err => {
+      } catch (err) {
         dispatch({
           type: GLOBALTYPES.ALERT,
           payload: { error: err.response?.data?.msg || 'Failed to load saved posts.' }
         })
-        setInitialLoad(false)
-        setLoad(false)
-      })
+      }
 
-    // Don't clear saved posts on unmount
-    return () => {}
-  }, [auth.token, dispatch, page])
+      setInitialLoad(false)
+      setLoad(false)
+    }
+
+    fetchInitialPosts()
+  }, [auth.token, dispatch])
 
   const handleLoadMore = async () => {
     const nextPage = page + 1
     setLoad(true)
 
     try {
-      const res = await getDataAPI(`getSavePosts?limit=${nextPage * 9}`, auth.token)
-      setSavePosts(res.data.savePosts)
+      const res = await getDataAPI(`getSavePosts?limit=9&page=${nextPage}`, auth.token)
+      setSavePosts(prev => [...prev, ...res.data.savePosts])
       setResult(res.data.result)
       setPage(nextPage)
     } catch (err) {
@@ -57,16 +55,22 @@ const Saved = ({ auth, dispatch }) => {
 
   return (
     <>
-      <PostThumb posts={savePosts} result={result} initialLoad={initialLoad} />
+      <PostThumb posts={savePosts} result={savePosts.length} initialLoad={initialLoad} />
 
-      {load && <img src={LoadIcon} alt="loading" className="d-block mx-auto" />}
+      {load && (
+        <div className="text-center py-5">
+          <div className="spinner-border text-primary" role="status" />
+        </div>
+      )}
 
-      <LoadMoreBtn
-        result={result}
-        page={page}
-        load={load}
-        handleLoadMore={handleLoadMore}
-      />
+      {result === 9 && (
+        <LoadMoreBtn
+          result={result}
+          page={page}
+          load={load}
+          handleLoadMore={handleLoadMore}
+        />
+      )}
     </>
   )
 }

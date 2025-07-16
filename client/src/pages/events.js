@@ -126,7 +126,6 @@ const EventsScreen = () => {
 
   return (
     <div className="events-screen container py-5">
-      {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="text-capitalize fw-semibold">{activeTab} Events</h3>
         <button className="btn btn-primary" onClick={() => setModalVisible(true)}>
@@ -134,7 +133,6 @@ const EventsScreen = () => {
         </button>
       </div>
 
-      {/* Tabs */}
       <ul className="events-tabs nav nav-pills mb-4">
         {tabs.map(tab => (
           <li className="nav-item" key={tab.key}>
@@ -149,7 +147,6 @@ const EventsScreen = () => {
         ))}
       </ul>
 
-      {/* Event Cards */}
       {filteredEvents.length === 0 ? (
         <p className="text-muted">No events to show.</p>
       ) : (
@@ -194,7 +191,6 @@ const EventsScreen = () => {
         </div>
       )}
 
-      {/* Modal */}
       {modalVisible && (
         <div className="modal-backdrop">
           <div className="modal-content p-4 bg-white rounded shadow">
@@ -219,7 +215,6 @@ const EventsScreen = () => {
               <option value="Wellness">Wellness & Lifestyle</option>
             </select>
 
-            {/* Image Upload */}
             <div className="form-group mt-3">
               <label>Event Images</label>
               <div className="show_images d-flex flex-wrap">

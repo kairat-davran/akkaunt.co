@@ -65,7 +65,6 @@ const Info = ({
 
             <h6>{user.fullname} <span className="text-danger">{user.mobile}</span></h6>
             <p className="m-0">{user.address}</p>
-            <h6 className="m-0">{user.email}</h6>
 
             {user.website && (
               <a href={user.website} target="_blank" rel="noreferrer">

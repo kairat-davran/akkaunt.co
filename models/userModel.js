@@ -12,9 +12,13 @@ const userSchema = new mongoose.Schema({
   role: { type: String, default: 'user' },
   gender: { type: String, default: 'male' },
   mobile: { type: String, default: '' },
-  address: { type: String, default: '' },
   story: { type: String, default: '', maxLength: 200 },
   website: { type: String, default: '' },
+
+  // Seen posts in Discover feed
+  // seenDiscoverPosts: [{ type: mongoose.Types.ObjectId, ref: 'post'}],
+  seenDiscoverPosts: [{ postId: { type: mongoose.Types.ObjectId, ref: 'post', required: true },
+    seenAt: { type: Date, default: Date.now } }],
 
   // Social
   followers: [{ type: mongoose.Types.ObjectId, ref: 'user' }],

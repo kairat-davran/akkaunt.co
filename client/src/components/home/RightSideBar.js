@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import UserCard from '../UserCard'
 import FollowBtn from '../FollowBtn'
-import LoadIcon from '../../images/loading.gif'
 import { getSuggestions } from '../../redux/actions/suggestionsAction'
 
 const RightSideBar = () => {
@@ -26,7 +25,9 @@ const RightSideBar = () => {
 
             {
                 suggestions.loading
-                ? <img src={LoadIcon} alt="loading" className="d-block mx-auto my-4" />
+                ?   <div className="text-center py-5">
+                        <div className="spinner-border text-primary" role="status" />
+                    </div>
                 : <div className="suggestions">
                     {
                         suggestions.users.map(user => (
@@ -48,7 +49,7 @@ const RightSideBar = () => {
                 </small>
 
                 <small>
-                   &copy; 2025 akaunt FROM me Kairat
+                   &copy; 2025 akkaunt FROM me Kairat
                 </small>
             </div>
 

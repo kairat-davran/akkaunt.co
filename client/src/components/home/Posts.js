@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import PostCard from '../PostCard'
 
 import LoadMoreBtn from '../LoadMoreBtn'
-import LoadIcon from '../../images/loading.gif'
 import { getDataAPI } from '../../utils/fetchData'
 import { POST_TYPES } from '../../redux/actions/postAction'
 
@@ -40,7 +39,9 @@ const Posts = () => {
             }
 
             {
-                load && <img src={LoadIcon} alt="loading" className="d-block mx-auto" />
+                load && <div className="text-center py-5">
+                            <div className="spinner-border text-primary" role="status" />
+                        </div>
             }
 
             

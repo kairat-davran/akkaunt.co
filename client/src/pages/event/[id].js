@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import LoadIcon from '../../images/loading.gif';
 import EventCard from '../../components/EventCard';
 import { getEvent } from '../../redux/actions/eventAction';
 
@@ -30,7 +29,9 @@ const Event = () => {
   return (
     <div className="container py-4">
       {!event ? (
-        <img src={LoadIcon} alt="loading" className="d-block mx-auto my-4" />
+        <div className="text-center py-5">
+          <div className="spinner-border text-primary" role="status" />
+        </div>
       ) : (
         <EventCard event={event} />
       )}

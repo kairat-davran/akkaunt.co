@@ -5,15 +5,16 @@
   margin: auto;
 }
 
-/* Grid layout: 3 columns, fixed height rows */
+/* Grid layout: 3 columns on desktop */
 .grid-layout {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: 300px;
   gap: 5px;
+  grid-auto-flow: dense;
 }
 
-/* Each grid item container */
+/* Grid item */
 .grid-item {
   position: relative;
   overflow: hidden;
@@ -22,7 +23,6 @@
   cursor: pointer;
 }
 
-/* Post image */
 .grid-item img {
   width: 100%;
   height: 100%;
@@ -32,20 +32,28 @@
   border-radius: 8px;
 }
 
-/* Tall posts span 2 rows */
+/* Tall posts */
 .grid-item.tall {
   grid-row: span 2;
 }
 
-/* Image zoom effect on hover */
+.grid-item.left {
+  grid-column: 1;
+}
+
+.grid-item.right {
+  grid-column: 3;
+}
+
+/* Zoom effect */
 .grid-item:hover img {
   transform: scale(1.05);
 }
 
-/* Overlay that shows on hover */
+/* Overlay on hover */
 .overlay {
   position: absolute;
-  inset: 0; /* top: 0, right: 0, bottom: 0, left: 0 */
+  inset: 0;
   background: rgba(0, 0, 0, 0.4);
   color: white;
   display: flex;
@@ -59,13 +67,11 @@
   pointer-events: none;
 }
 
-/* Show overlay on hover */
 .grid-item:hover .overlay {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* Icon + number group */
 .icon-info {
   display: flex;
   align-items: center;
@@ -73,12 +79,11 @@
   font-size: 15px;
 }
 
-/* Material icons styling */
 .material-icons {
   font-size: 20px;
 }
 
-/* Load more button */
+/* Load More button */
 .load-more {
   display: block;
   margin: 30px auto;
@@ -94,4 +99,107 @@
 
 .load-more:hover {
   background-color: #222;
+}
+
+/* Discover Empty Block */
+.discover-empty {
+  text-align: center;
+  margin: 4rem auto 2rem;
+  max-width: 600px;
+  padding: 1.5rem;
+  background: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.discover-message {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  line-height: 1.6;
+}
+
+.reset-btn {
+  padding: 12px 24px;
+  background-color: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+}
+
+.reset-btn:hover {
+  background-color: #333;
+  transform: scale(1.03);
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------- Responsive Styles ---------------- */
+
+@media (max-width: 1024px) {
+  .grid-layout {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-item.left,
+  .grid-item.right {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .discover-page {
+    padding: 0px;
+  }
+
+  .grid-layout {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 350px;
+  }
+
+  .grid-item.tall {
+    grid-row: span 1;
+  }
+
+  .discover-empty {
+    margin: 2rem 1rem;
+    padding: 1rem;
+  }
+
+  .discover-message {
+    font-size: 1.05rem;
+  }
+
+  .reset-btn {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
+
+  .load-more {
+    font-size: 0.9rem;
+    padding: 8px 20px;
+  }
+
+  .overlay {
+    font-size: 14px;
+    gap: 15px;
+  }
+
+  .material-icons {
+    font-size: 18px;
+  }
 }

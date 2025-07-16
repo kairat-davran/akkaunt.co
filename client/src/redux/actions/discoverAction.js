@@ -7,16 +7,22 @@ export const DISCOVER_TYPES = {
     UPDATE_POST: 'UPDATE_DISCOVER_POST'
 }
 
-export const getDiscoverPosts = (token) => async (dispatch) => {
-    try {
-        dispatch({type: DISCOVER_TYPES.LOADING, payload: true})
+export const getDiscoverPosts = (token, page = 1) => async (dispatch) => {
+  try {
+    dispatch({ type: DISCOVER_TYPES.LOADING, payload: true });
 
-        const res = await getDataAPI(`post_discover`, token)
-        dispatch({type: DISCOVER_TYPES.GET_POSTS, payload: res.data})
+    const res = await getDataAPI(`post_discover?page=${page}&limit=10`, token);
 
-        dispatch({type: DISCOVER_TYPES.LOADING, payload: false})
+    dispatch({
+      type: page === 1 ? DISCOVER_TYPES.GET_POSTS : DISCOVER_TYPES.UPDATE_POST,
+      payload: res.data
+    });
 
-    } catch (err) {
-        dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})
-    }
-}
+    dispatch({ type: DISCOVER_TYPES.LOADING, payload: false });
+  } catch (err) {
+    dispatch({
+      type: GLOBALTYPES.ALERT,
+      payload: { error: err.response?.data?.msg }
+    });
+  }
+};

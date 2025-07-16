@@ -2,6 +2,7 @@ const Posts = require('../models/postModel');
 const Comments = require('../models/commentModel');
 const Users = require('../models/userModel');
 const { S3Client, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const userModel = require('../models/userModel');
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION || 'us-west-2',
@@ -104,9 +105,9 @@ const postCtrl = {
           if (key) {
             try {
               await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
-              console.log(`🗑 Deleted from S3: ${key}`);
+              console.log(`Deleted from S3: ${key}`);
             } catch (err) {
-              console.warn(`⚠️ Failed to delete ${key} from S3:`, err.message);
+              console.warn(`Failed to delete ${key} from S3:`, err.message);
             }
           }
         }
@@ -158,9 +159,9 @@ const postCtrl = {
                   Bucket: bucket,
                   Key: key
                 }));
-                console.log(`✅ Deleted from S3: ${key}`);
+                console.log(`Deleted from S3: ${key}`);
               } catch (err) {
-                console.warn(`⚠️ Failed to delete ${key} from S3:`, err.message);
+                console.warn(`Failed to delete ${key} from S3:`, err.message);
               }
             }
           }
@@ -247,20 +248,95 @@ const postCtrl = {
 
   getPostDiscover: async (req, res) => {
     try {
-      const newArr = [...req.user.following, req.user._id];
-      const num = req.query.num || 9;
+      const userId = req.user._id;
+      const following = req.user.following || [];
+      const seen = req.user.seenDiscoverPosts || [];
 
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const now = new Date();
+
+      const seenIds = seen.map(p => p.postId || p).filter(Boolean);
+
+      const excludedUsers = [...following, userId];
+
+      // 🔥 Prioritize:
+      // 1. New (7 days), 2. Popular, 3. Older
       const posts = await Posts.aggregate([
-        { $match: { user: { $nin: newArr } } },
-        { $sample: { size: Number(num) } },
+        {
+          $match: {
+            user: { $nin: excludedUsers },
+            _id: { $nin: seenIds }
+          }
+        },
+        {
+          $addFields: {
+            ageScore: {
+              $divide: [
+                { $subtract: [now, "$createdAt"] },
+                1000 * 60 * 60 * 24 // convert to days
+              ]
+            },
+            engagementScore: {
+              $add: [
+                { $size: "$likes" },
+                { $size: "$comments" }
+              ]
+            }
+          }
+        },
+        {
+          $addFields: {
+            sortScore: {
+              $cond: [
+                { $lte: ["$ageScore", 7] }, // New = high priority
+                { $add: [10000, "$engagementScore"] }, // boost new
+                { $subtract: [5000, "$engagementScore"] } // older = fallback
+              ]
+            }
+          }
+        },
+        { $sort: { sortScore: -1, createdAt: -1 } },
+        { $limit: limit }
       ]);
+
+      const fullPosts = await Posts.populate(posts, [
+        { path: "user likes", select: "avatar username fullname" },
+        {
+          path: "comments",
+          populate: { path: "user likes", select: "avatar username fullname" }
+        }
+      ]);
+
+      const seenDocs = fullPosts.map(p => ({
+        postId: p._id,
+        seenAt: now
+      }));
+
+      await Users.findByIdAndUpdate(userId, {
+        $push: {
+          seenDiscoverPosts: { $each: seenDocs, $slice: -1000 }
+        }
+      });
 
       return res.json({
         msg: 'Success!',
-        result: posts.length,
-        posts
+        result: fullPosts.length,
+        posts: fullPosts
+      });
+    } catch (err) {
+      console.error('Discover Error:', err.message);
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+
+  resetDiscover: async (req, res) => {
+    try {
+      await userModel.findByIdAndUpdate(req.user._id, {
+        $set: { seenDiscoverPosts: [] }
       });
 
+      return res.json({ msg: 'Discover feed reset.' });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }

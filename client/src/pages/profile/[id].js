@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Info from '../../components/profile/Info'
 import Posts from '../../components/profile/Posts'
 import { useDispatch, useSelector } from 'react-redux'
-import LoadIcon from '../../images/loading.gif'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getProfileUsers } from '../../redux/actions/profileAction'
 import Saved from '../../components/profile/Saved'
@@ -76,7 +75,9 @@ const Profile = () => {
       )}
 
       {profile.loading
-        ? <img className="d-block mx-auto" src={LoadIcon} alt="loading" />
+        ? <div className="text-center py-5">
+            <div className="spinner-border text-primary" role="status" />
+          </div>
         : (
           saveTab
             ? <Saved auth={auth} dispatch={dispatch} />

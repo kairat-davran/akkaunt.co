@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PostThumb from '../PostThumb'
 import LoadMoreBtn from '../LoadMoreBtn'
-import LoadIcon from '../../images/loading.gif'
 import { getDataAPI } from '../../utils/fetchData'
 import { GLOBALTYPES } from '../../redux/actions/globalTypes'
 
@@ -56,7 +55,11 @@ const Posts = ({ auth, id, dispatch }) => {
     <>
       <PostThumb posts={posts} result={result} initialLoad={initialLoad} />
 
-      {load && <img src={LoadIcon} alt="loading" className="d-block mx-auto" />}
+      {load && (
+        <div className="text-center py-5">
+          <div className="spinner-border text-primary" role="status" />
+        </div>
+      )}
 
       <LoadMoreBtn
         result={result}

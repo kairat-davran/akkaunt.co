@@ -1,6 +1,7 @@
 .profile {
   width: 100%;
   min-height: 100vh;
+  margin: auto;
 }
 
 .profile_back {
@@ -110,6 +111,7 @@
   padding: 20px;
   border-radius: 5px;
   margin: 20px auto;
+  position: relative;
 }
 
 .edit_profile .btn_close {
@@ -160,6 +162,22 @@
   height: 100%;
   cursor: pointer;
   opacity: 0;
+}
+
+.edit_close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #666;
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.2s ease;
+}
+
+.edit_close:hover {
+  color: crimson;
 }
 
 ::-webkit-file-upload-button {

@@ -21,7 +21,7 @@ const AppRouter = () => {
   const modal = useSelector(state => state.modal);
   const call = useSelector(state => state.call);
 
-  const isMobileOrTablet = window.innerWidth <= 1024; // phones + tablets
+  const isMobileOrTablet = window.innerWidth <= 1024;
   const hideHeader =
     isMobileOrTablet &&
     (pathname.startsWith('/message') || pathname.startsWith('/profile'));
@@ -30,7 +30,6 @@ const AppRouter = () => {
     <>
       <input type="checkbox" id="theme" />
       <div className={`App ${(status || modal) && 'mode'}`}>
-        {/* {auth.token && !hideHeader && <Header />} */}
         {auth.token && !hideHeader && <Sidebar />}
         {status && <StatusModal />}
         {auth.token && <SocketClient />}

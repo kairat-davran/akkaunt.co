@@ -115,7 +115,7 @@
 .search-panel__close {
   position: absolute;
   right: 14px;
-  top: 13px;
+  top: 3px;
   font-size: 22px;
   cursor: pointer;
   color: #666;
@@ -151,6 +151,15 @@
     border-top: 1px solid #ddd;
   }
 
+  .sidebar-header {
+    margin-bottom: 0;
+    padding: 0;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+  }
+
   .nav-link {
     flex-direction: column;
     justify-content: center;
@@ -163,7 +172,7 @@
   }
 
   .label {
-    display: none; /* Hide labels on mobile */
+    display: none;
   }
 
   .material-icons {
