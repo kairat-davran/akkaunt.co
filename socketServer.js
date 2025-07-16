@@ -97,14 +97,17 @@ const SocketServer = (socket) => {
 
     // Notification
     socket.on('createNotify', msg => {
+        if (!msg || !Array.isArray(msg.recipients)) return;
+
         const client = users.find(user => msg.recipients.includes(user.id))
         client && socket.to(`${client.socketId}`).emit('createNotifyToClient', msg)
     })
 
     socket.on('removeNotify', msg => {
+        if (!msg || !Array.isArray(msg.recipients)) return;
+
         const client = users.find(user => msg.recipients.includes(user.id))
         client && socket.to(`${client.socketId}`).emit('removeNotifyToClient', msg)
-
     })
 
     // Message

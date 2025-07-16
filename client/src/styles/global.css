@@ -29,12 +29,13 @@ code {
 }
 
 .main {
-    /* max-width: 1000px;
-    width: 100%;
-    margin: auto; */
-    margin-left: 250px;
-    padding: 2rem;
-    max-width: calc(100% - 250px);
+  padding: 2rem;
+  max-width: 100%;
+}
+
+.with-sidebar {
+  margin-left: 250px;
+  max-width: calc(100% - 250px);
 }
 
 img {
@@ -45,6 +46,10 @@ img {
     width: 100%;
     height: 100vh;
     overflow: hidden;
+}
+
+.material-icons {
+    font-size: 24px;
 }
 
 /* ---------- AUTH ---------- */
@@ -97,6 +102,13 @@ img {
 
 
 /* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+    .with-sidebar {
+        margin-left: 80px;
+        max-width: calc(100% - 80px);
+    }
+}
+
 @media (max-width: 768px) {
     .main {
         margin-left: 0;

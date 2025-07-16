@@ -17,7 +17,7 @@ const allowedOrigins = [
     'http://172.20.20.20:8081', // Expo Web (Metro bundler)
 
     // SPO Network IPs for mobile access
-    'http://10.3.0.62:8081', // For mobile access (adjust to your LAN IP)
+    'http://10.3.0.226:8081', // For mobile access (adjust to your LAN IP)
 ];
 
 const corsOptions = {

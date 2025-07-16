@@ -92,12 +92,14 @@ const SocketClient = () => {
             dispatch({type: NOTIFY_TYPES.CREATE_NOTIFY, payload: msg})
 
             if(notify.sound) audioRef.current.play()
-            spawnNotification(
-                msg.user.username + ' ' + msg.text,
-                msg.user.avatar,
-                msg.url,
-                'BIRGECHAT'
-            )
+            if (msg?.user) {
+                spawnNotification(
+                    msg.user.username + ' ' + msg.text,
+                    msg.user.avatar,
+                    msg.url,
+                    'AKKAUNT'
+                );
+            }
         })
 
         return () => socket.off('createNotifyToClient')

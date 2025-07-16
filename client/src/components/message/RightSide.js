@@ -189,7 +189,7 @@ const RightSide = () => {
             <div className="message_header" style={{cursor: 'pointer'}} >
                 {window.innerWidth <= 768 && (
                     <span className="dm-back-btn" onClick={() => navigate('/message')}>
-                        <i className="fas fa-arrow-left mr-1"></i>
+                        <i className="fas fa-arrow-left"></i>
                     </span>
                 )}
                 {

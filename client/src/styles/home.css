@@ -73,3 +73,16 @@
     transform: translate(5px, -5px);
     opacity: 0.9;
 }
+
+@media (max-width: 1024px) {
+    .home {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .home {
+        margin: 0 0 40px 0;
+    }
+}

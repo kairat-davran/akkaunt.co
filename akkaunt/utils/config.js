@@ -5,4 +5,4 @@
 // export const BASE_URL = 'http://172.20.20.20:5000/api'
 
 // SPO Network IPs for mobile access
-export const BASE_URL = 'http://10.3.0.62:5000/api'
+export const BASE_URL = 'http://10.3.0.226:5000/api'

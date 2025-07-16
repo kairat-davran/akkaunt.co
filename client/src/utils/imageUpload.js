@@ -34,7 +34,7 @@ export const imageUpload = async (images, token) => {
         },
       });
 
-      imgArr.push({ url: res.data }); // S3 URL directly
+      imgArr.push({ url: res.data });
     } catch (error) {
       console.error("S3 upload failed:", error.response?.data || error.message);
     }

@@ -34,7 +34,7 @@ const AppRouter = () => {
         {status && <StatusModal />}
         {auth.token && <SocketClient />}
         {call && <CallModal />}
-        <div className="main">
+        <div className={`main ${auth.token && !hideHeader ? 'with-sidebar' : ''}`}>
           <Routes>
             <Route path="/" element={auth.token ? <Home /> : <Login />} />
             <Route path="/register" element={<Register />} />
