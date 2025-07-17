@@ -7,8 +7,8 @@ const SearchSide = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const { users } = useSelector(state => state.profile);
 
-  const auth = useSelector(state => state.auth)
-  const dispatch = useDispatch()
+  const auth = useSelector(state => state.auth);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (searchKeyword.trim()) {

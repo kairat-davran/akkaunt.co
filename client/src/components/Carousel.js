@@ -10,7 +10,7 @@ const Carousel = ({ images, id }) => {
       id={`image${id}`}
       className="carousel slide"
       data-ride="carousel"
-      style={{ height: '500px', overflow: 'hidden' }}
+      style={{ height: '361px', overflow: 'hidden' }}
     >
       <ol className="carousel-indicators" style={{ zIndex: 1 }}>
         {images?.map((img, index) => (
@@ -21,35 +21,19 @@ const Carousel = ({ images, id }) => {
       <div className="carousel-inner" style={{ height: '100%' }}>
         {images?.map((img, index) => {
           const src = img?.url || img?.uri || '';
-          const isVideo = src.match(/\.(mp4|webm|ogg)$/i);
 
           return (
             <div key={index} className={`carousel-item ${isActive(index)}`} style={{ height: '100%' }}>
-              {isVideo ? (
-                <video
-                  controls
-                  className="d-block w-100"
-                  style={{
-                    height: '100%',
-                    objectFit: 'contain',
-                    filter: theme ? 'invert(1)' : 'invert(0)',
-                  }}
-                >
-                  <source src={src} />
-                  Your browser does not support the video tag.
-                </video>
-              ) : (
-                <img
-                  src={src}
-                  className="d-block w-100"
-                  alt={`carousel-media-${index}`}
-                  style={{
-                    height: '100%',
-                    objectFit: 'contain',
-                    filter: theme ? 'invert(1)' : 'invert(0)',
-                  }}
-                />
-              )}
+              <img
+                src={src}
+                className="d-block w-100"
+                alt={`carousel-media-${index}`}
+                style={{
+                  height: '100%',
+                  objectFit: 'cover',
+                  filter: theme ? 'invert(1)' : 'invert(0)',
+                }}
+              />
             </div>
           );
         })}

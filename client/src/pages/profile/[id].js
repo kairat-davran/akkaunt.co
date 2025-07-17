@@ -47,8 +47,10 @@ const Profile = () => {
     <div className="profile">
 
       {isMobileOrTablet && (
-        <div className="profile_back" onClick={() => navigate('/')}>
-          <i className="fas fa-arrow-left"></i>
+        <div className="profile_back">
+          <span className="dm-back-btn" onClick={() => navigate('/')}>
+            <i className="fas fa-arrow-left"></i>
+          </span>
           <span>{userData?.username || 'Back'}</span>
         </div>
       )}

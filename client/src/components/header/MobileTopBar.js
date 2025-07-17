@@ -1,25 +1,25 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import NotifyModal from '../NotifyModal';
-import SearchSide from './SearchSide';
+import { getUsers } from '../../redux/actions/profileAction';
+import UserCard from '../UserCard';
 
 const MobileTopBar = () => {
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
+  const { users } = useSelector(state => state.profile);
+  const auth = useSelector(state => state.auth)
   const notify = useSelector(state => state.notify);
 
-  const [openSearch, setOpenSearch] = useState(false);
   const [openNotify, setOpenNotify] = useState(false);
-  const searchRef = useRef();
+  const [searchKeyword, setSearchKeyword] = useState('');
   const notifyRef = useRef();
 
   const isActive = (pn) => (pn === pathname ? 'active' : '');
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setOpenSearch(false);
-      }
       if (notifyRef.current && !notifyRef.current.contains(e.target)) {
         setOpenNotify(false);
       }
@@ -30,14 +30,22 @@ const MobileTopBar = () => {
   }, []);
 
   useEffect(() => {
-    // Close modals when navigating to a new page
-    setOpenSearch(false);
+    if (searchKeyword.trim()) {
+      dispatch(getUsers(auth.token, searchKeyword.trim()));
+    }
+  }, [dispatch, auth.token, searchKeyword]);
+
+  const handleClose = () => {
+    setSearchKeyword('');
+    dispatch(getUsers(auth.token, ''));
+  }
+
+  useEffect(() => {
     setOpenNotify(false);
   }, [pathname]);
 
   return (
-    <div className="mobile-topbar">
-      {/* Only show on / */}
+    <div className="mobile-topbar" style={{ display: pathname === '/discover' ? 'block' : 'flex' }}>
       {pathname === '/' && (
         <>
           <div className="topbar-left">
@@ -56,7 +64,6 @@ const MobileTopBar = () => {
               onClick={(e) => {
                 e.preventDefault();
                 setOpenNotify(!openNotify);
-                setOpenSearch(false);
               }}
               className={`nav-link ${openNotify ? 'active' : ''}`}
               style={{ position: 'relative' }}
@@ -75,30 +82,47 @@ const MobileTopBar = () => {
         </>
       )}
 
-      {/* Only show search on /discover */}
       {pathname === '/discover' && (
-        <Link
-          to="#"
-          onClick={(e) => {
-            e.preventDefault();
-            setOpenSearch(!openSearch);
-            setOpenNotify(false);
-          }}
-          className={`nav-link ${openSearch ? 'active' : ''}`}
-        >
-          <span className="material-icons">search</span>
-        </Link>
+        <form className="search-panel">
+          <input
+            type="text"
+            name="search"
+            value={searchKeyword}
+            id="search"
+            className="search-panel__input"
+            title="Enter to Search"
+            onChange={e => setSearchKeyword(e.target.value.toLowerCase().replace(/ /g, ''))}
+          />
+
+          <div className="search-panel__icon" style={{ opacity: searchKeyword ? 0 : 0.3 }}>
+            <span className="material-icons">search</span>
+            <span>Enter to Search</span>
+          </div>
+
+          <div
+            className="search-panel__close"
+            onClick={handleClose}
+            style={{ opacity: users.length === 0 ? 0 : 1 }}
+          >
+            &times;
+          </div>
+
+          <div className="search-panel__results">
+            {searchKeyword && users.map(user => (
+              <UserCard
+                key={user._id}
+                user={user}
+                border="border"
+                handleClose={handleClose}
+              />
+            ))}
+          </div>
+        </form>
       )}
 
-      {/* Modals */}
-      {openSearch && (
-        <div className="search-dropdown" ref={searchRef}>
-          <SearchSide />
-        </div>
-      )}
       {openNotify && (
         <div className="search-dropdown" ref={notifyRef}>
-          <NotifyModal />
+          <NotifyModal onClose={() => setOpenNotify(false)} />
         </div>
       )}
     </div>

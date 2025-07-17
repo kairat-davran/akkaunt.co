@@ -6,9 +6,9 @@ import Avatar from './Avatar'
 import moment from 'moment'
 import NoNotice from '../images/notice.png'
 
-const NotifyModal = () => {
-    const auth = useSelector(state => state.auth)
-    const notify = useSelector(state => state.notify)
+const NotifyModal = ({ onClose = () => {} }) => {
+    const auth = useSelector(state => state.auth);
+    const notify = useSelector(state => state.notify);
     const dispatch = useDispatch()
 
     const handleIsRead = (msg) => {
@@ -30,64 +30,106 @@ const NotifyModal = () => {
 
     return (
         <div style={{minWidth: '300px'}}>
-            <div className="d-flex justify-content-between align-items-center px-3">
-                <h3>Notification</h3>
-                {
-                    notify.sound 
-                    ? <i className="fas fa-bell text-danger" 
-                    style={{fontSize: '1.2rem', cursor: 'pointer'}}
-                    onClick={handleSound} />
+            <div className="d-flex align-items-center justify-content-between px-3 mb-2" style={{ position: 'relative' }}>
+                {/* Back button — fixed width, even if hidden */}
+                <div style={{ width: '32px' }}>
+                    {typeof onClose === 'function' && window.innerWidth <= 768 && (
+                    <span className="dm-back-btn" onClick={onClose}>
+                        <i className="fas fa-arrow-left"></i>
+                    </span>
+                    )}
+                </div>
 
-                    : <i className="fas fa-bell-slash text-danger"
-                    style={{fontSize: '1.2rem', cursor: 'pointer'}}
-                    onClick={handleSound} />
-                }
+                {/* Title — always centered */}
+                <h3 className="m-0 text-center flex-grow-1">Notification</h3>
+
+                {/* Sound icon — fixed width */}
+                <div style={{ width: '32px', textAlign: 'right' }}>
+                    {notify.sound ? (
+                    <i
+                        className="fas fa-bell text-danger"
+                        style={{ fontSize: '1.2rem', cursor: 'pointer' }}
+                        onClick={handleSound}
+                    />
+                    ) : (
+                    <i
+                        className="fas fa-bell-slash text-danger"
+                        style={{ fontSize: '1.2rem', cursor: 'pointer' }}
+                        onClick={handleSound}
+                    />
+                    )}
+                </div>
             </div>
             <hr className="mt-0" />
 
-            {
-                notify.data.length === 0 &&
-                <img src={NoNotice} alt="NoNotice" className="w-100" />
-            }
-
-            <div style={{maxHeight: 'calc(100vh - 200px)', overflow: 'auto'}}>
-                {
+            <div
+                style={{
+                    height: 'calc(100vh - 130px)',
+                    overflow: 'auto'
+                }}
+                >
+                {notify.data.length === 0 ? (
+                    <div
+                    style={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: '40px 10px',
+                        textAlign: 'center',
+                        color: '#888'
+                    }}
+                    >
+                    <img
+                        src={NoNotice}
+                        alt="No Notifications"
+                        style={{
+                        width: '150px',
+                        maxWidth: '80%',
+                        opacity: 0.7,
+                        marginBottom: '20px'
+                        }}
+                    />
+                    <h5 style={{ marginBottom: '8px', color: '#555' }}>You're all caught up!</h5>
+                    <p style={{ fontSize: '14px', maxWidth: '240px' }}>
+                        You don’t have any notifications right now. Check back later.
+                    </p>
+                    </div>
+                ) : (
                     notify.data.map((msg, index) => (
-                        <div key={index} className="px-2 mb-3" >
-                            <Link to={`${msg.url}`} className="d-flex text-dark align-items-center"
-                            onClick={() => handleIsRead(msg)}>
-                                <Avatar src={msg.user.avatar} size="big-avatar" />
-
-                                <div className="mx-1 flex-fill">
-                                    <div>
-                                        <strong className="mr-1">{msg.user.username}</strong>
-                                        <span>{msg.text}</span>
-                                    </div>
-                                    {msg.content && <small>{msg.content.slice(0,20)}...</small>}
-                                </div>
-
-                                {
-                                    msg.image &&
-                                    <div style={{width: '30px'}}>
-                                        {
-                                            msg.image.match(/video/i)
-                                            ? <video src={msg.image} width="100%" />
-                                            : <Avatar src={msg.image} size="medium-avatar" />
-                                        }
-                                    </div>
-                                }
-                                
-                            </Link>
-                            <small className="text-muted d-flex justify-content-between px-2">
-                                {moment(msg.createdAt).fromNow()}
-                                {
-                                    !msg.isRead && <i className="fas fa-circle text-primary" />
-                                }
-                            </small>
+                    <div key={index} className="px-2 mb-3">
+                        <Link
+                        to={`${msg.url}`}
+                        className="d-flex text-dark align-items-center"
+                        onClick={() => handleIsRead(msg)}
+                        >
+                        <Avatar src={msg.user.avatar} size="big-avatar" />
+                        <div className="mx-1 flex-fill">
+                            <div>
+                            <strong className="mr-1">{msg.user.username}</strong>
+                            <span>{msg.text}</span>
+                            </div>
+                            {msg.content && <small>{msg.content.slice(0, 20)}...</small>}
                         </div>
-                    ))
-                }
 
+                        {msg.image && (
+                            <div style={{ width: '30px' }}>
+                            {msg.image.match(/video/i) ? (
+                                <video src={msg.image} width="100%" />
+                            ) : (
+                                <Avatar src={msg.image} size="medium-avatar" />
+                            )}
+                            </div>
+                        )}
+                        </Link>
+                        <small className="text-muted d-flex justify-content-between px-2">
+                        {moment(msg.createdAt).fromNow()}
+                        {!msg.isRead && <i className="fas fa-circle text-primary" />}
+                        </small>
+                    </div>
+                    ))
+                )}
             </div>
 
             <hr className="my-1" />
