@@ -1,9 +1,15 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  fullname: { type: String, required: true, trim: true, maxLength: 25, unique: true },
+  fullname: { type: String, required: true, trim: true, maxLength: 25 },
   username: { type: String, required: true, trim: true, maxLength: 25, unique: true },
-  email: { type: String, required: true, trim: true, unique: true },
+  mobile: {
+    type: String,
+    required: true,
+    unique: true,
+    match: [/^\+\d{1,4}\d{6,14}$/, 'Invalid phone number format.']
+  },
+  email: { type: String, trim: true, unique: true },
   password: { type: String, required: true },
   avatar: {
     type: String,

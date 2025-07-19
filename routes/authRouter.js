@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const authCtrl = require('../controllers/authCtrl')
 
+router.post('/precheck-register', authCtrl.precheckRegister);
+
 router.post('/register', authCtrl.register)
 
 router.post('/login', authCtrl.login)

@@ -3,58 +3,77 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const authCtrl = {
+    precheckRegister: async (req, res) => {
+        const { username, mobile } = req.body;
+
+        let newUserName = username.toLowerCase().replace(/ /g, '');
+
+        const existsUser = await Users.findOne({ username: newUserName });
+        const existsMobile = await Users.findOne({ mobile });
+
+        if (existsUser || existsMobile) {
+            let msg = '';
+            if (existsUser) msg += 'Username already exists. ';
+            if (existsMobile) msg += 'Phone number already used.';
+            return res.status(400).json({ msg: msg.trim() });
+        }
+
+        return res.status(200).json({ msg: 'OK' });
+    },
+
     register: async (req, res) => {
         try {
-            const { fullname, username, email, password, gender } = req.body
-            let newUserName = username.toLowerCase().replace(/ /g, '')
+            const { fullname, username, mobile, password, gender } = req.body;
+            const newUserName = username.toLowerCase().replace(/ /g, '');
 
-            const user_name = await Users.findOne({username: newUserName})
-            if(user_name) return res.status(400).json({msg: "This user name already exists."})
+            if (password.length < 6)
+            return res.status(400).json({ msg: "Password must be at least 6 characters." });
 
-            const user_email = await Users.findOne({email})
-            if(user_email) return res.status(400).json({msg: "This email already exists."})
-            
-            if(password.length < 6)
-            return res.status(400).json({msg: "Password must be at least 6 characters."})
-
-            const passwordHash = await bcrypt.hash(password, 12)
+            const passwordHash = await bcrypt.hash(password, 12);
 
             const newUser = new Users({
-                fullname, username: newUserName, email, password: passwordHash, gender
-            })
+                fullname,
+                username: newUserName,
+                mobile,
+                password: passwordHash,
+                gender,
+            });
 
-            const access_token = createAccessToken({id: newUser._id})
-            const refresh_token = createRefreshToken({id: newUser._id})
+            const access_token = createAccessToken({ id: newUser._id });
+            const refresh_token = createRefreshToken({ id: newUser._id });
 
             res.cookie('refreshtoken', refresh_token, {
-                httpOnly: true,
-                path: '/api/refresh_token',
-                maxAge: 30*24*60*60*1000
-            })
+            httpOnly: true,
+            path: '/api/refresh_token',
+            maxAge: 30 * 24 * 60 * 60 * 1000
+            });
 
-            await newUser.save()
+            await newUser.save();
 
             res.json({
                 msg: 'Register Success!',
                 access_token,
-                refresh_token, // ✅ Add this line
+                refresh_token,
                 user: {
                     ...newUser._doc,
                     password: ''
                 }
-            })
+            });
         } catch (error) {
-            return res.status(500).json({msg: error.message})
+            return res.status(500).json({ msg: error.message });
         }
+        
     },
+    
     login: async (req, res) => {
         try {
-            const { email, password } = req.body
+            const { username, password } = req.body;
+            const formattedUsername = username.toLowerCase().replace(/ /g, '');
 
-            const user = await Users.findOne({email})
-            .populate("followers following", "avatar username fullname followers following")
+            const user = await Users.findOne({ username: formattedUsername })
+            .populate("followers following", "avatar username fullname followers following");
 
-            if(!user) return res.status(400).json({msg: "This email does not exist."})
+            if (!user) return res.status(400).json({ msg: "This username does not exist." });
 
             const isMatch = await bcrypt.compare(password, user.password)
             if(!isMatch) return res.status(400).json({msg: "Password is incorrect."})
