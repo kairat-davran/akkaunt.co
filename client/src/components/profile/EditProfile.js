@@ -15,7 +15,6 @@ const EditProfile = ({setOnEdit}) => {
     const [avatar, setAvatar] = useState('')
 
     const auth = useSelector(state => state.auth)
-    const theme = useSelector(state => state.theme)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -39,6 +38,7 @@ const EditProfile = ({setOnEdit}) => {
     const handleSubmit = e => {
         e.preventDefault()
         dispatch(updateProfileUser({userData, avatar, auth}))
+        setOnEdit(false)
     }
 
     return (
@@ -47,7 +47,7 @@ const EditProfile = ({setOnEdit}) => {
                 <span className="edit_close" onClick={() => setOnEdit(false)}>&times;</span>
                 <div className="info_avatar">
                     <img src={avatar ? URL.createObjectURL(avatar) : auth.user.avatar}
-                    alt="avatar" style={{filter: theme ? 'invert(1)' : 'invert(0)'}} />
+                    alt="avatar"/>
                     <span>
                         <i className="fas fa-camera" />
                         <p>Change</p>

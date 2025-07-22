@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
   mobile: { type: String, default: '' },
   story: { type: String, default: '', maxLength: 200 },
   website: { type: String, default: '' },
+  theme: { type: Boolean, default: false },
 
   // Seen posts in Discover feed
   // seenDiscoverPosts: [{ type: mongoose.Types.ObjectId, ref: 'post'}],

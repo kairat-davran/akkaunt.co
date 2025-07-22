@@ -5,37 +5,44 @@ import { useSelector, useDispatch } from 'react-redux'
 import { deleteMessages } from '../../redux/actions/messageAction'
 import Times from './Times'
 
-const MsgDisplay = ({user, msg, theme, data}) => {
+const MsgDisplay = ({user, msg, data}) => {
     const auth = useSelector(state => state.auth)
     const dispatch = useDispatch()
 
     const handleDeleteMessages = () => {
-        if(!data) return;
-        
-        if(window.confirm('Do you want to delete?')){
-            dispatch(deleteMessages({msg, data, auth}))
+        if (!data || !msg._id) {
+            console.warn("Message missing required data or _id");
+            return;
         }
-    }
+
+        if (window.confirm('Do you want to delete this message?')) {
+            dispatch(deleteMessages({ msg, data, auth }));
+        }
+    };
 
     return (
         <>
             <div className="chat_title">
-                <Avatar src={user.avatar} size="small-avatar" />
+                <Avatar src={user.avatar} size="small-avatar" marginRight={"5px"} />
                 <span>{user.username}</span>
             </div>
 
             <div className="you_content">
                 { 
                     user._id === auth.user._id && 
-                    <i className="fas fa-trash text-danger"
-                    onClick={handleDeleteMessages} />
+                    <span
+                        className="material-icons text-danger delete_icon"
+                        onClick={handleDeleteMessages}
+                        title="Delete message"
+                    >
+                    delete
+                    </span>
                 }
 
                 <div>
                     {
                         msg.text && 
-                        <div className="chat_text"
-                        style={{filter: theme ? 'invert(1)' : 'invert(0)'}}>
+                        <div className="chat_text">
                             {msg.text}
                         </div>
                     }
@@ -44,8 +51,8 @@ const MsgDisplay = ({user, msg, theme, data}) => {
                             <div key={index}>
                                 {
                                     item.url.match(/video/i)
-                                    ? videoShow(item.url, theme)
-                                    : imageShow(item.url, theme)
+                                    ? videoShow(item.url)
+                                    : imageShow(item.url)
                                 }
                             </div>
                         ))
@@ -54,13 +61,11 @@ const MsgDisplay = ({user, msg, theme, data}) => {
             
                 {
                     msg.call &&
-                    <button className="btn d-flex align-items-center py-3"
-                    style={{background: '#eee', borderRadius: '10px'}}>
+                    <button className="btn d-flex align-items-center py-3 call_button">
 
                         <span className="material-icons font-weight-bold mr-1"
                         style={{ 
                             fontSize: '2.5rem', color: msg.call.times === 0 ? 'crimson' : 'green',
-                            filter: theme ? 'invert(1)' : 'invert(0)'
                         }}>
                             {
                                 msg.call.times === 0

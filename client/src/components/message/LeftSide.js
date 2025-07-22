@@ -55,7 +55,6 @@ const LeftSide = ({ setIsLeftOpen }) => {
     dispatch(getConversations({ auth }))
   }, [dispatch, auth, message.firstLoad])
 
-  // Load More
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
@@ -74,7 +73,6 @@ const LeftSide = ({ setIsLeftOpen }) => {
     }
   }, [message.resultUsers, page, auth, dispatch])
 
-  // Check User Online - Offline
   useEffect(() => {
     if (message.firstLoad) {
       dispatch({ type: MESS_TYPES.CHECK_ONLINE_OFFLINE, payload: online })

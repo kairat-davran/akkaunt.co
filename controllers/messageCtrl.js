@@ -1,6 +1,16 @@
 const Conversations = require('../models/conversationModel')
 const Messages = require('../models/messageModel')
 
+const { S3Client, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+
+const s3 = new S3Client({
+  region: process.env.AWS_REGION || 'us-west-2',
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  }
+});
+
 class APIfeatures {
     constructor(query, queryString){
         this.query = query;
@@ -41,7 +51,7 @@ const messageCtrl = {
 
             await newMessage.save()
 
-            res.json({msg: 'Create Success!'})
+            res.json({ msg: 'Create Success!', message: newMessage });
 
         } catch (err) {
             return res.status(500).json({msg: err.message})
@@ -87,25 +97,71 @@ const messageCtrl = {
     },
     deleteMessages: async (req, res) => {
         try {
-            await Messages.findOneAndDelete({_id: req.params.id, sender: req.user._id})
-            res.json({msg: 'Delete Success!'})
+            const message = await Messages.findOneAndDelete({
+                _id: req.params.id,
+                sender: req.user._id
+            });
+
+            if (!message) {
+                return res.status(404).json({ msg: 'Message not found or unauthorized' });
+            }
+
+            const bucket = process.env.AWS_BUCKET_NAME || 'akaunt-media';
+
+            for (const media of message.media) {
+                if (media.url && media.url.includes('.amazonaws.com/')) {
+                    const key = media.url.split('.amazonaws.com/')[1];
+                    if (key) {
+                        try {
+                            await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
+                        } catch (err) {
+                            console.warn(`Failed to delete ${key} from S3:`, err.message);
+                        }
+                    }
+                }
+            }
+
+            res.json({ msg: 'Delete Success!' });
         } catch (err) {
-            return res.status(500).json({msg: err.message})
+            return res.status(500).json({ msg: err.message });
         }
     },
     deleteConversation: async (req, res) => {
         try {
-            const newConver = await Conversations.findOneAndDelete({
+            const convo = await Conversations.findOneAndDelete({
                 $or: [
-                    {recipients: [req.user._id, req.params.id]},
-                    {recipients: [req.params.id, req.user._id]}
+                    { recipients: [req.user._id, req.params.id] },
+                    { recipients: [req.params.id, req.user._id] }
                 ]
-            })
-            await Messages.deleteMany({conversation: newConver._id})
-            
-            res.json({msg: 'Delete Success!'})
+            });
+
+            if (!convo) {
+                return res.status(404).json({ msg: 'Conversation not found' });
+            }
+
+            const messages = await Messages.find({ conversation: convo._id });
+            const bucket = process.env.AWS_BUCKET_NAME || 'akaunt-media';
+
+            for (const message of messages) {
+                for (const media of message.media) {
+                    if (media.url && media.url.includes('.amazonaws.com/')) {
+                        const key = media.url.split('.amazonaws.com/')[1];
+                    if (key) {
+                        try {
+                            await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
+                        } catch (err) {
+                            console.warn(`Failed to delete ${key} from S3:`, err.message);
+                        }
+                    }
+                    }
+                }
+            }
+
+            await Messages.deleteMany({ conversation: convo._id });
+
+            res.json({ msg: 'Delete Success!' });
         } catch (err) {
-            return res.status(500).json({msg: err.message})
+            return res.status(500).json({ msg: err.message });
         }
     },
 }

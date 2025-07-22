@@ -43,9 +43,9 @@ const authCtrl = {
             const refresh_token = createRefreshToken({ id: newUser._id });
 
             res.cookie('refreshtoken', refresh_token, {
-            httpOnly: true,
-            path: '/api/refresh_token',
-            maxAge: 30 * 24 * 60 * 60 * 1000
+                httpOnly: true,
+                path: '/api/refresh_token',
+                maxAge: 30 * 24 * 60 * 60 * 1000
             });
 
             await newUser.save();
@@ -53,7 +53,6 @@ const authCtrl = {
             res.json({
                 msg: 'Register Success!',
                 access_token,
-                refresh_token,
                 user: {
                     ...newUser._doc,
                     password: ''
@@ -84,13 +83,12 @@ const authCtrl = {
             res.cookie('refreshtoken', refresh_token, {
                 httpOnly: true,
                 path: '/api/refresh_token',
-                maxAge: 30*24*60*60*1000
+                maxAge: 30 * 24 * 60 * 60 * 1000
             })
 
             res.json({
                 msg: 'Login Success!',
                 access_token,
-                refresh_token, // ✅ Add this line
                 user: {
                     ...user._doc,
                     password: ''

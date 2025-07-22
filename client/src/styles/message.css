@@ -70,6 +70,7 @@
 .chat_input input{
     width: 100%;
     height: 49px;
+    padding: 0 10px;
     border: none;
     outline: none;
 }
@@ -134,7 +135,7 @@
 /* -------- Chat Container ----- */
 .chat_container{
     width: 100%;
-    height: calc(100% - 110px);
+    height: calc(100% - 140px);
     overflow-y: auto;
     padding: 0 10px;
 }
@@ -184,17 +185,20 @@
 .you_content{
     position: relative;
 }
-.you_content .fa-trash{
+.you_content .delete_icon{
     position: absolute;
     top: 50%;
-    left: -15px;
+    left: -30px;
     transform: translateY(-50%);
     cursor: pointer;
-    font-size: 14px;
     opacity: 0;
 }
-.you_content:hover .fa-trash{
+.you_content:hover .delete_icon{
     opacity: 1;
+}
+.you_content .call_button{
+    background: #eee;
+    border-radius: 10px;
 }
 .chat_input .dropdown-menu{
     transform: translate3d(-110px, -200px, 0px) !important;

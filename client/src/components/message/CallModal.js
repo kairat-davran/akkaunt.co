@@ -10,7 +10,6 @@ const CallModal = () => {
     const auth = useSelector(state => state.auth)
     const peer = useSelector(state => state.communication.peer)
     const socket = useSelector(state => state.communication.socket)
-    const theme = useSelector(state => state.theme)
     const dispatch = useDispatch()
 
     const [hours, setHours] = useState(0)
@@ -264,7 +263,6 @@ const CallModal = () => {
 
             <div className="show_video" style={{
                 opacity: (answer && call.video) ? '1' : '0',
-                filter: theme ? 'invert(1)' : 'invert(0)'
             }} >
 
                 <video ref={youVideo} className="you_video" playsInline muted />

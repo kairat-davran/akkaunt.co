@@ -1,5 +1,5 @@
 import { MESS_TYPES } from '../actions/messageAction'
-import { EditData, DeleteData } from '../actions/globalTypes'
+import { DeleteData } from '../actions/globalTypes'
 
 const initialState = {
     users: [],
@@ -56,7 +56,18 @@ const messageReducer = (state = initialState, action) => {
         case MESS_TYPES.UPDATE_MESSAGES:
             return {
                 ...state,
-                data: EditData(state.data, action.payload._id, action.payload)
+                data: state.data.map(item =>
+                    item._id === action.payload._id
+                        ? {
+                            ...item,
+                            messages: item.messages.map(msg =>
+                                !msg._id && msg.createdAt === action.payload.messages[0].createdAt
+                                    ? { ...msg, _id: action.payload.messages[0]._id }
+                                    : msg
+                            )
+                        }
+                        : item
+                )
             };
         case MESS_TYPES.DELETE_MESSAGES:
             return {

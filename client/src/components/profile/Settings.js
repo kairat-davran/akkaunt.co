@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { toggleTheme } from '../../redux/actions/profileAction'
 import { logout } from '../../redux/actions/authAction'
 import { GLOBALTYPES } from '../../redux/actions/globalTypes'
 import ChangePassword from './ChangePassword'
@@ -7,11 +8,13 @@ import ChangePassword from './ChangePassword'
 const Settings = ({ setShowSettings, setOnEdit }) => {
   const dispatch = useDispatch()
   const theme = useSelector(state => state.theme)
+  const auth = useSelector(state => state.auth)
   const [showChangePass, setShowChangePass] = useState(false)
 
   const handleLogout = () => {
     setShowSettings(false)
     dispatch({ type: GLOBALTYPES.AUTH, payload: {} })
+    dispatch({ type: GLOBALTYPES.THEME, payload: false }) 
     dispatch(logout())
   }
 
@@ -22,6 +25,11 @@ const Settings = ({ setShowSettings, setOnEdit }) => {
       alert("Delete account functionality not implemented.")
       // dispatch(deleteAccount())
     }
+  }
+
+  const handleToggleTheme = async () => {
+    dispatch(toggleTheme(auth, theme))
+    setShowSettings(false)
   }
 
   return (
@@ -50,25 +58,22 @@ const Settings = ({ setShowSettings, setOnEdit }) => {
                 setShowSettings(false)
                 setOnEdit(true)
               }}>
-                <i className="fas fa-user-edit settings_icon_item" /> Edit Profile
+                <span className="material-icons settings_icon_item">edit</span> Edit Profile
               </div>
 
               <div className="settings_item" onClick={() => setShowChangePass(true)}>
-                <i className="fas fa-key settings_icon_item" /> Change Password
+                <span className="material-icons settings_icon_item">vpn_key</span> Change Password
               </div>
             </div>
 
             {/* Preferences Section */}
             <div className="settings_section">
-              <div className="settings_item" onClick={() => {
-                setShowSettings(false)
-                dispatch({ type: GLOBALTYPES.THEME, payload: !theme })
-              }}>
-                <i className="fas fa-adjust settings_icon_item" /> {theme ? 'Light Mode' : 'Dark Mode'}
+              <div className="settings_item" onClick={handleToggleTheme}>
+                <span className="material-icons settings_icon_item">brightness_6</span> {theme ? 'Light Mode' : 'Dark Mode'}
               </div>
 
               <div className="settings_item">
-                <i className="fas fa-globe settings_icon_item" /> Language:
+                <span className="material-icons settings_icon_item">language</span> Language:
                 <select
                   className="language_select"
                   onChange={(e) => alert(`Language switched to ${e.target.value}`)}
@@ -83,11 +88,11 @@ const Settings = ({ setShowSettings, setOnEdit }) => {
             {/* Actions */}
             <div className="settings_section">
               <div className="settings_item" onClick={handleLogout}>
-                <i className="fas fa-sign-out-alt settings_icon_item" /> Logout
+                <span className="material-icons settings_icon_item">logout</span> Logout
               </div>
 
               <div className="settings_item danger" onClick={handleDeleteAccount}>
-                <i className="fas fa-trash-alt settings_icon_item" /> Delete Account
+                <span className="material-icons settings_icon_item">delete_forever</span> Delete Account
               </div>
             </div>
           </>

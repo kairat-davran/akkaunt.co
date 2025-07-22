@@ -48,9 +48,9 @@ const Info = ({
               )}
 
               {user._id === auth.user._id && (
-                <span className="settings_icon" onClick={() => setShowSettings(true)}>
-                  <i className="fas fa-cog" />
-                </span>
+                <span
+                  className="settings_icon material-icons"
+                  onClick={() => setShowSettings(true)}>settings</span>
               )}
             </div>
 
@@ -63,16 +63,15 @@ const Info = ({
               </span>
             </div>
 
-            <h6>{user.fullname} <span className="text-danger">{user.mobile}</span></h6>
-            <p className="m-0">{user.address}</p>
+            <h6>{user.fullname}</h6>
+
+            {user.story && <p>{user.story}</p>}
 
             {user.website && (
               <a href={user.website} target="_blank" rel="noreferrer">
                 {user.website}
               </a>
             )}
-
-            {user.story && <p>{user.story}</p>}
           </div>
         </div>
       ))}

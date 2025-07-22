@@ -1,6 +1,5 @@
 /* General Layout */
 .events-screen {
-  background-color: #fafbfc;
   min-height: 100vh;
   padding-bottom: 2rem;
 }
@@ -18,7 +17,6 @@
   border-radius: 30px;
   font-weight: 500;
   transition: all 0.2s ease-in-out;
-  color: #495057;
   background-color: #f1f3f5;
   border: none;
   margin-right: 0.5rem;
@@ -30,7 +28,7 @@
 
 .events-tabs .events-tab-btn.active {
   background-color: #0d6efd;
-  color: white;
+  color: #fff;
 }
 
 /* Event Card */
@@ -75,6 +73,7 @@
 .btn .material-icons {
   font-size: 20px;
   margin-right: 0.4rem;
+  color: #f0f0f0;
 }
 
 .btn-sm .material-icons {

@@ -1,11 +1,8 @@
 import React from 'react'
 import Avatar from './Avatar'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 
 const UserCard = ({children, user, border, handleClose, setShowFollowers, setShowFollowing, msg}) => {
-
-    const theme = useSelector(state => state.theme)
 
     const handleCloseAll = () => {
         if(handleClose) handleClose()
@@ -16,7 +13,7 @@ const UserCard = ({children, user, border, handleClose, setShowFollowers, setSho
     const showMsg = (user) => {
         return(
             <>
-                <div style={{filter: theme ? 'invert(1)' : 'invert(0)'}}>
+                <div>
                     {user.text}
                 </div>
                 {

@@ -21,7 +21,6 @@ const BazarScreen = () => {
   return (
     <div className="bazar-screen px-md-4 px-2 py-5">
       {/* Header */}
-      {/* <div className="bazar-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4"> */}
       <div className="bazar-header d-flex flex-row justify-content-between align-items-center mb-4 flex-wrap">
         <h3 className="text-capitalize fw-semibold mb-2 mb-md-0">Bazar</h3>
 

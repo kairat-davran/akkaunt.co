@@ -137,7 +137,7 @@ const EventsScreen = () => {
         {tabs.map(tab => (
           <li className="nav-item" key={tab.key}>
             <button
-              className={`nav-link events-tab-btn d-flex align-items-center ${activeTab === tab.key ? 'active' : ''}`}
+              className={`events-tab-btn d-flex align-items-center ${activeTab === tab.key ? 'active' : ''}`}
               onClick={() => setActiveTab(tab.key)}
             >
               <span className="material-icons me-2">{tab.icon}</span>
@@ -193,7 +193,7 @@ const EventsScreen = () => {
 
       {modalVisible && (
         <div className="modal-backdrop">
-          <div className="modal-content p-4 bg-white rounded shadow">
+          <div className="modal-content p-4 rounded shadow">
             <h5>{editingId ? 'Edit Event' : 'Create Event'}</h5>
 
             <input type="text" name="title" className="form-control my-2" placeholder="Event Title"
@@ -233,8 +233,21 @@ const EventsScreen = () => {
                   </div>
                 ))}
               </div>
-              <input type="file" name="file" accept="image/*" multiple
-                className="form-control mt-2" onChange={handleChangeImages} />
+              
+              <div className="custom-file-upload mt-2">
+                <label htmlFor="event-images" className="btn">
+                  <span className="material-icons me-1">upload</span> Choose Images
+                </label>
+                <input
+                  type="file"
+                  id="event-images"
+                  name="file"
+                  accept="image/*"
+                  multiple
+                  style={{ display: 'none' }}
+                  onChange={handleChangeImages}
+                />
+              </div>
             </div>
 
             <div className="d-flex justify-content-end mt-3">

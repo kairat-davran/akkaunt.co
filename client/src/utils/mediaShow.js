@@ -1,13 +1,11 @@
-export const imageShow = (src, theme) => {
+export const imageShow = (src) => {
     return(
-        <img src={src} alt="images" className="img-thumbnail"
-        style={{filter: theme ? 'invert(1)' : 'invert(0)'}} />
+        <img src={src} alt="images" className="img-thumbnail" />
     )
 }
 
-export const videoShow = (src, theme) => {
+export const videoShow = (src) => {
     return(
-        <video controls src={src} alt="images" className="img-thumbnail"
-        style={{filter: theme ? 'invert(1)' : 'invert(0)'}} />
+        <video controls src={src} alt="images" className="img-thumbnail" />
     )
 }

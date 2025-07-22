@@ -12,18 +12,29 @@ export const MESS_TYPES = {
     CHECK_ONLINE_OFFLINE: 'CHECK_ONLINE_OFFLINE'
 }
 
-export const addMessage = ({msg, auth, socket}) => async (dispatch) =>{
-    dispatch({type: MESS_TYPES.ADD_MESSAGE, payload: msg})
+export const addMessage = ({ msg, auth, socket }) => async (dispatch) => {
+  dispatch({ type: MESS_TYPES.ADD_MESSAGE, payload: msg });
 
-    const { _id, avatar, fullname, username } = auth.user
-    socket.emit('addMessage', {...msg, user: { _id, avatar, fullname, username } })
-    
-    try {
-        await postDataAPI('message', msg, auth.token)
-    } catch (err) {
-        dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})
-    }
-}
+  const { _id, avatar, fullname, username } = auth.user;
+  socket.emit('addMessage', { ...msg, user: { _id, avatar, fullname, username } });
+
+  try {
+    const res = await postDataAPI('message', msg, auth.token);
+    const realMsg = res.data.message;
+
+    dispatch({
+      type: MESS_TYPES.UPDATE_MESSAGES,
+      payload: {
+        _id: msg.recipient,
+        messages: [{ ...msg, _id: realMsg._id }],
+        page: 1,
+        result: 1,
+      }
+    });
+  } catch (err) {
+    dispatch({ type: GLOBALTYPES.ALERT, payload: { error: err.response?.data?.msg } });
+  }
+};
 
 export const getConversations = ({auth, page = 1}) => async (dispatch) => {
     try {

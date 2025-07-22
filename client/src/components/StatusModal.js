@@ -8,7 +8,6 @@ import { imageShow } from '../utils/mediaShow'
 
 const StatusModal = () => {
     const auth = useSelector(state => state.auth)
-    const theme = useSelector(state => state.theme)
     const status = useSelector(state => state.status)
     const socket = useSelector(state => state.communication.socket)
     const dispatch = useDispatch()
@@ -33,8 +32,8 @@ const StatusModal = () => {
 
             try {
                 const compressedFile = await imageCompression(file, {
-                    maxSizeMB: 1,               // 🔧 compress all images to ≤1MB
-                    maxWidthOrHeight: 1920,     // resize large dimensions
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 1920,
                     useWebWorker: true
                 });
 
@@ -151,16 +150,11 @@ const StatusModal = () => {
                 <div className="status_body">
                     <textarea name="content" value={content}
                     placeholder={`${auth.user.username}, what are you thinking?`}
-                    onChange={e => setContent(e.target.value)}
-                    style={{
-                        filter: theme ? 'invert(1)' : 'invert(0)',
-                        color: theme ? 'white' : '#111',
-                        background: theme ? 'rgba(0,0,0,.03)' : '',
-                    }} />
+                    onChange={e => setContent(e.target.value)} />
 
                     <div className="d-flex">
                         <div className="flex-fill"></div>
-                        <Icons setContent={setContent} content={content} theme={theme} />
+                        <Icons setContent={setContent} content={content} />
                     </div>
 
                     <div className="show_images">
@@ -168,13 +162,13 @@ const StatusModal = () => {
                             images.map((img, index) => (
                                 <div key={index} id="file_img">
                                     {
-                                        img.camera ? imageShow(img.camera, theme)
+                                        img.camera ? imageShow(img.camera)
                                         : img.url
                                             ?<>
-                                                { imageShow(img.url, theme) }
+                                                { imageShow(img.url) }
                                             </>
                                             :<>
-                                                { imageShow(URL.createObjectURL(img), theme) }
+                                                { imageShow(URL.createObjectURL(img)) }
                                             </>
                                     }
                                     <span onClick={() => deleteImages(index)}>&times;</span>
@@ -186,8 +180,7 @@ const StatusModal = () => {
                     {
                         stream && 
                         <div className="stream position-relative">
-                            <video autoPlay muted ref={videoRef} width="100%" height="100%"
-                            style={{filter: theme ? 'invert(1)' : 'invert(0)'}} />
+                            <video autoPlay muted ref={videoRef} width="100%" height="100%" />
                             
                             <span onClick={handleStopStream}>&times;</span>
                             <canvas ref={refCanvas} style={{display: 'none'}} />
@@ -195,20 +188,37 @@ const StatusModal = () => {
                     }
 
                     <div className="input_images">
-                        {
-                            stream 
-                            ? <i className="fas fa-camera" onClick={handleCapture} />
-                            : <>
-                                <i className="fas fa-camera" onClick={handleStream} />
+                        {stream ? (
+                            <span
+                            className="material-icons"
+                            onClick={handleCapture}
+                            title="Capture Photo"
+                            >
+                            photo_camera
+                            </span>
+                        ) : (
+                            <>
+                            <span
+                                className="material-icons"
+                                onClick={handleStream}
+                                title="Open Camera"
+                            >
+                                photo_camera
+                            </span>
 
-                                <div className="file_upload">
-                                    <i className="fas fa-image" />
-                                    <input type="file" name="file" id="file"
-                                    multiple accept="image/*" onChange={handleChangeImages} />
-                                </div>
+                            <div className="file_upload">
+                                <span className="material-icons" title="Upload Image">image</span>
+                                <input
+                                type="file"
+                                name="file"
+                                id="file"
+                                multiple
+                                accept="image/*"
+                                onChange={handleChangeImages}
+                                />
+                            </div>
                             </>
-                        }
-                        
+                        )}
                     </div>
 
                 </div>

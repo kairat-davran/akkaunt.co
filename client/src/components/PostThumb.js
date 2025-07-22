@@ -1,9 +1,7 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 const PostThumb = ({ posts, result, initialLoad }) => {
-  const theme = useSelector(state => state.theme)
 
   if (!initialLoad && result === 0 && posts.length === 0) {
     return (
@@ -26,9 +24,6 @@ const PostThumb = ({ posts, result, initialLoad }) => {
           <img
             src={post.images[0].url}
             alt="post"
-            style={{
-              filter: theme ? 'invert(1)' : 'invert(0)'
-            }}
           />
           <div className="post_thumb_menu">
             <div className="icon-info">

@@ -1,6 +1,19 @@
 const Users = require('../models/userModel')
 
 const userCtrl = {
+    updateTheme: async (req, res) => {
+        try {
+            const { theme } = req.body;
+            if (typeof theme !== 'boolean') {
+                return res.status(400).json({ msg: "Theme must be true or false." });
+            }
+
+            await Users.findByIdAndUpdate(req.user._id, { theme });
+            res.json({ msg: "Theme updated successfully.", theme });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
     searchUser: async (req, res) => {
         try {
             const users = await Users.find({username: {$regex: req.query.username}})

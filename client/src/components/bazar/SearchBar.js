@@ -4,7 +4,7 @@ const SearchBar = ({ search, setSearch }) => {
   };
 
   return (
-    <form onSubmit={handleSearch} className="bazar-filters bg-light p-3 rounded border mb-4 d-flex gap-2">
+    <form onSubmit={handleSearch} className="bazar-filters p-3 rounded border mb-4 d-flex gap-2">
       <input
         type="text"
         className="form-control"

@@ -1,17 +1,14 @@
 /* Bazar Screen Container */
 .bazar-screen {
-  background-color: #fafbfc;
   min-height: 100vh;
   padding-bottom: 2rem;
 }
 
-/* Header Title */
 .bazar-screen h3 {
   font-size: 1.75rem;
   font-weight: 600;
 }
 
-/* Avatar */
 .bazar-avatar {
   width: 38px;
   height: 38px;
@@ -26,7 +23,6 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
 }
 
-/* Category Tabs */
 .bazar-tabs {
   padding-left: 0;
   display: flex;
@@ -56,7 +52,6 @@
 
 /* Search Bar */
 .bazar-filters {
-  background-color: #f8f9fa;
   border-radius: 12px;
   border: 1px solid #dee2e6;
   padding: 1rem;
@@ -152,7 +147,7 @@
 }
 
 .item-detail {
-  background-color: #fff;
+  border: 1px solid #dee2e6;
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);

@@ -6,11 +6,7 @@ const CardBody = ({post, theme}) => {
 
     return (
         <div className="card_body">
-            <div className="card_body-content" 
-            style={{
-                filter: theme ? 'invert(1)' : 'invert(0)',
-                color: theme ? 'white' : '#111',
-            }}>
+            <div className="card_body-content">
                 <span>
                     {
                         post.content.length < 60 

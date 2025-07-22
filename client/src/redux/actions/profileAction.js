@@ -14,6 +14,32 @@ export const PROFILE_TYPES = {
     UPDATE_POST: 'UPDATE_PROFILE_POST'
 }
 
+export const toggleTheme = (auth, currentTheme) => async (dispatch) => {
+  const newTheme = !currentTheme;
+
+  dispatch({ type: GLOBALTYPES.THEME, payload: newTheme });
+
+  dispatch({
+    type: GLOBALTYPES.AUTH,
+    payload: {
+      ...auth,
+      user: {
+        ...auth.user,
+        theme: newTheme
+      }
+    }
+  });
+
+  try {
+    await patchDataAPI("user/theme", { theme: newTheme }, auth.token);
+  } catch (err) {
+    dispatch({
+      type: GLOBALTYPES.ALERT,
+      payload: { error: err.response?.data?.msg || "Failed to update theme" }
+    });
+  }
+};
+
 export const getProfileUsers = ({id, auth}) => async (dispatch) => {
     dispatch({type: PROFILE_TYPES.GET_ID, payload: id})
 
@@ -42,7 +68,6 @@ export const getProfileUsers = ({id, auth}) => async (dispatch) => {
     }
 }
 
-// userAction.js
 export const getUsers = (token, search = '') => async (dispatch) => {
   if (!search.trim()) {
     return dispatch({

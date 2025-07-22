@@ -1,9 +1,7 @@
 import React from 'react'
-import { useSelector } from 'react-redux';
 
 const Carousel = ({ images, id }) => {
   const isActive = (index) => (index === 0 ? "active" : "");
-  const theme = useSelector((state) => state.theme);
 
   return (
     <div
@@ -31,7 +29,6 @@ const Carousel = ({ images, id }) => {
                 style={{
                   height: '100%',
                   objectFit: 'cover',
-                  filter: theme ? 'invert(1)' : 'invert(0)',
                 }}
               />
             </div>

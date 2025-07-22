@@ -12,7 +12,7 @@
     outline: none;
     border-radius: 30px;
     color: #555;
-    padding: 0 10px;
+    padding: 0 20px;
     text-align: left;
     margin: 0 5px;
 }
@@ -63,15 +63,9 @@
     padding: 0 15px;
     cursor: pointer;
 }
-.posts .card_icon_menu i{
+.posts .card_icon_menu span{
     font-size: 28px;
     margin: 10px;
-}
-.posts .card_icon_menu img{
-    width: 28px;
-    height: 28px;
-    transform: translate(5px, -5px);
-    opacity: 0.9;
 }
 
 @media (max-width: 1024px) {

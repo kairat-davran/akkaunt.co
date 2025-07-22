@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Send from '../../../images/send.svg'
 import LikeButton from '../../LikeButton'
 import { useDispatch, useSelector } from 'react-redux'
 import { likePost, savePost, unLikePost, unSavePost } from '../../../redux/actions/postAction'
@@ -84,19 +83,36 @@ const CardFooter = ({post}) => {
                     />
 
                     <Link to={`/post/${post._id}`} className="text-dark">
-                        <i className="far fa-comment" />
+                        <span className="material-icons comment-icon">chat_bubble_outline</span>
                     </Link>
 
-                    <img src={Send} alt="Send" onClick={() => setIsShare(!isShare)} />
+                    <span
+                        className="material-icons"
+                        onClick={() => setIsShare(!isShare)}
+                        role="button"
+                        title="Send/Share"
+                    >
+                        send
+                    </span>
                 </div>
 
                 {
                     saved
-                    ?  <i className="fas fa-bookmark text-info"
-                    onClick={handleUnSavePost} />
-                    :  <i className="far fa-bookmark"
-                    onClick={handleSavePost} />
-                }
+                        ? <span
+                            className="material-icons saved"
+                            onClick={handleUnSavePost}
+                            title="Unsave"
+                        >
+                            bookmark
+                        </span>
+                        : <span
+                            className="material-icons"
+                            onClick={handleSavePost}
+                            title="Save"
+                        >
+                            bookmark_border
+                        </span>
+                    }
                
             </div>
 

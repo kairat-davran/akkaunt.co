@@ -24,7 +24,7 @@ const Sidebar = () => {
         />
       );
     } else {
-      return <h1 className="logo">akkaunt</h1>;
+      return <h1 className="logo">αккαυηт</h1>;
     }
   };
 
