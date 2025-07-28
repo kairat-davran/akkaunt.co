@@ -21,9 +21,9 @@ const AppRouter = () => {
   const call = useSelector(state => state.call);
   const theme = useSelector(state => state.theme)
 
-  const isMobileOrTablet = window.innerWidth <= 1024;
+  const isMobile = window.innerWidth <= 768;
   const hideHeader =
-    isMobileOrTablet &&
+    isMobile &&
     (pathname.startsWith('/message') || pathname.startsWith('/profile'));
 
   return (
@@ -39,9 +39,12 @@ const AppRouter = () => {
           <Routes>
             <Route path="/" element={auth.token ? <Home /> : <Login />} />
             <Route path="/register" element={<Register />} />
+            
+            <Route path="/:page/sub/:subpage/id/:id" element={<PrivateRouter><PageRender /></PrivateRouter>} />
+            <Route path="/:page/sub/:subpage" element={<PrivateRouter><PageRender /></PrivateRouter>} />
+            <Route path="/:page/id/:id" element={<PrivateRouter><PageRender /></PrivateRouter>} />
+
             <Route path="/:page" element={<PrivateRouter><PageRender /></PrivateRouter>} />
-            <Route path="/:page/:id" element={<PrivateRouter><PageRender /></PrivateRouter>} />
-            <Route path="/:page/:subpage/:id" element={<PrivateRouter><PageRender /></PrivateRouter>} />
           </Routes>
         </div>
       </div>

@@ -104,7 +104,7 @@ const Register = () => {
   return (
     <div className="auth_page">
       <form onSubmit={step === 1 ? handlePrecheck : handleVerifyAndRegister}>
-        <h3 className="text-uppercase text-center mb-4">akkaunt</h3>
+        <h3 className="text-center mb-4">αккαυηт</h3>
 
         {step === 1 && (
           <>

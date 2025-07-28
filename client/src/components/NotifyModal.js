@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { NOTIFY_TYPES, deleteAllNotifies, isReadNotify } from '../redux/actions/notifyAction'
 import Avatar from './Avatar'
 import moment from 'moment'
-import NoNotice from '../images/notice.png'
 
 const NotifyModal = ({ onClose = () => {} }) => {
     const auth = useSelector(state => state.auth);
@@ -81,17 +80,17 @@ const NotifyModal = ({ onClose = () => {} }) => {
                         color: '#888'
                     }}
                     >
-                    <img
-                        src={NoNotice}
-                        alt="No Notifications"
+                    <span
+                        className="material-icons"
                         style={{
-                        width: '150px',
-                        maxWidth: '80%',
-                        opacity: 0.7,
-                        marginBottom: '20px'
+                            fontSize: '80px',
+                            opacity: 0.5,
+                            marginBottom: '20px'
                         }}
-                    />
-                    <h5 style={{ marginBottom: '8px', color: '#555' }}>You're all caught up!</h5>
+                    >
+                        notifications_off
+                    </span>
+                    <h5 style={{ marginBottom: '8px' }}>You're all caught up!</h5>
                     <p style={{ fontSize: '14px', maxWidth: '240px' }}>
                         You don’t have any notifications right now. Check back later.
                     </p>

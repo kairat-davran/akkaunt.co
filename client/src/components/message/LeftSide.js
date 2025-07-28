@@ -42,8 +42,8 @@ const LeftSide = ({ setIsLeftOpen }) => {
     dispatch({ type: MESS_TYPES.CHECK_ONLINE_OFFLINE, payload: online })
 
     if (typeof setIsLeftOpen === 'function') setIsLeftOpen(false);
-
-    navigate(`/message/${user._id}`);
+    
+    navigate(`/message/id/${user._id}`);
   }
 
   const isActive = (user) => {
@@ -84,8 +84,8 @@ const LeftSide = ({ setIsLeftOpen }) => {
       <div className="dm-header">
         {window.innerWidth <= 768 && (
           <div className="dm-header-top">
-            <span className="dm-back-btn" onClick={() => navigate('/')}>
-              <i className="fas fa-arrow-left"></i>
+            <span className="material-icons" onClick={() => navigate('/')}>
+              arrow_back
             </span>
             <span className="dm-username">
               {id
@@ -107,28 +107,42 @@ const LeftSide = ({ setIsLeftOpen }) => {
       </div>
 
       <div className="message_chat_list">
+        <div
+          className={`message_user ${id === 'bazar' ? 'active' : ''}`}
+          onClick={() => navigate('/message/sub/bazar')}
+        >
+          <div className="d-flex align-items-center px-2 py-2">
+            <span className="material-icons me-3" style={{ fontSize: '28px' }}>
+              storefront
+            </span>
+            <div className="text-truncate">
+              <strong>Bazar Chat</strong>
+              <div className="text-muted small">Marketplace messages</div>
+            </div>
+          </div>
+        </div>
         {
           searchUsers.length !== 0
-            ? searchUsers.map(user => (
-              <div key={user._id} className={`message_user ${isActive(user)}`}
-                onClick={() => handleAddUser(user)}>
-                <UserCard user={user} />
-              </div>
-            ))
-            : message.users.map(user => (
-              <div key={user._id} className={`message_user ${isActive(user)}`}
-                onClick={() => handleAddUser(user)}>
-                <UserCard user={user} msg={true}>
-                  {
-                    user.online
-                      ? <i className="fas fa-circle text-success" />
-                      : auth.user.following.find(item =>
-                        item._id === user._id
-                      ) && <i className="fas fa-circle" />
-                  }
-                </UserCard>
-              </div>
-            ))
+          ? searchUsers.map(user => (
+            <div key={user._id} className={`message_user ${isActive(user)}`}
+              onClick={() => handleAddUser(user)}>
+              <UserCard user={user} />
+            </div>
+          ))
+          : message.users.map(user => (
+            <div key={user._id} className={`message_user ${isActive(user)}`}
+              onClick={() => handleAddUser(user)}>
+              <UserCard user={user} msg={true}>
+                {
+                  user.online
+                    ? <i className="fas fa-circle text-success" />
+                    : auth.user.following.find(item =>
+                      item._id === user._id
+                    ) && <i className="fas fa-circle" />
+                }
+              </UserCard>
+            </div>
+          ))
         }
 
         <button ref={pageEnd} style={{ opacity: 0 }}>Load More</button>

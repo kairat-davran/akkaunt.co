@@ -104,12 +104,11 @@ const MenuSide = () => {
         </>
       )}
 
-      <Link to={`/profile/${auth.user._id}`} className={`nav-link ${isActive(`/profile/${auth.user._id}`)}`}>
+      <Link to={`/profile/id/${auth.user._id}`} className={`nav-link ${isActive(`/profile/id/${auth.user._id}`)}`}>
         <Avatar src={auth.user.avatar} size="medium-avatar" />
         <span className="label">Profile</span>
       </Link>
 
-      {/* Modals still work, even if triggered from mobile topbar */}
       {openSearch && (
         <div className="search-dropdown" ref={searchRef}>
           <SearchSide />

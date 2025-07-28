@@ -15,6 +15,9 @@ export const BAZAR_TYPES = {
   UPDATE_ITEM: 'UPDATE_ITEM',
   DELETE_ITEM: 'DELETE_ITEM',
   LOADING_ITEM: 'LOADING_ITEM',
+  SAVE_ITEM: 'SAVE_BAZAR_ITEM',
+  UNSAVE_ITEM: 'UNSAVE_BAZAR_ITEM',
+  SET_SAVED_ITEMS: 'SET_SAVED_BAZAR_ITEMS',
 };
 
 // Create Item
@@ -156,6 +159,54 @@ export const deleteItem = ({ id, auth }) => async (dispatch) => {
       type: GLOBALTYPES.ALERT,
       payload: {
         error: err.response?.data?.msg || 'Delete failed',
+      },
+    });
+  }
+};
+
+// Save Item
+export const saveItem = (item, auth) => async (dispatch) => {
+  try {
+    await patchDataAPI(`bazar/save/${item._id}`, null, auth.token);
+    dispatch({ type: BAZAR_TYPES.SAVE_ITEM, payload: item });
+  } catch (err) {
+    dispatch({
+      type: GLOBALTYPES.ALERT,
+      payload: {
+        error: err.response?.data?.msg || 'Save failed',
+      },
+    });
+  }
+};
+
+// Unsave Item
+export const unsaveItem = (item, auth) => async (dispatch) => {
+  try {
+    await patchDataAPI(`bazar/unsave/${item._id}`, null, auth.token);
+    dispatch({ type: BAZAR_TYPES.UNSAVE_ITEM, payload: item._id });
+  } catch (err) {
+    dispatch({
+      type: GLOBALTYPES.ALERT,
+      payload: {
+        error: err.response?.data?.msg || 'Unsave failed',
+      },
+    });
+  }
+};
+
+// Get all saved items
+export const getSavedItems = (token) => async (dispatch) => {
+  try {
+    const res = await getDataAPI('bazar/saved', token);
+    dispatch({
+      type: BAZAR_TYPES.SET_SAVED_ITEMS,
+      payload: res.data.items,
+    });
+  } catch (err) {
+    dispatch({
+      type: GLOBALTYPES.ALERT,
+      payload: {
+        error: err.response?.data?.msg || 'Failed to load saved items',
       },
     });
   }

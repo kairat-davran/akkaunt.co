@@ -73,6 +73,7 @@ app.use('/api', require('./routes/notifyRouter'));
 app.use('/api', require('./routes/messageRouter'));
 app.use('/api', require('./routes/eventRouter'));
 app.use('/api', require('./routes/bazarRouter'));
+app.use('/api', require('./routes/bazarMessageRouter'));
 app.use('/api', require('./routes/uploadRouter'));
 
 const URI = process.env.MONGODB_URL

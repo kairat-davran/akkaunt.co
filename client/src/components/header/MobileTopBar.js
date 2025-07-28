@@ -50,7 +50,7 @@ const MobileTopBar = () => {
         <>
           <div className="topbar-left">
             <Link to="/" onClick={() => window.scrollTo({ top: 0 })}>
-              <h1 className="logo">akkaunt</h1>
+              <h1 className="logo">αккαυηт</h1>
             </Link>
           </div>
 

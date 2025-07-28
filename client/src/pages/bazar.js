@@ -1,70 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  getItemById,
-  deleteItem,
+  getItems,
+  createItem,
+  updateItem,
   saveItem,
   unsaveItem,
-  updateItem
-} from '../../redux/actions/bazarAction';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+  getSavedItems
+} from '../redux/actions/bazarAction';
+import ItemCard from '../components/bazar/ItemCard';
+import CategoryFilter from '../components/bazar/CategoryFilter';
+import SearchBar from '../components/bazar/SearchBar';
 import imageCompression from 'browser-image-compression';
-import { GLOBALTYPES } from '../../redux/actions/globalTypes';
+import { GLOBALTYPES } from '../redux/actions/globalTypes';
 
-const ItemDetail = () => {
-  const { id } = useParams();
+const BazarScreen = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { items, loading, saved } = useSelector(state => state.bazar);
+  const auth = useSelector(state => state.auth);
 
-  const { item, loading, saved } = useSelector(state => state.bazar);
-  const { token, user } = useSelector(state => state.auth);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchKeyword, setSearchKeyword] = useState('');
 
-  const isOwner = item?.seller?._id === user?._id;
-  const isSaved = saved.some(i => i._id === item?._id);
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [itemData, setItemData] = useState({
+  const initialItemState = {
     title: '',
     price: '',
     description: '',
     location: '',
     category: ''
-  });
+  };
+
+  const [itemData, setItemData] = useState(initialItemState);
   const [images, setImages] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-    if (id) dispatch(getItemById(id, token));
-  }, [id, dispatch, token]);
-
-  useEffect(() => {
-    if (item && isOwner) {
-      setItemData({
-        title: item.title,
-        price: item.price,
-        description: item.description,
-        location: item.location,
-        category: item.category
-      });
-      setImages(item.images || []);
+    if (auth.token) {
+      dispatch(getItems(auth.token, searchKeyword, selectedCategory));
+      dispatch(getSavedItems(auth.token));
     }
-  }, [item, isOwner]);
+  }, [dispatch, auth.token, searchKeyword, selectedCategory]);
 
-  const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this item?')) {
-      dispatch(deleteItem({ id: item._id, auth: { token } }));
-      navigate('/bazar');
-    }
-  };
-
-  const handleToggleSave = () => {
-    if (isSaved) {
-      dispatch(unsaveItem(item, { token }));
-    } else {
-      dispatch(saveItem(item, { token }));
-    }
-  };
-
-  const handleChange = (e) => {
+  const handleChange = e => {
     setItemData({ ...itemData, [e.target.name]: e.target.value });
   };
 
@@ -102,82 +80,95 @@ const ItemDetail = () => {
       });
     }
 
-    const success = await dispatch(updateItem({
-      id: item._id,
-      data: itemData,
-      images,
-      auth: { token, user }
-    }));
+    let success;
+    if (editingId) {
+      success = await dispatch(updateItem({ id: editingId, data: itemData, images, auth }));
+    } else {
+      success = await dispatch(createItem({ data: itemData, images, auth }));
+    }
 
     if (success) {
       setModalVisible(false);
+      setItemData(initialItemState);
+      setImages([]);
+      setEditingId(null);
     }
   };
 
-  if (loading || !item) return <p className="text-center my-5">Loading...</p>;
+  const handleEdit = (item) => {
+    setItemData({
+      title: item.title,
+      price: item.price,
+      description: item.description,
+      location: item.location,
+      category: item.category
+    });
+    setImages(item.images || []);
+    setEditingId(item._id);
+    setModalVisible(true);
+  };
 
   return (
-    <div className="container py-4">
-      <div className="item-detail">
-        <h3 className="mb-3">{item.title}</h3>
+    <div className="bazar-screen px-md-4 px-2 py-5">
+      <div className="bazar-header d-flex flex-row justify-content-between align-items-center mb-4 flex-wrap">
+        <h3 className="text-capitalize fw-semibold mb-2 mb-md-0">Bazar</h3>
 
-        {item.images?.[0]?.url && (
-          <img
-            src={item.images[0].url}
-            alt={item.title}
-            className="img-fluid w-100 mb-3"
-          />
-        )}
-
-        <p><strong>Price:</strong> ${item.price}</p>
-        <p><strong>Description:</strong><br />{item.description}</p>
-        <p><strong>Location:</strong> {item.location}</p>
-        <p>
-          <strong>Seller:</strong>{' '}
-          <Link to={`/bazar/seller/id/${item.seller?._id}`}>
-            {item.seller?.username}
-          </Link>
-        </p>
-
-        <div className="d-flex gap-2 mt-4">
-          <button
-            className="btn btn-outline-primary"
-            onClick={handleToggleSave}
-          >
-            <span className="material-icons me-1">
-              {isSaved ? 'bookmark' : 'bookmark_border'}
-            </span>
-            {isSaved ? 'Saved' : 'Save'}
-          </button>
-
-          {isOwner ? (
-            <>
-              <button
-                className="btn btn-outline-secondary"
-                onClick={() => setModalVisible(true)}
-              >
-                <span className="material-icons me-1">edit</span> Edit
-              </button>
-
-              <button className="btn btn-danger" onClick={handleDelete}>
-                <span className="material-icons me-1">delete</span> Delete
-              </button>
-            </>
-          ) : (
-            <button
-              className="btn btn-outline-success"
-              onClick={() => navigate(`/message/sub/bazar/id/${item.seller._id}`)}
-            >
-              <span className="material-icons me-1">chat</span> Message
+        <div className="d-flex align-items-center gap-2">
+          {auth.token && (
+            <button className="btn btn-primary d-flex align-items-center" onClick={() => setModalVisible(true)}>
+              <span className="material-icons me-1">add_circle</span> Add Item
             </button>
           )}
+
+          <img
+            src={auth.user.avatar}
+            alt={auth.user.username}
+            title={auth.user.username}
+            className="bazar-avatar"
+          />
         </div>
       </div>
+
+      <div className="bazar-filters mb-4">
+        <SearchBar search={searchKeyword} setSearch={setSearchKeyword} />
+        <CategoryFilter selected={selectedCategory} setSelected={setSelectedCategory} />
+      </div>
+
+      {loading ? (
+        <div className="text-center py-5">
+          <div className="spinner-border text-primary" role="status" />
+        </div>
+      ) : items.length === 0 ? (
+        <p className="text-muted text-center mt-4">No items found for your search.</p>
+      ) : (
+        <div className="row">
+          {items.map(item => {
+            const isOwner = item.seller?._id === auth.user?._id;
+            const isSaved = saved.some(i => i._id === item._id);
+
+            return (
+              <div className="col-6 col-md-4 col-lg-3 mb-4" key={item._id}>
+                <ItemCard
+                  item={item}
+                  isOwner={isOwner}
+                  isSaved={isSaved}
+                  onEdit={() => handleEdit(item)}
+                  onToggleSave={() =>
+                    isSaved
+                      ? dispatch(unsaveItem(item, auth))
+                      : dispatch(saveItem(item, auth))
+                  }
+                />
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {modalVisible && (
         <div className="modal-backdrop">
           <div className="modal-content p-4 rounded shadow">
-            <h5>Edit Item</h5>
+            <h5>{editingId ? 'Edit Item' : 'Create New Item'}</h5>
 
             <input name="title" className="form-control my-2" placeholder="Title" value={itemData.title} onChange={handleChange} />
             <input name="price" className="form-control my-2" placeholder="Price" type="number" value={itemData.price} onChange={handleChange} />
@@ -196,12 +187,12 @@ const ItemDetail = () => {
 
             <label className="form-label mt-3">Images</label>
             <div className="custom-file-upload mt-2">
-              <label htmlFor="item-images" className="btn">
+              <label htmlFor="event-images" className="btn">
                 <span className="material-icons me-1">upload</span> Choose Images
               </label>
               <input
                 type="file"
-                id="item-images"
+                id="event-images"
                 name="file"
                 accept="image/*"
                 multiple
@@ -233,12 +224,17 @@ const ItemDetail = () => {
             <div className="d-flex justify-content-end mt-3">
               <button
                 className="btn btn-secondary me-2"
-                onClick={() => setModalVisible(false)}
+                onClick={() => {
+                  setModalVisible(false);
+                  setItemData(initialItemState);
+                  setImages([]);
+                  setEditingId(null);
+                }}
               >
                 Cancel
               </button>
               <button className="btn btn-success" onClick={handleSubmit}>
-                Update
+                {editingId ? 'Update' : 'Post'}
               </button>
             </div>
           </div>
@@ -248,4 +244,4 @@ const ItemDetail = () => {
   );
 };
 
-export default ItemDetail;
+export default BazarScreen;

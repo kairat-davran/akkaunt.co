@@ -218,6 +218,51 @@ const bazarCtrl = {
       return res.status(500).json({ msg: err.message });
     }
   },
+  
+  saveItem: async (req, res) => {
+    try {
+      const user = await User.findById(req.user._id);
+      const itemId = req.params.id;
+
+      if (!user.savedBazarItems.includes(itemId)) {
+        user.savedBazarItems.push(itemId);
+        await user.save();
+      }
+
+      res.json({ msg: 'Item saved successfully.' });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+
+  unsaveItem: async (req, res) => {
+    try {
+      const user = await User.findById(req.user._id);
+      const itemId = req.params.id;
+
+      user.savedBazarItems = user.savedBazarItems.filter(
+        id => id.toString() !== itemId
+      );
+      await user.save();
+
+      res.json({ msg: 'Item unsaved successfully.' });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+
+  getSavedItems: async (req, res) => {
+    try {
+      const user = await User.findById(req.user._id).populate({
+        path: 'savedBazarItems',
+        populate: { path: 'seller', select: 'avatar username fullname seller' }
+      });
+
+      res.json({ items: user.savedBazarItems });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
 };
 
 module.exports = bazarCtrl;

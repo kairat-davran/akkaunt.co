@@ -8,6 +8,7 @@ const initialState = {
   sellerItems: [],
   seller: null,
   result: 0,
+  saved: [],
 };
 
 const bazarReducer = (state = initialState, action) => {
@@ -50,6 +51,24 @@ const bazarReducer = (state = initialState, action) => {
       return {
         ...state,
         items: DeleteData(state.items, action.payload),
+      };
+    
+    case BAZAR_TYPES.SAVE_ITEM:
+      return {
+        ...state,
+        saved: [action.payload, ...state.saved],
+      };
+
+    case BAZAR_TYPES.UNSAVE_ITEM:
+      return {
+        ...state,
+        saved: state.saved.filter(item => item._id !== action.payload),
+      };
+
+    case BAZAR_TYPES.SET_SAVED_ITEMS:
+      return {
+        ...state,
+        saved: action.payload,
       };
 
     default:

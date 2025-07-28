@@ -155,7 +155,7 @@ const EventsScreen = () => {
             <div className="col-md-6 mb-4" key={event._id}>
               <div
                 className="card event-card h-100 shadow-sm"
-                onClick={() => navigate(`/event/${event._id}`)}
+                onClick={() => navigate(`/event/id/${event._id}`)}
                 style={{ cursor: 'pointer' }}
               >
                 <img

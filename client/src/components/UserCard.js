@@ -1,68 +1,71 @@
-import React from 'react'
-import Avatar from './Avatar'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import Avatar from './Avatar';
+import { Link } from 'react-router-dom';
 
-const UserCard = ({children, user, border, handleClose, setShowFollowers, setShowFollowing, msg}) => {
+const UserCard = ({
+  children,
+  user,
+  border,
+  handleClose,
+  setShowFollowers,
+  setShowFollowing,
+  msg
+}) => {
+  const handleCloseAll = () => {
+    if (handleClose) handleClose();
+    if (setShowFollowers) setShowFollowers(false);
+    if (setShowFollowing) setShowFollowing(false);
+  };
 
-    const handleCloseAll = () => {
-        if(handleClose) handleClose()
-        if(setShowFollowers) setShowFollowers(false)
-        if(setShowFollowing) setShowFollowing(false)
-    }
-
-    const showMsg = (user) => {
-        return(
-            <>
-                <div>
-                    {user.text}
-                </div>
-                {
-                    user.media.length > 0 && 
-                    <div>
-                        {user.media.length} <i className="fas fa-image" />
-                    </div>
-                }
-
-                {
-                    user.call &&
-                    <span className="material-icons">
-                        {
-                            user.call.times === 0
-                            ? user.call.video ? 'videocam_off' : 'phone_disabled'
-                            : user.call.video ? 'video_camera_front' : 'call'
-                        }
-                    </span>
-                }
-            </>
-        )
-    }
-
-
+  const showMsg = (user) => {
     return (
-        <div className={`d-flex p-2 align-items-center justify-content-between w-100 ${border}`}>
-            <div>
-                <Link to={`/profile/${user._id}`} onClick={handleCloseAll}
-                className="d-flex align-items-center">
-                    
-                    <Avatar src={user.avatar} size="big-avatar" marginRight={5} />
+      <>
+        {user.text && <div>{user.text}</div>}
 
-                    <div className="ml-1" style={{transform: 'translateY(-2px)'}}>
-                        <span className="d-block">@{user.username}</span>
-                        
-                        <small style={{opacity: 0.7}}>
-                            {
-                                msg 
-                                ? showMsg(user)
-                                : user.fullname
-                            }
-                        </small>
-                    </div>
-                </Link>
-            </div>
-            
-            {children}
-        </div>
-    )
-}
+        {Array.isArray(user.media) && user.media.length > 0 && (
+          <div>
+            {user.media.length} <i className="fas fa-image" />
+          </div>
+        )}
 
-export default UserCard
+        {user.call && (
+          <span className="material-icons">
+            {user.call.times === 0
+              ? user.call.video
+                ? 'videocam_off'
+                : 'phone_disabled'
+              : user.call.video
+              ? 'video_camera_front'
+              : 'call'}
+          </span>
+        )}
+      </>
+    );
+  };
+
+  return (
+    <div className={`d-flex p-2 align-items-center justify-content-between w-100 ${border}`}>
+      <div>
+        <Link
+          to={`/profile/id/${user._id}`}
+          onClick={handleCloseAll}
+          className="d-flex align-items-center"
+        >
+          <Avatar src={user.avatar} size="big-avatar" marginRight={5} />
+
+          <div className="ml-1" style={{ transform: 'translateY(-2px)' }}>
+            <span className="d-block">@{user.username}</span>
+
+            <small style={{ opacity: 0.7 }}>
+              {msg ? showMsg(user) : user.fullname}
+            </small>
+          </div>
+        </Link>
+      </div>
+
+      {children}
+    </div>
+  );
+};
+
+export default UserCard;

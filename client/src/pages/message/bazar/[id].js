@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import LeftSide from '../../components/message/LeftSide';
-import RightSide from '../../components/message/RightSide';
+import BazarLeftSide from '../../../components/message/BazarLeftSide';
+import BazarRightSide from '../../../components/message/BazarRightSide';
 
-const Conversation = () => {
+const BazarConversation = () => {
   const [isLeftOpen, setIsLeftOpen] = useState(false);
 
   useEffect(() => {
@@ -14,13 +14,13 @@ const Conversation = () => {
   return (
     <div className={`message d-flex ${isLeftOpen ? 'open-left' : ''}`}>
       <div className="col-md-4 border-right px-0 left_mess">
-        <LeftSide setIsLeftOpen={setIsLeftOpen} />
+        <BazarLeftSide setIsLeftOpen={setIsLeftOpen} />
       </div>
       <div className="col-md-8 px-0 right_mess">
-        <RightSide setIsLeftOpen={setIsLeftOpen} />
+        <BazarRightSide setIsLeftOpen={setIsLeftOpen} />
       </div>
     </div>
   );
 };
 
-export default Conversation;
+export default BazarConversation;

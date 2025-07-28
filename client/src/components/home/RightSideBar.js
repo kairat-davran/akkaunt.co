@@ -40,7 +40,7 @@ const RightSideBar = () => {
             }
 
             <div style={{opacity: 0.5}} className="my-2" >
-                <a href="https://www.youtube.com/c/DevATHTML" target="_blank" rel="noreferrer"
+                <a href="https://www.akkaunt.co" target="_blank" rel="noreferrer"
                 style={{wordBreak: 'break-all'}} >
                     Right now we do not have a link
                 </a>
