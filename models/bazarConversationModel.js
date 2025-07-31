@@ -1,16 +1,10 @@
 const mongoose = require('mongoose');
 
 const bazarConversationSchema = new mongoose.Schema({
-  item: {
-    type: mongoose.Types.ObjectId,
-    ref: 'bazar',
-    required: true
-  },
-  participants: [{ type: mongoose.Types.ObjectId, ref: 'user' }],
-  lastMessage: {
-    text: String,
-    media: Array
-  },
+  recipients: [{ type: mongoose.Types.ObjectId, ref: 'user' }],
+  text: String,
+  media: Array,
+  item: { type: mongoose.Types.ObjectId, ref: 'bazar',},
 }, {
   timestamps: true
 });

@@ -116,6 +116,14 @@ const SocketServer = (socket) => {
         user && socket.to(`${user.socketId}`).emit('addMessageToClient', msg)
     })
 
+    // Bazar Message
+    socket.on('addBazarMessage', msg => {
+        const user = users.find(user => user.id === msg.recipient);
+        if (user) {
+            socket.to(user.socketId).emit('addBazarMessageToClient', msg);
+        }
+    });
+
     // Check User Online / Offline
     socket.on('checkUserOnline', data => {
         const following = users.filter(user => 

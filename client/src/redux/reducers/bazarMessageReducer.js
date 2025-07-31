@@ -10,18 +10,21 @@ const initialState = {
 
 const bazarMessageReducer = (state = initialState, action) => {
   switch (action.type) {
+    case BAZAR_MSG_TYPES.ADD_BAZAR_CONVERSATION:
+      if (state.users.every(u => u._id !== action.payload._id)) {
+        return {
+          ...state,
+          users: [action.payload, ...state.users]
+        };
+      }
+      return state;
+
     case BAZAR_MSG_TYPES.GET_BAZAR_CONVERSATIONS:
       return {
         ...state,
         users: action.payload.newArr,
         resultUsers: action.payload.result,
         firstLoad: true
-      };
-
-    case BAZAR_MSG_TYPES.GET_BAZAR_MESSAGES:
-      return {
-        ...state,
-        data: [...state.data, action.payload]
       };
 
     case BAZAR_MSG_TYPES.ADD_BAZAR_MESSAGE:
@@ -32,12 +35,12 @@ const bazarMessageReducer = (state = initialState, action) => {
             ? {
                 ...item,
                 messages: [...item.messages, action.payload],
-                result: (item.result || 0) + 1
+                result: item.result + 1
               }
             : item
         ),
         users: state.users.map(user =>
-          user._id === action.payload.recipient || user._id === action.payload.sender
+          user._id === action.payload.conversation
             ? {
                 ...user,
                 text: action.payload.text,
@@ -48,6 +51,12 @@ const bazarMessageReducer = (state = initialState, action) => {
         )
       };
 
+    case BAZAR_MSG_TYPES.GET_BAZAR_MESSAGES:
+      return {
+        ...state,
+        data: [...state.data, action.payload]
+      };
+
     case BAZAR_MSG_TYPES.UPDATE_BAZAR_MESSAGES:
       return {
         ...state,
@@ -55,16 +64,11 @@ const bazarMessageReducer = (state = initialState, action) => {
           item._id === action.payload._id
             ? {
                 ...item,
-                messages: [
-                  ...item.messages.map(msg =>
-                    !msg._id && msg.createdAt === action.payload.messages[0].createdAt
-                      ? { ...msg, ...action.payload.messages[0] }
-                      : msg
-                  ),
-                  ...item.messages.some(msg => msg._id === action.payload.messages[0]._id)
-                    ? []
-                    : [action.payload.messages[0]]
-                ]
+                messages: item.messages.map(msg =>
+                  !msg._id && msg.createdAt === action.payload.messages[0].createdAt
+                    ? { ...msg, _id: action.payload.messages[0]._id }
+                    : msg
+                )
               }
             : item
         )
@@ -75,7 +79,7 @@ const bazarMessageReducer = (state = initialState, action) => {
         ...state,
         data: state.data.map(item =>
           item._id === action.payload._id
-            ? { ...item, messages: [...action.payload.newData] }
+            ? { ...item, messages: action.payload.newData }
             : item
         )
       };

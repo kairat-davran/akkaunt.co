@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import UserCard from '../UserCard';
 import { getUsers } from '../../redux/actions/profileAction';
+import { useTranslation } from 'react-i18next';
 
 const SearchSide = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const { users } = useSelector(state => state.profile);
-
   const auth = useSelector(state => state.auth);
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (searchKeyword.trim()) {
@@ -17,9 +18,9 @@ const SearchSide = () => {
   }, [dispatch, auth.token, searchKeyword]);
 
   const handleClose = () => {
-      setSearchKeyword('');
-      dispatch(getUsers(auth.token, ''));
-  }
+    setSearchKeyword('');
+    dispatch(getUsers(auth.token, ''));
+  };
 
   return (
     <form className="search-panel">
@@ -29,13 +30,12 @@ const SearchSide = () => {
         value={searchKeyword}
         id="search"
         className="search-panel__input"
-        title="Enter to Search"
         onChange={e => setSearchKeyword(e.target.value.toLowerCase().replace(/ /g, ''))}
       />
 
       <div className="search-panel__icon" style={{ opacity: searchKeyword ? 0 : 0.3 }}>
         <span className="material-icons">search</span>
-        <span>Enter to Search</span>
+        <span>{t('search_users')}</span>
       </div>
 
       <div
@@ -57,7 +57,7 @@ const SearchSide = () => {
         ))}
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default SearchSide
+export default SearchSide;

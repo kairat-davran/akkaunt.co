@@ -9,6 +9,7 @@ import EditProfile from '../../components/profile/EditProfile'
 import Followers from '../../components/profile/Followers'
 import Following from '../../components/profile/Following'
 import Settings from '../../components/profile/Settings'
+import { useTranslation } from 'react-i18next'
 
 const Profile = () => {
   const profile = useSelector(state => state.profile)
@@ -17,13 +18,13 @@ const Profile = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { id } = useParams()
-  const [saveTab, setSaveTab] = useState(false)
+  const { t } = useTranslation()
 
+  const [saveTab, setSaveTab] = useState(false)
   const [onEdit, setOnEdit] = useState(false)
   const [showFollowers, setShowFollowers] = useState(false)
   const [showFollowing, setShowFollowing] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
-
   const [userData, setUserData] = useState([])
 
   const isMobileOrTablet = window.innerWidth <= 1024
@@ -45,13 +46,12 @@ const Profile = () => {
 
   return (
     <div className="profile">
-
       {isMobileOrTablet && (
         <div className="profile_back">
           <span className="dm-back-btn" onClick={() => navigate('/')}>
             <i className="fas fa-arrow-left"></i>
           </span>
-          <span>{userData?.username || 'Back'}</span>
+          <span>{userData?.username || t('back')}</span>
         </div>
       )}
 
@@ -71,37 +71,49 @@ const Profile = () => {
 
       {auth.user._id === id && (
         <div className="profile_tab">
-          <button className={saveTab ? '' : 'active'} onClick={() => setSaveTab(false)}>Posts</button>
-          <button className={saveTab ? 'active' : ''} onClick={() => setSaveTab(true)}>Saved</button>
+          <button
+            className={saveTab ? '' : 'active'}
+            onClick={() => setSaveTab(false)}
+          >
+            {t('posts')}
+          </button>
+          <button
+            className={saveTab ? 'active' : ''}
+            onClick={() => setSaveTab(true)}
+          >
+            {t('saved')}
+          </button>
         </div>
       )}
 
-      {profile.loading
-        ? <div className="text-center py-5">
-            <div className="spinner-border text-primary" role="status" />
-          </div>
-        : (
-          saveTab
-            ? <Saved auth={auth} dispatch={dispatch} />
-            : <Posts auth={auth} dispatch={dispatch} id={id} />
-        )
-      }
+      {profile.loading ? (
+        <div className="text-center py-5">
+          <div className="spinner-border text-primary" role="status" />
+        </div>
+      ) : saveTab ? (
+        <Saved auth={auth} dispatch={dispatch} />
+      ) : (
+        <Posts auth={auth} dispatch={dispatch} id={id} />
+      )}
 
       {onEdit && <EditProfile setOnEdit={setOnEdit} />}
+      {showSettings && (
+        <Settings setShowSettings={setShowSettings} setOnEdit={setOnEdit} />
+      )}
 
-      {showSettings && <Settings setShowSettings={setShowSettings} setOnEdit={setOnEdit} />}
-
-      {showFollowers &&
+      {showFollowers && (
         <Followers
           users={userData.followers}
           setShowFollowers={setShowFollowers}
-        />}
+        />
+      )}
 
-      {showFollowing &&
+      {showFollowing && (
         <Following
           users={userData.following}
           setShowFollowing={setShowFollowing}
-        />}
+        />
+      )}
     </div>
   )
 }

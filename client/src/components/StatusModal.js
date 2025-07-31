@@ -5,233 +5,219 @@ import { createPost, updatePost } from '../redux/actions/postAction'
 import imageCompression from 'browser-image-compression'
 import Icons from './Icons'
 import { imageShow } from '../utils/mediaShow'
+import { useTranslation } from 'react-i18next'
 
 const StatusModal = () => {
-    const auth = useSelector(state => state.auth)
-    const status = useSelector(state => state.status)
-    const socket = useSelector(state => state.communication.socket)
-    const dispatch = useDispatch()
+  const { t } = useTranslation()
+  const auth = useSelector(state => state.auth)
+  const status = useSelector(state => state.status)
+  const socket = useSelector(state => state.communication.socket)
+  const dispatch = useDispatch()
 
-    const [content, setContent] = useState('')
-    const [images, setImages] = useState([])
-    
-    const [stream, setStream] = useState(false)
-    const videoRef = useRef()
-    const refCanvas = useRef()
-    const [tracks, setTracks] = useState('')
+  const [content, setContent] = useState('')
+  const [images, setImages] = useState([])
 
-    const handleChangeImages = async (e) => {
-        const files = [...e.target.files];
-        let newImages = [];
+  const [stream, setStream] = useState(false)
+  const videoRef = useRef()
+  const refCanvas = useRef()
+  const [tracks, setTracks] = useState('')
 
-        for (const file of files) {
-            if (!file) {
-                dispatch({ type: GLOBALTYPES.ALERT, payload: { error: "File does not exist." } });
-                continue;
-            }
+  const handleChangeImages = async (e) => {
+    const files = [...e.target.files]
+    let newImages = []
 
-            try {
-                const compressedFile = await imageCompression(file, {
-                    maxSizeMB: 1,
-                    maxWidthOrHeight: 1920,
-                    useWebWorker: true
-                });
+    for (const file of files) {
+      if (!file) {
+        dispatch({ type: GLOBALTYPES.ALERT, payload: { error: t('error.no_file') } })
+        continue
+      }
 
-                newImages.push(compressedFile);
-            } catch (err) {
-                console.error("Image compression error:", err);
-                dispatch({
-                    type: GLOBALTYPES.ALERT,
-                    payload: { error: "Image compression failed." }
-                });
-            }
-        }
-
-        setImages(prev => [...prev, ...newImages]);
-    };
-
-    const deleteImages = (index) => {
-        const newArr = [...images]
-        newArr.splice(index, 1)
-        setImages(newArr)
+      try {
+        const compressedFile = await imageCompression(file, {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true
+        })
+        newImages.push(compressedFile)
+      } catch (err) {
+        dispatch({
+          type: GLOBALTYPES.ALERT,
+          payload: { error: t('error.image_compression') }
+        })
+      }
     }
 
-    const handleStream = () => {
-        setStream(true)
-        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
-            navigator.mediaDevices.getUserMedia({video: true})
-            .then(mediaStream => {
-                videoRef.current.srcObject = mediaStream
-                videoRef.current.play()
+    setImages(prev => [...prev, ...newImages])
+  }
 
-                const track = mediaStream.getTracks()
-                setTracks(track[0])
-            }).catch(err => console.log(err))
-        }
+  const deleteImages = (index) => {
+    const newArr = [...images]
+    newArr.splice(index, 1)
+    setImages(newArr)
+  }
+
+  const handleStream = () => {
+    setStream(true)
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(mediaStream => {
+          videoRef.current.srcObject = mediaStream
+          videoRef.current.play()
+          const track = mediaStream.getTracks()
+          setTracks(track[0])
+        }).catch(err => console.log(err))
     }
+  }
 
-    const handleCapture = () => {
-        const width = videoRef.current.clientWidth;
-        const height = videoRef.current.clientHeight;
+  const handleCapture = () => {
+    const width = videoRef.current.clientWidth;
+    const height = videoRef.current.clientHeight;
 
-        refCanvas.current.setAttribute("width", width);
-        refCanvas.current.setAttribute("height", height);
+    refCanvas.current.setAttribute("width", width);
+    refCanvas.current.setAttribute("height", height);
 
-        const ctx = refCanvas.current.getContext("2d");
-        ctx.drawImage(videoRef.current, 0, 0, width, height);
+    const ctx = refCanvas.current.getContext("2d");
+    ctx.drawImage(videoRef.current, 0, 0, width, height);
 
-        refCanvas.current.toBlob(async (blob) => {
-            const file = new File([blob], `photo_${Date.now()}.jpg`, {
-            type: 'image/jpeg'
-            });
+    refCanvas.current.toBlob(async (blob) => {
+      const file = new File([blob], `photo_${Date.now()}.jpg`, {
+        type: 'image/jpeg'
+      })
 
-            try {
-            const compressedFile = await imageCompression(file, {
-                maxSizeMB: 1,
-                maxWidthOrHeight: 1920,
-                useWebWorker: true
-            });
-
-            setImages((prev) => [...prev, compressedFile]);
-            } catch (err) {
-            console.error("Capture compression error:", err);
-            dispatch({
-                type: GLOBALTYPES.ALERT,
-                payload: { error: "Image compression failed." }
-            });
-            }
-        }, 'image/jpeg');
-    };
-
-    const handleStopStream = () => {
-        tracks.stop()
-        setStream(false)
-    }
-
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        if(images.length === 0)
-        return dispatch({ 
-            type: GLOBALTYPES.ALERT, payload: {error: "Please add your photo."}
+      try {
+        const compressedFile = await imageCompression(file, {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true
         })
 
-        if(status.onEdit){
-            dispatch(updatePost({content, images, auth, status}))
-        }else{
-            dispatch(createPost({content, images, auth, socket}))
-        }
-        
+        setImages((prev) => [...prev, compressedFile])
+      } catch (err) {
+        dispatch({
+          type: GLOBALTYPES.ALERT,
+          payload: { error: t('error.image_compression') }
+        })
+      }
+    }, 'image/jpeg')
+  }
 
-        setContent('')
-        setImages([])
-        if(tracks) tracks.stop()
-        dispatch({ type: GLOBALTYPES.STATUS, payload: false})
+  const handleStopStream = () => {
+    tracks.stop()
+    setStream(false)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (images.length === 0)
+      return dispatch({
+        type: GLOBALTYPES.ALERT,
+        payload: { error: t('error.no_photo') }
+      })
+
+    if (status.onEdit) {
+      dispatch(updatePost({ content, images, auth, status }))
+    } else {
+      dispatch(createPost({ content, images, auth, socket }))
     }
 
-    useEffect(() => {
-        if(status.onEdit){
-            setContent(status.content)
-            setImages(status.images)
-        }
-    },[status])
+    setContent('')
+    setImages([])
+    if (tracks) tracks.stop()
+    dispatch({ type: GLOBALTYPES.STATUS, payload: false })
+  }
 
-    return (
-        <div className="status_modal">
-            <form onSubmit={handleSubmit}>
-                <div className="status_header">
-                    <h5 className="m-0">Create Post</h5>
-                    <span onClick={() => dispatch({
-                        type: GLOBALTYPES.STATUS, payload: false
-                    })}>
-                        &times;
-                    </span>
-                </div>
+  useEffect(() => {
+    if (status.onEdit) {
+      setContent(status.content)
+      setImages(status.images)
+    }
+  }, [status])
 
-                <div className="status_body">
-                    <textarea name="content" value={content}
-                    placeholder={`${auth.user.username}, what are you thinking?`}
-                    onChange={e => setContent(e.target.value)} />
-
-                    <div className="d-flex">
-                        <div className="flex-fill"></div>
-                        <Icons setContent={setContent} content={content} />
-                    </div>
-
-                    <div className="show_images">
-                        {
-                            images.map((img, index) => (
-                                <div key={index} id="file_img">
-                                    {
-                                        img.camera ? imageShow(img.camera)
-                                        : img.url
-                                            ?<>
-                                                { imageShow(img.url) }
-                                            </>
-                                            :<>
-                                                { imageShow(URL.createObjectURL(img)) }
-                                            </>
-                                    }
-                                    <span onClick={() => deleteImages(index)}>&times;</span>
-                                </div>
-                            ))
-                        }
-                    </div>
-
-                    {
-                        stream && 
-                        <div className="stream position-relative">
-                            <video autoPlay muted ref={videoRef} width="100%" height="100%" />
-                            
-                            <span onClick={handleStopStream}>&times;</span>
-                            <canvas ref={refCanvas} style={{display: 'none'}} />
-                        </div>
-                    }
-
-                    <div className="input_images">
-                        {stream ? (
-                            <span
-                            className="material-icons"
-                            onClick={handleCapture}
-                            title="Capture Photo"
-                            >
-                            photo_camera
-                            </span>
-                        ) : (
-                            <>
-                            <span
-                                className="material-icons"
-                                onClick={handleStream}
-                                title="Open Camera"
-                            >
-                                photo_camera
-                            </span>
-
-                            <div className="file_upload">
-                                <span className="material-icons" title="Upload Image">image</span>
-                                <input
-                                type="file"
-                                name="file"
-                                id="file"
-                                multiple
-                                accept="image/*"
-                                onChange={handleChangeImages}
-                                />
-                            </div>
-                            </>
-                        )}
-                    </div>
-
-                </div>
-
-                <div className="status_footer">
-                    <button className="btn btn-secondary w-100" type="submit">
-                        Post
-                    </button>
-                </div>
-
-            </form>
+  return (
+    <div className="status_modal">
+      <form onSubmit={handleSubmit}>
+        <div className="status_header">
+          <h5 className="m-0">{t('create_post')}</h5>
+          <span onClick={() => dispatch({ type: GLOBALTYPES.STATUS, payload: false })}>&times;</span>
         </div>
-    )
+
+        <div className="status_body">
+          <textarea
+            name="content"
+            value={content}
+            placeholder={t('thinking_placeholder', { username: auth.user.username })}
+            onChange={e => setContent(e.target.value)}
+          />
+
+          <div className="d-flex">
+            <div className="flex-fill"></div>
+            <Icons setContent={setContent} content={content} />
+          </div>
+
+          <div className="show_images">
+            {images.map((img, index) => (
+              <div key={index} id="file_img">
+                {img.camera
+                  ? imageShow(img.camera)
+                  : img.url
+                    ? imageShow(img.url)
+                    : imageShow(URL.createObjectURL(img))
+                }
+                <span onClick={() => deleteImages(index)}>&times;</span>
+              </div>
+            ))}
+          </div>
+
+          {stream && (
+            <div className="stream position-relative">
+              <video autoPlay muted ref={videoRef} width="100%" height="100%" />
+              <span onClick={handleStopStream}>&times;</span>
+              <canvas ref={refCanvas} style={{ display: 'none' }} />
+            </div>
+          )}
+
+          <div className="input_images">
+            {stream ? (
+              <span
+                className="material-icons"
+                onClick={handleCapture}
+                title={t('capture_photo')}
+              >
+                photo_camera
+              </span>
+            ) : (
+              <>
+                <span
+                  className="material-icons"
+                  onClick={handleStream}
+                  title={t('open_camera')}
+                >
+                  photo_camera
+                </span>
+                <div className="file_upload">
+                  <span className="material-icons" title={t('upload_image')}>image</span>
+                  <input
+                    type="file"
+                    name="file"
+                    id="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleChangeImages}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="status_footer">
+          <button className="btn btn-secondary w-100" type="submit">
+            {status.onEdit ? t('update') : t('post')}
+          </button>
+        </div>
+      </form>
+    </div>
+  )
 }
 
 export default StatusModal

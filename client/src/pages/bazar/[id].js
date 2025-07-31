@@ -10,11 +10,13 @@ import {
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import imageCompression from 'browser-image-compression';
 import { GLOBALTYPES } from '../../redux/actions/globalTypes';
+import { useTranslation } from 'react-i18next';
 
 const ItemDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { item, loading, saved } = useSelector(state => state.bazar);
   const { token, user } = useSelector(state => state.auth);
@@ -50,7 +52,7 @@ const ItemDetail = () => {
   }, [item, isOwner]);
 
   const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this item?')) {
+    if (window.confirm(t('confirm_delete'))) {
       dispatch(deleteItem({ id: item._id, auth: { token } }));
       navigate('/bazar');
     }
@@ -98,10 +100,9 @@ const ItemDetail = () => {
     if (!itemData.title || !itemData.price || !itemData.location) {
       return dispatch({
         type: GLOBALTYPES.ALERT,
-        payload: { error: 'Title, price, and location are required.' }
+        payload: { error: t('required_fields') }
       });
     }
-
     const success = await dispatch(updateItem({
       id: item._id,
       data: itemData,
@@ -114,7 +115,7 @@ const ItemDetail = () => {
     }
   };
 
-  if (loading || !item) return <p className="text-center my-5">Loading...</p>;
+  if (loading || !item) return <p className="text-center my-5">{t('loading')}</p>;
 
   return (
     <div className="container py-4">
@@ -129,38 +130,32 @@ const ItemDetail = () => {
           />
         )}
 
-        <p><strong>Price:</strong> ${item.price}</p>
-        <p><strong>Description:</strong><br />{item.description}</p>
-        <p><strong>Location:</strong> {item.location}</p>
+        <p><strong>{t('price')}:</strong> ${item.price}</p>
+        <p><strong>{t('description')}:</strong><br />{item.description}</p>
+        <p><strong>{t('location')}:</strong> {item.location}</p>
         <p>
-          <strong>Seller:</strong>{' '}
-          <Link to={`/bazar/seller/id/${item.seller?._id}`}>
+          <strong>{t('seller')}:</strong>{' '}
+          <Link to={`/bazar/sub/seller/id/${item.seller?._id}`}>
             {item.seller?.username}
           </Link>
         </p>
 
         <div className="d-flex gap-2 mt-4">
-          <button
-            className="btn btn-outline-primary"
-            onClick={handleToggleSave}
-          >
+          <button className="btn btn-outline-primary" onClick={handleToggleSave}>
             <span className="material-icons me-1">
               {isSaved ? 'bookmark' : 'bookmark_border'}
             </span>
-            {isSaved ? 'Saved' : 'Save'}
+            {isSaved ? t('saved') : t('save')}
           </button>
 
           {isOwner ? (
             <>
-              <button
-                className="btn btn-outline-secondary"
-                onClick={() => setModalVisible(true)}
-              >
-                <span className="material-icons me-1">edit</span> Edit
+              <button className="btn btn-outline-secondary" onClick={() => setModalVisible(true)}>
+                <span className="material-icons me-1">edit</span> {t('edit_item')}
               </button>
 
               <button className="btn btn-danger" onClick={handleDelete}>
-                <span className="material-icons me-1">delete</span> Delete
+                <span className="material-icons me-1">delete</span> {t('delete')}
               </button>
             </>
           ) : (
@@ -168,7 +163,7 @@ const ItemDetail = () => {
               className="btn btn-outline-success"
               onClick={() => navigate(`/message/sub/bazar/id/${item.seller._id}`)}
             >
-              <span className="material-icons me-1">chat</span> Message
+              <span className="material-icons me-1">chat</span> {t('message')}
             </button>
           )}
         </div>
@@ -177,27 +172,27 @@ const ItemDetail = () => {
       {modalVisible && (
         <div className="modal-backdrop">
           <div className="modal-content p-4 rounded shadow">
-            <h5>Edit Item</h5>
+            <h5>{t('edit_item')}</h5>
 
-            <input name="title" className="form-control my-2" placeholder="Title" value={itemData.title} onChange={handleChange} />
-            <input name="price" className="form-control my-2" placeholder="Price" type="number" value={itemData.price} onChange={handleChange} />
-            <textarea name="description" className="form-control my-2" placeholder="Description" rows="3" value={itemData.description} onChange={handleChange} />
-            <input name="location" className="form-control my-2" placeholder="Location" value={itemData.location} onChange={handleChange} />
+            <input name="title" className="form-control my-2" placeholder={t('title')} value={itemData.title} onChange={handleChange} />
+            <input name="price" className="form-control my-2" placeholder={t('price')} type="number" value={itemData.price} onChange={handleChange} />
+            <textarea name="description" className="form-control my-2" placeholder={t('description')} rows="3" value={itemData.description} onChange={handleChange} />
+            <input name="location" className="form-control my-2" placeholder={t('location')} value={itemData.location} onChange={handleChange} />
 
             <select name="category" className="form-select my-2" value={itemData.category} onChange={handleChange}>
-              <option value="">Select category</option>
-              <option value="foods">Foods</option>
-              <option value="services">Services</option>
-              <option value="vehicles">Vehicles</option>
-              <option value="furniture">Furniture</option>
-              <option value="electronics">Electronics</option>
-              <option value="etc">Etc</option>
+              <option value="">{t('select_category')}</option>
+              <option value="foods">{t('category_foods')}</option>
+              <option value="services">{t('category_services')}</option>
+              <option value="vehicles">{t('category_vehicles')}</option>
+              <option value="furniture">{t('category_furniture')}</option>
+              <option value="electronics">{t('category_electronics')}</option>
+              <option value="etc">{t('category_etc')}</option>
             </select>
 
-            <label className="form-label mt-3">Images</label>
+            <label className="form-label mt-3">{t('images')}</label>
             <div className="custom-file-upload mt-2">
               <label htmlFor="item-images" className="btn">
-                <span className="material-icons me-1">upload</span> Choose Images
+                <span className="material-icons me-1">upload</span> {t('choose_images')}
               </label>
               <input
                 type="file"
@@ -235,10 +230,10 @@ const ItemDetail = () => {
                 className="btn btn-secondary me-2"
                 onClick={() => setModalVisible(false)}
               >
-                Cancel
+                {t('cancel')}
               </button>
               <button className="btn btn-success" onClick={handleSubmit}>
-                Update
+                {t('update')}
               </button>
             </div>
           </div>

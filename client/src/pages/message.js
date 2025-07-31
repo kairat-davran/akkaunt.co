@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import LeftSide from '../components/message/LeftSide';
+import { useTranslation } from 'react-i18next';
 
 const Message = () => {
+  const { t } = useTranslation();
   const [isLeftOpen, setIsLeftOpen] = useState(() => window.innerWidth <= 768);
 
   useEffect(() => {
@@ -22,7 +24,7 @@ const Message = () => {
         {window.innerWidth > 768 && (
           <div className="d-flex justify-content-center align-items-center flex-column h-100">
             <span className="material-icons" style={{ fontSize: '5rem' }}>forum</span>
-            <h4>Messenger</h4>
+            <h4>{t('messenger')}</h4>
           </div>
         )}
       </div>

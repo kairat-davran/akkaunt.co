@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import imageCompression from 'browser-image-compression';
-
+import { useTranslation } from 'react-i18next';
 import MsgDisplay from '../../components/message/MsgDisplay';
 import UserCard from '../../components/UserCard';
 import Icons from '../../components/Icons';
@@ -18,8 +18,10 @@ import {
 } from '../../redux/actions/bazarMessageAction';
 
 const BazarRightSide = () => {
+  const { t } = useTranslation();
   const auth = useSelector(state => state.auth);
   const bazarMessage = useSelector(state => state.bazarMessage);
+  const socket = useSelector(state => state.communication.socket);
   const dispatch = useDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -152,7 +154,7 @@ const BazarRightSide = () => {
     };
 
     setLoadMedia(false);
-    await dispatch(sendBazarMessage({ msg, auth }));
+    await dispatch(sendBazarMessage({ msg, auth, socket }));
 
     if (refDisplay.current) {
       refDisplay.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -164,9 +166,8 @@ const BazarRightSide = () => {
   };
 
   const handleDeleteConversation = () => {
-    if (window.confirm('Do you want to delete?')) {
-      dispatch(deleteBazarConversation({ auth, id }));
-      navigate('/message/sub/bazar');
+    if (window.confirm(t('confirm_delete'))) {
+      dispatch(deleteBazarConversation({auth, convId: id, navigate }));
     }
   };
 
@@ -203,7 +204,7 @@ const BazarRightSide = () => {
           {loadMedia && (
             <div className="chat_row you_message">
               <div className="text-center py-5">
-                <div className="spinner-border text-primary" role="status" />
+                <div className="text-center text-muted mt-2">{t('sending')}</div>
               </div>
             </div>
           )}
@@ -224,7 +225,7 @@ const BazarRightSide = () => {
       <form className="chat_input" onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Enter your message..."
+          placeholder={t('enter_message')}
           value={text}
           onChange={e => setText(e.target.value)}
         />

@@ -100,8 +100,6 @@ export const refreshToken = () => async (dispatch) => {
       dispatch({ type: GLOBALTYPES.ALERT, payload: {} });
 
     } catch (err) {
-      // localStorage.removeItem("firstLogin");
-
       dispatch({ type: GLOBALTYPES.AUTH, payload: {} });
       dispatch({ type: GLOBALTYPES.THEME, payload: false });
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Avatar from '../Avatar'
 import FollowBtn from '../FollowBtn'
 import { GLOBALTYPES } from '../../redux/actions/globalTypes'
+import { useTranslation } from 'react-i18next'
 
 const Info = ({
   id, auth, profile, dispatch,
@@ -11,6 +12,7 @@ const Info = ({
   setShowSettings
 }) => {
   const [userData, setUserData] = useState([])
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (id === auth.user._id) {
@@ -40,8 +42,11 @@ const Info = ({
               <h2>{user.username}</h2>
 
               {user._id === auth.user._id ? (
-                <button className="btn btn-outline-info" onClick={() => setOnEdit(true)}>
-                  Edit Profile
+                <button
+                  className="btn btn-outline-info"
+                  onClick={() => setOnEdit(true)}
+                >
+                  {t('edit_profile')}
                 </button>
               ) : (
                 <FollowBtn user={user} />
@@ -50,16 +55,19 @@ const Info = ({
               {user._id === auth.user._id && (
                 <span
                   className="settings_icon material-icons"
-                  onClick={() => setShowSettings(true)}>settings</span>
+                  onClick={() => setShowSettings(true)}
+                >
+                  settings
+                </span>
               )}
             </div>
 
             <div className="follow_btn">
               <span className="mr-4" onClick={() => setShowFollowers(true)}>
-                {user.followers.length} Followers
+                {user.followers.length} {t('followers')}
               </span>
               <span className="ml-4" onClick={() => setShowFollowing(true)}>
-                {user.following.length} Following
+                {user.following.length} {t('following')}
               </span>
             </div>
 

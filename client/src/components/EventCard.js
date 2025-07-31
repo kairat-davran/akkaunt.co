@@ -1,7 +1,9 @@
-// components/EventCard.js
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const EventCard = ({ event }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="card shadow-sm mb-4">
       <img
@@ -12,10 +14,10 @@ const EventCard = ({ event }) => {
       <div className="card-body">
         <h4 className="card-title">{event.title}</h4>
         <p className="text-muted">{new Date(event.date).toLocaleString()}</p>
-        <p><strong>Location:</strong> {event.location}</p>
-        <p><strong>Category:</strong> {event.category}</p>
+        <p><strong>{t('location')}:</strong> {event.location}</p>
+        <p><strong>{t(`category_${event.category?.toLowerCase()}`)}:</strong> {t(`category_${event.category?.toLowerCase()}`)}</p>
         <p>{event.description}</p>
-        <p><strong>Organizer:</strong> {event.organizer?.username}</p>
+        <p><strong>{t('organizer')}:</strong> {event.organizer?.username}</p>
       </div>
     </div>
   );

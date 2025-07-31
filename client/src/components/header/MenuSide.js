@@ -4,13 +4,16 @@ import { Link, useLocation } from 'react-router-dom';
 import Avatar from '../Avatar';
 import NotifyModal from '../NotifyModal';
 import SearchSide from './SearchSide';
+import { useTranslation } from 'react-i18next';
 
 const MenuSide = () => {
+  const { t } = useTranslation();
+
   const navLinks = [
-    { label: 'Home', icon: 'home', path: '/' },
-    { label: 'Discover', icon: 'explore', path: '/discover' },
-    { label: 'Events', icon: 'event', path: '/events' },
-    { label: 'Bazar', icon: 'storefront', path: '/bazar' },
+    { label: t('home'), icon: 'home', path: '/' },
+    { label: t('discover'), icon: 'explore', path: '/discover' },
+    { label: t('events'), icon: 'event', path: '/events' },
+    { label: t('bazar'), icon: 'storefront', path: '/bazar' }
   ];
 
   const auth = useSelector(state => state.auth);
@@ -59,12 +62,9 @@ const MenuSide = () => {
 
       {!isMobile && (
         <>
-          <Link
-            to="/message"
-            className={`nav-link ${isActive('/message')}`}
-          >
+          <Link to="/message" className={`nav-link ${isActive('/message')}`}>
             <span className="material-icons">near_me</span>
-            <span className="label">Message</span>
+            <span className="label">{t('message')}</span>
           </Link>
 
           <Link
@@ -77,7 +77,7 @@ const MenuSide = () => {
             className={`nav-link ${openSearch ? 'active' : ''}`}
           >
             <span className="material-icons">search</span>
-            <span className="label">Search</span>
+            <span className="label">{t('search')}</span>
           </Link>
 
           <Link
@@ -96,7 +96,7 @@ const MenuSide = () => {
             >
               favorite
             </span>
-            <span className="label">Notifications</span>
+            <span className="label">{t('notifications')}</span>
             {notify.data.length > 0 && (
               <span className="notify_length">{notify.data.length}</span>
             )}
@@ -106,7 +106,7 @@ const MenuSide = () => {
 
       <Link to={`/profile/id/${auth.user._id}`} className={`nav-link ${isActive(`/profile/id/${auth.user._id}`)}`}>
         <Avatar src={auth.user.avatar} size="medium-avatar" />
-        <span className="label">Profile</span>
+        <span className="label">{t('profile')}</span>
       </Link>
 
       {openSearch && (

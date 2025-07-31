@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react'
-import UserCard from '../UserCard'
-import { useSelector, useDispatch } from 'react-redux'
-import { getDataAPI } from '../../utils/fetchData'
-import { GLOBALTYPES } from '../../redux/actions/globalTypes'
-import { useNavigate, useParams } from 'react-router-dom'
-import { MESS_TYPES, getConversations } from '../../redux/actions/messageAction'
+import React, { useState, useEffect, useRef } from 'react';
+import UserCard from '../UserCard';
+import { useSelector, useDispatch } from 'react-redux';
+import { getDataAPI } from '../../utils/fetchData';
+import { GLOBALTYPES } from '../../redux/actions/globalTypes';
+import { useNavigate, useParams } from 'react-router-dom';
+import { MESS_TYPES, getConversations } from '../../redux/actions/messageAction';
+import { useTranslation } from 'react-i18next';
 
 const LeftSide = ({ setIsLeftOpen }) => {
+  const { t } = useTranslation();
+
   const auth = useSelector(state => state.auth)
   const message = useSelector(state => state.message)
   const online = useSelector(state => state.online)
@@ -89,8 +92,8 @@ const LeftSide = ({ setIsLeftOpen }) => {
             </span>
             <span className="dm-username">
               {id
-                ? message.users.find(u => u._id === id)?.username || 'Chat'
-                : 'Messages'}
+                ? message.users.find(u => u._id === id)?.username || t('chat')
+                : t('messages')}
             </span>
           </div>
         )}
@@ -99,7 +102,7 @@ const LeftSide = ({ setIsLeftOpen }) => {
           <input
             type="text"
             value={search}
-            placeholder="Search users..."
+            placeholder={t('search_users')}
             onChange={e => setSearch(e.target.value)}
           />
           <button type="submit" style={{ display: 'none' }}>Search</button>
@@ -116,8 +119,8 @@ const LeftSide = ({ setIsLeftOpen }) => {
               storefront
             </span>
             <div className="text-truncate">
-              <strong>Bazar Chat</strong>
-              <div className="text-muted small">Marketplace messages</div>
+              <strong>{t('bazar_chat')}</strong>
+              <div className="text-muted small">{t('bazar_messages')}</div>
             </div>
           </div>
         </div>

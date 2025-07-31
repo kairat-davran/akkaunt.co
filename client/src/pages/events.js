@@ -4,31 +4,31 @@ import { getEvents, createEvent, updateEvent, deleteEvent } from '../redux/actio
 import { GLOBALTYPES } from '../redux/actions/globalTypes';
 import imageCompression from 'browser-image-compression';
 import { useNavigate } from 'react-router-dom';
-
-const tabs = [
-  { key: 'today', icon: 'today', label: 'Today' },
-  { key: 'upcoming', icon: 'update', label: 'Upcoming' },
-  { key: 'past', icon: 'history', label: 'Past' },
-  { key: 'mine', icon: 'person', label: 'My Events' }
-];
-
-const initialEventState = {
-  title: '',
-  description: '',
-  date: '',
-  location: '',
-  category: 'Social',
-};
+import { useTranslation } from 'react-i18next';
 
 const EventsScreen = () => {
+  const { t } = useTranslation();
+
+  const tabs = [
+    { key: 'today', icon: 'today', label: t('event_tab_today') },
+    { key: 'upcoming', icon: 'update', label: t('event_tab_upcoming') },
+    { key: 'past', icon: 'history', label: t('event_tab_past') },
+    { key: 'mine', icon: 'person', label: t('event_tab_mine') }
+  ];
+
   const [activeTab, setActiveTab] = useState('today');
   const [modalVisible, setModalVisible] = useState(false);
-  const [eventData, setEventData] = useState(initialEventState);
+  const [eventData, setEventData] = useState({
+    title: '',
+    description: '',
+    date: '',
+    location: '',
+    category: 'Social'
+  });
   const [images, setImages] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
   const navigate = useNavigate();
-
   const now = new Date();
   const dispatch = useDispatch();
   const events = useSelector(state => state.events.events);
@@ -70,14 +70,14 @@ const EventsScreen = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const { title, description, date, location } = eventData;
+
     if (!title || !description || !date || !location) {
-      return dispatch({ type: GLOBALTYPES.ALERT, payload: { error: "All fields are required." } });
+      return dispatch({ type: GLOBALTYPES.ALERT, payload: { error: t('event_required') } });
     }
 
     if (images.length === 0) {
-      return dispatch({ type: GLOBALTYPES.ALERT, payload: { error: "Please add at least one image." } });
+      return dispatch({ type: GLOBALTYPES.ALERT, payload: { error: t('event_image_required') } });
     }
 
     const payload = { ...eventData };
@@ -89,7 +89,7 @@ const EventsScreen = () => {
     }
 
     setModalVisible(false);
-    setEventData(initialEventState);
+    setEventData({ title: '', description: '', date: '', location: '', category: 'Social' });
     setImages([]);
     setEditingId(null);
   };
@@ -110,7 +110,7 @@ const EventsScreen = () => {
   };
 
   const handleDelete = id => {
-    if (window.confirm('Are you sure you want to delete this event?')) {
+    if (window.confirm(t('confirm_delete_event'))) {
       dispatch(deleteEvent({ id, auth }));
     }
   };
@@ -127,9 +127,9 @@ const EventsScreen = () => {
   return (
     <div className="events-screen container py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h3 className="text-capitalize fw-semibold">{activeTab} Events</h3>
+        <h3 className="text-capitalize fw-semibold">{t(`event_tab_${activeTab}`)} {t('events')}</h3>
         <button className="btn btn-primary" onClick={() => setModalVisible(true)}>
-          <span className="material-icons me-2">add_circle</span> Create Event
+          <span className="material-icons me-2">add_circle</span> {t('create_event')}
         </button>
       </div>
 
@@ -148,7 +148,7 @@ const EventsScreen = () => {
       </ul>
 
       {filteredEvents.length === 0 ? (
-        <p className="text-muted">No events to show.</p>
+        <p className="text-muted">{t('no_events')}</p>
       ) : (
         <div className="row">
           {filteredEvents.map(event => (
@@ -171,15 +171,21 @@ const EventsScreen = () => {
                   <p className="card-text">{event.location}</p>
                   <div className="d-flex justify-content-between align-items-center">
                     <button className="btn btn-outline-primary">
-                      <span className="material-icons me-1">favorite</span> Interested
+                      <span className="material-icons me-1">favorite</span> {t('interested')}
                     </button>
                     {event.organizer._id === auth.user._id && (
                       <div className="event-buttons">
-                        <button className="btn btn-sm btn-outline-secondary me-2" onClick={() => handleEdit(event)}>
-                          <span className="material-icons me-1">edit</span> Edit
+                        <button className="btn btn-sm btn-outline-secondary me-2" onClick={(e) => {
+                          e.stopPropagation()
+                          handleEdit(event)
+                          }}>
+                          <span className="material-icons me-1">edit</span> {t('edit')}
                         </button>
-                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(event._id)}>
-                          <span className="material-icons me-1">delete</span> Delete
+                        <button className="btn btn-sm btn-outline-danger" onClick={(e) => {
+                          e.stopPropagation()
+                          handleDelete(event._id)}
+                          }>
+                          <span className="material-icons me-1">delete</span> {t('delete')}
                         </button>
                       </div>
                     )}
@@ -194,29 +200,29 @@ const EventsScreen = () => {
       {modalVisible && (
         <div className="modal-backdrop">
           <div className="modal-content p-4 rounded shadow">
-            <h5>{editingId ? 'Edit Event' : 'Create Event'}</h5>
+            <h5>{editingId ? t('edit_event') : t('create_event')}</h5>
 
-            <input type="text" name="title" className="form-control my-2" placeholder="Event Title"
-              value={eventData.title} onChange={handleChange} />
+            <input type="text" name="title" className="form-control my-2"
+              placeholder={t('event_title')} value={eventData.title} onChange={handleChange} />
 
-            <textarea name="description" className="form-control my-2" placeholder="Event Description"
-              value={eventData.description} onChange={handleChange} />
+            <textarea name="description" className="form-control my-2"
+              placeholder={t('event_description')} value={eventData.description} onChange={handleChange} />
 
-            <input type="text" name="location" className="form-control my-2" placeholder="Event Location"
-              value={eventData.location} onChange={handleChange} />
+            <input type="text" name="location" className="form-control my-2"
+              placeholder={t('event_location')} value={eventData.location} onChange={handleChange} />
 
             <input type="datetime-local" name="date" className="form-control my-2"
               value={eventData.date || ''} onChange={handleChange} />
 
             <select name="category" className="form-select my-2"
               value={eventData.category} onChange={handleChange}>
-              <option value="Social">Social & Community</option>
-              <option value="Education">Education & Career</option>
-              <option value="Wellness">Wellness & Lifestyle</option>
+              <option value="Social">{t('category_social')}</option>
+              <option value="Education">{t('category_education')}</option>
+              <option value="Wellness">{t('category_wellness')}</option>
             </select>
 
             <div className="form-group mt-3">
-              <label>Event Images</label>
+              <label>{t('event_images')}</label>
               <div className="show_images d-flex flex-wrap">
                 {images.map((img, i) => (
                   <div key={i} className="position-relative m-2">
@@ -236,7 +242,7 @@ const EventsScreen = () => {
               
               <div className="custom-file-upload mt-2">
                 <label htmlFor="event-images" className="btn">
-                  <span className="material-icons me-1">upload</span> Choose Images
+                  <span className="material-icons me-1">upload</span> {t('choose_images')}
                 </label>
                 <input
                   type="file"
@@ -251,9 +257,11 @@ const EventsScreen = () => {
             </div>
 
             <div className="d-flex justify-content-end mt-3">
-              <button className="btn btn-secondary me-2" onClick={() => setModalVisible(false)}>Cancel</button>
+              <button className="btn btn-secondary me-2" onClick={() => setModalVisible(false)}>
+                {t('cancel')}
+              </button>
               <button className="btn btn-success" onClick={handleSubmit}>
-                {editingId ? 'Update' : 'Create'}
+                {editingId ? t('update') : t('create')}
               </button>
             </div>
           </div>

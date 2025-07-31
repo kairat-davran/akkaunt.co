@@ -61,6 +61,7 @@ img {
 }
 
 .material-icons {
+  cursor: pointer;
   font-size: 24px;
   margin: 0 5px;
 }
@@ -345,6 +346,9 @@ hr {
 .dark .settings_box {
     background-color: #2f3e4d;
     color: #f0f0f0;
+}
+.dark .settings_item:hover {
+  background: #3b4758;
 }
 .dark .edit_profile form {
     background-color: #2f3e4d;

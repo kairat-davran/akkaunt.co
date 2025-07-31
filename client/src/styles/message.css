@@ -76,7 +76,7 @@
 .chat_input button{
     border: none;
     outline: none;
-    background: white;
+    background-color: transparent !important;
 }
 
 .chat_input .file_upload{
@@ -84,9 +84,12 @@
     overflow: hidden;
     margin: 0 10px;
 }
+.chat_input .file_upload span{
+    margin: 10px 10px;
+}
 .chat_input .file_upload #file{
     position: absolute;
-    top:0;
+    top: 0;
     left: 0;
     opacity: 0;
 }

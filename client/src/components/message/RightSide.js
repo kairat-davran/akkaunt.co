@@ -7,7 +7,8 @@ import MsgDisplay from './MsgDisplay'
 import Icons from '../Icons'
 import { GLOBALTYPES } from '../../redux/actions/globalTypes'
 import { imageShow, videoShow } from '../../utils/mediaShow'
-import { imageUpload } from '../../utils/imageUpload'
+import { imageUpload } from '../../utils/imageUpload';
+import { useTranslation } from 'react-i18next';
 import {
   addMessage,
   getMessages,
@@ -17,6 +18,7 @@ import {
 } from '../../redux/actions/messageAction'
 
 const RightSide = () => {
+  const { t } = useTranslation();
   const auth = useSelector(state => state.auth)
   const message = useSelector(state => state.message)
   const socket = useSelector(state => state.communication.socket)
@@ -167,7 +169,7 @@ const RightSide = () => {
   }, [isLoadMore, dispatch, auth, id, page, result])
 
   const handleDeleteConversation = () => {
-    if (window.confirm('Do you want to delete?')) {
+    if (window.confirm(t('confirm_delete_conversation'))) {
       dispatch(deleteConversation({ auth, id }))
       navigate('/message')
     }
@@ -229,7 +231,7 @@ const RightSide = () => {
 
       <div className="chat_container" style={{ height: media.length > 0 ? 'calc(100% - 180px)' : '' }}>
         <div className="chat_display" ref={refDisplay}>
-          <button style={{ marginTop: '-25px', opacity: 0 }} ref={pageEnd}>Load more</button>
+          <button style={{ marginTop: '-25px', opacity: 0 }} ref={pageEnd}>{t('load_more')}</button>
 
           {data.map((msg, index) => (
             <div key={index}>
@@ -269,7 +271,7 @@ const RightSide = () => {
       <form className="chat_input" onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Enter your message..."
+          placeholder={t('enter_message')}
           value={text}
           onChange={e => setText(e.target.value)}
         />

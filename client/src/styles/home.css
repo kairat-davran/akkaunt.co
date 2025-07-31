@@ -35,10 +35,13 @@
 .posts .card_header .card_name{
     transform: translateY(3px);
 }
-.posts .card_header .dropdown-menu{
+.posts .card_header .dropdown-menu {
     position: absolute;
     right: 0;
     left: inherit;
+    width: max-content;
+    white-space: nowrap;
+    padding: 5px 10px;
 }
 .posts .card_header .dropdown-item{
     display: flex;

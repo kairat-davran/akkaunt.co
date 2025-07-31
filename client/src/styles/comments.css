@@ -42,6 +42,7 @@
     position: absolute;
     right: 0;
     left: inherit;
+    width: max-content;
 }
 .comment_card .comment_content .dropdown-item{
     display: flex;

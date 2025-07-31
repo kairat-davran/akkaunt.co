@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { startBazarConversation } from '../../redux/actions/bazarMessageAction'; // adjust path as needed
+import { startBazarConversation } from '../../redux/actions/bazarMessageAction';
 
 const ItemCard = ({ item, isOwner, isSaved, onEdit, onToggleSave }) => {
   const navigate = useNavigate();

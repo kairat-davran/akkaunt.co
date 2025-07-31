@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getBazarConversations } from '../../redux/actions/bazarMessageAction';
 import UserCard from '../UserCard';
 
@@ -8,6 +9,7 @@ const BazarLeftSide = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { t } = useTranslation();
 
   const { users = [] } = useSelector(state => state.bazarMessage);
 
@@ -22,13 +24,13 @@ const BazarLeftSide = () => {
           <span className="material-icons" onClick={() => navigate('/message')}>
             arrow_back
           </span>
-          <span className="dm-username">Marketplace</span>
+          <span className="dm-username">{t('bazar')}</span>
         </div>
       </div>
 
       <div className="message_chat_list">
         {users.length === 0 && (
-          <p className="text-center text-muted mt-4">No bazar messages yet</p>
+          <p className="text-center text-muted mt-4">{t('no_bazar_messages')}</p>
         )}
 
         {users.map(conv => (

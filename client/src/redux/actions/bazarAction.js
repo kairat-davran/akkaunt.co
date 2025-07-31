@@ -20,7 +20,6 @@ export const BAZAR_TYPES = {
   SET_SAVED_ITEMS: 'SET_SAVED_BAZAR_ITEMS',
 };
 
-// Create Item
 export const createItem = ({ data, images, auth }) => async (dispatch) => {
   let media = [];
 
@@ -37,7 +36,7 @@ export const createItem = ({ data, images, auth }) => async (dispatch) => {
     dispatch({ type: BAZAR_TYPES.CREATE_ITEM, payload: res.data.newItem });
     dispatch({ type: GLOBALTYPES.ALERT, payload: { success: res.data.msg } });
 
-    return true; // ✅ success
+    return true;
   } catch (err) {
     dispatch({
       type: GLOBALTYPES.ALERT,
@@ -45,16 +44,14 @@ export const createItem = ({ data, images, auth }) => async (dispatch) => {
         error: err.response?.data?.msg || 'Item creation failed',
       },
     });
-    return false; // ❌ failure
+    return false;
   }
 };
 
-// Get Items (with optional search and category)
 export const getItems = (token, search = '', category = '') => async (dispatch) => {
   try {
     dispatch({ type: BAZAR_TYPES.LOADING_ITEM, payload: true });
 
-    // Build query string
     const query = new URLSearchParams();
     if (search.trim()) query.append('search', search.trim());
     if (category && category !== 'All') query.append('category', category);
@@ -108,7 +105,7 @@ export const getItemById = (id, token) => async (dispatch) => {
 
     dispatch({
       type: BAZAR_TYPES.GET_ITEM_DETAIL,
-      payload: res.data.item, // make sure backend returns { item }
+      payload: res.data.item,
     });
 
     dispatch({ type: BAZAR_TYPES.LOADING_ITEM, payload: false });
@@ -122,23 +119,23 @@ export const getItemById = (id, token) => async (dispatch) => {
   }
 };
 
-// Update Item
-export const updateItem = ({ data, images, auth }) => async (dispatch) => {
+export const updateItem = ({ id, data, images, auth }) => async (dispatch) => {
   let media = [];
-  
   try {
 
     if (images.length > 0) {
       media = await imageUpload(images, auth.token);
     }
 
-    const res = await patchDataAPI(`bazar/${data.id}`, {
+    const res = await patchDataAPI(`bazar/${id}`, {
       ...data,
       images: media.filter(Boolean),
     }, auth.token);
 
     dispatch({ type: BAZAR_TYPES.UPDATE_ITEM, payload: res.data.updatedItem });
     dispatch({ type: GLOBALTYPES.ALERT, payload: { success: res.data.msg } });
+
+    return true;
   } catch (err) {
     dispatch({
       type: GLOBALTYPES.ALERT,
@@ -146,10 +143,10 @@ export const updateItem = ({ data, images, auth }) => async (dispatch) => {
         error: err.response?.data?.msg || 'Update failed',
       },
     });
+    return false;
   }
 };
 
-// Delete Item
 export const deleteItem = ({ id, auth }) => async (dispatch) => {
   try {
     await deleteDataAPI(`bazar/${id}`, auth.token);
@@ -164,7 +161,6 @@ export const deleteItem = ({ id, auth }) => async (dispatch) => {
   }
 };
 
-// Save Item
 export const saveItem = (item, auth) => async (dispatch) => {
   try {
     await patchDataAPI(`bazar/save/${item._id}`, null, auth.token);
@@ -179,7 +175,6 @@ export const saveItem = (item, auth) => async (dispatch) => {
   }
 };
 
-// Unsave Item
 export const unsaveItem = (item, auth) => async (dispatch) => {
   try {
     await patchDataAPI(`bazar/unsave/${item._id}`, null, auth.token);
@@ -194,7 +189,6 @@ export const unsaveItem = (item, auth) => async (dispatch) => {
   }
 };
 
-// Get all saved items
 export const getSavedItems = (token) => async (dispatch) => {
   try {
     const res = await getDataAPI('bazar/saved', token);

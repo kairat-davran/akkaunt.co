@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { POST_TYPES } from './redux/actions/postAction'
 import { GLOBALTYPES } from './redux/actions/globalTypes'
 import { NOTIFY_TYPES } from './redux/actions/notifyAction'
+import { BAZAR_MSG_TYPES } from './redux/actions/bazarMessageAction'
 
 import audiobell from './audio/got-it-done-613.mp3'
 import { MESS_TYPES } from './redux/actions/messageAction'
@@ -130,6 +131,24 @@ const SocketClient = () => {
 
         return () => socket.off('addMessageToClient')
     },[socket, dispatch])
+
+    // Bazar Message
+    useEffect(() => {
+        socket.on('addBazarMessageToClient', msg => {
+            dispatch({ type: BAZAR_MSG_TYPES.ADD_BAZAR_MESSAGE, payload: msg });
+
+            dispatch({
+            type: BAZAR_MSG_TYPES.ADD_BAZAR_CONVERSATION,
+            payload: {
+                ...msg.user,
+                text: msg.text,
+                media: msg.media,
+                _id: msg.conversation
+            }});
+        });
+
+        return () => socket.off('addBazarMessageToClient');
+    }, [socket, dispatch]);
 
     // Check User Online / Offline
     useEffect(() => {

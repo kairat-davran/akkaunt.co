@@ -1,6 +1,8 @@
-import React from 'react'
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const LoadMoreBtn = ({ result, page, load, handleLoadMore }) => {
+  const { t } = useTranslation();
   const showButton = result >= 9;
 
   return (
@@ -10,11 +12,11 @@ const LoadMoreBtn = ({ result, page, load, handleLoadMore }) => {
           className="btn btn-dark mx-auto d-block my-3 px-4 py-2"
           onClick={handleLoadMore}
         >
-          Load More
+          {t('load_more')}
         </button>
       )}
     </>
-  )
-}
+  );
+};
 
-export default LoadMoreBtn
+export default LoadMoreBtn;
