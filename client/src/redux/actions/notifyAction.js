@@ -36,15 +36,24 @@ export const removeNotify = ({msg, auth, socket}) => async (dispatch) => {
     }
 }
 
-export const getNotifies = (token) => async (dispatch) => {
-    try {
-        const res = await getDataAPI('notifies', token)
-        
-        dispatch({ type: NOTIFY_TYPES.GET_NOTIFIES, payload: res.data })
-    } catch (err) {
-        dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})
-    }
-}
+export const getNotifies = (token, page = 1, limit = 10) => async (dispatch) => {
+  try {
+    const res = await getDataAPI(`notifies?page=${page}&limit=${limit}`, token);
+    dispatch({
+      type: NOTIFY_TYPES.GET_NOTIFIES,
+      payload: {
+        data: res.data.notifies,
+        total: res.data.total,
+        page
+      }
+    });
+  } catch (err) {
+    dispatch({
+      type: GLOBALTYPES.ALERT,
+      payload: { error: err.response?.data?.msg }
+    });
+  }
+};
 
 
 export const isReadNotify = ({msg, auth}) => async (dispatch) => {

@@ -30,7 +30,12 @@ export const createItem = ({ data, images, auth }) => async (dispatch) => {
       media = await imageUpload(images, auth.token);
     }
 
-    const payload = { ...data, images: media };
+    const payload = {
+      ...data,
+      location: data.location,
+      images: media
+    };
+
     const res = await postDataAPI('bazar', payload, auth.token);
 
     dispatch({ type: BAZAR_TYPES.CREATE_ITEM, payload: res.data.newItem });
@@ -48,16 +53,20 @@ export const createItem = ({ data, images, auth }) => async (dispatch) => {
   }
 };
 
-export const getItems = (token, search = '', category = '') => async (dispatch) => {
+export const getItems = (token, search = '', category = '', userLocation = null, radius = 50000) => async (dispatch) => {
   try {
     dispatch({ type: BAZAR_TYPES.LOADING_ITEM, payload: true });
 
     const query = new URLSearchParams();
     if (search.trim()) query.append('search', search.trim());
     if (category && category !== 'All') query.append('category', category);
+    if (userLocation) {
+      query.append('lat', userLocation.lat);
+      query.append('lng', userLocation.lng);
+      query.append('radius', radius);
+    }
 
     const url = query.toString() ? `bazar?${query.toString()}` : 'bazar';
-
     const res = await getDataAPI(url, token);
 
     dispatch({ type: BAZAR_TYPES.GET_ITEMS, payload: res.data });
@@ -120,17 +129,24 @@ export const getItemById = (id, token) => async (dispatch) => {
 };
 
 export const updateItem = ({ id, data, images, auth }) => async (dispatch) => {
-  let media = [];
   try {
+    const imgNew = images.filter(img => !img.url);
+    const imgOld = images.filter(img => img.url);
 
-    if (images.length > 0) {
-      media = await imageUpload(images, auth.token);
+    let media = [];
+
+    if (imgNew.length > 0) {
+      media = await imageUpload(imgNew, auth.token);
     }
 
-    const res = await patchDataAPI(`bazar/${id}`, {
-      ...data,
-      images: media.filter(Boolean),
-    }, auth.token);
+    const res = await patchDataAPI(
+      `bazar/${id}`,
+      {
+        ...data,
+        images: [...imgOld, ...media],
+      },
+      auth.token
+    );
 
     dispatch({ type: BAZAR_TYPES.UPDATE_ITEM, payload: res.data.updatedItem });
     dispatch({ type: GLOBALTYPES.ALERT, payload: { success: res.data.msg } });

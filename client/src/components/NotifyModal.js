@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { NOTIFY_TYPES, deleteAllNotifies, isReadNotify } from '../redux/actions/notifyAction';
+import { NOTIFY_TYPES, getNotifies, isReadNotify } from '../redux/actions/notifyAction';
 import Avatar from './Avatar';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,8 @@ const NotifyModal = ({ onClose = () => {} }) => {
   const notify = useSelector(state => state.notify);
   const dispatch = useDispatch();
 
+  const scrollRef = useRef();
+
   const handleIsRead = (msg) => {
     dispatch(isReadNotify({ msg, auth }));
   };
@@ -21,18 +23,36 @@ const NotifyModal = ({ onClose = () => {} }) => {
     dispatch({ type: NOTIFY_TYPES.UPDATE_SOUND, payload: !notify.sound });
   };
 
-  const handleDeleteAll = () => {
-    const newArr = notify.data.filter(item => item.isRead === false);
-    if (newArr.length === 0) return dispatch(deleteAllNotifies(auth.token));
-
-    if (window.confirm(t('confirm_delete_all', { count: newArr.length }))) {
-      return dispatch(deleteAllNotifies(auth.token));
+  useEffect(() => {
+    if (notify.page === 1 && notify.data.length === 0) {
+      dispatch(getNotifies(auth.token, 1));
     }
-  };
+  }, [dispatch, auth.token, notify.page, notify.data.length]);
+
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    if (
+      el.scrollTop + el.clientHeight >= el.scrollHeight - 300 &&
+      notify.data.length < notify.total
+    ) {
+      dispatch(getNotifies(auth.token, notify.page + 1));
+    }
+  }, [dispatch, auth.token, notify.data.length, notify.page, notify.total]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.addEventListener('scroll', handleScroll);
+    return () => el?.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   return (
     <div style={{ minWidth: '300px' }}>
-      <div className="d-flex align-items-center justify-content-between px-3 mb-2" style={{ position: 'relative' }}>
+      <div
+        className="d-flex align-items-center justify-content-between px-3 mb-2"
+        style={{ position: 'relative' }}
+      >
         <div style={{ width: '32px' }}>
           {typeof onClose === 'function' && window.innerWidth <= 768 && (
             <span className="dm-back-btn" onClick={onClose}>
@@ -61,7 +81,10 @@ const NotifyModal = ({ onClose = () => {} }) => {
       </div>
       <hr className="mt-0" />
 
-      <div style={{ height: 'calc(100vh - 130px)', overflow: 'auto' }}>
+      <div
+        ref={scrollRef}
+        style={{ height: 'calc(100vh - 130px)', overflow: 'auto' }}
+      >
         {notify.data.length === 0 ? (
           <div className="text-center text-muted" style={{ padding: '40px 10px' }}>
             <span className="material-icons" style={{ fontSize: '80px', opacity: 0.5 }}>
@@ -74,7 +97,7 @@ const NotifyModal = ({ onClose = () => {} }) => {
           </div>
         ) : (
           notify.data.map((msg, index) => (
-            <div key={index} className="px-2 mb-3">
+            <div key={msg._id || index} className="px-2 mb-3">
               <Link
                 to={`${msg.url}`}
                 className="d-flex text-dark align-items-center"
@@ -106,11 +129,6 @@ const NotifyModal = ({ onClose = () => {} }) => {
             </div>
           ))
         )}
-      </div>
-
-      <hr className="my-1" />
-      <div className="text-right text-danger mr-2" style={{ cursor: 'pointer' }} onClick={handleDeleteAll}>
-        {t('delete_all')}
       </div>
     </div>
   );

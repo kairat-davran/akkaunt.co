@@ -254,19 +254,21 @@ const postCtrl = {
 
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
       const now = new Date();
 
-      const seenIds = seen.map(p => p.postId || p).filter(Boolean);
+      const seenCutoff = new Date(now.getTime() - 1000 * 60 * 60);
+      const filteredSeenIds = seen
+        .filter(p => p.seenAt < seenCutoff)
+        .map(p => p.postId);
 
       const excludedUsers = [...following, userId];
 
-      // 🔥 Prioritize:
-      // 1. New (7 days), 2. Popular, 3. Older
       const posts = await Posts.aggregate([
         {
           $match: {
             user: { $nin: excludedUsers },
-            _id: { $nin: seenIds }
+            _id: { $nin: filteredSeenIds }
           }
         },
         {
@@ -274,7 +276,7 @@ const postCtrl = {
             ageScore: {
               $divide: [
                 { $subtract: [now, "$createdAt"] },
-                1000 * 60 * 60 * 24 // convert to days
+                1000 * 60 * 60 * 24
               ]
             },
             engagementScore: {
@@ -289,14 +291,15 @@ const postCtrl = {
           $addFields: {
             sortScore: {
               $cond: [
-                { $lte: ["$ageScore", 7] }, // New = high priority
-                { $add: [10000, "$engagementScore"] }, // boost new
-                { $subtract: [5000, "$engagementScore"] } // older = fallback
+                { $lte: ["$ageScore", 7] },
+                { $add: [10000, "$engagementScore"] },
+                { $subtract: [5000, "$engagementScore"] }
               ]
             }
           }
         },
         { $sort: { sortScore: -1, createdAt: -1 } },
+        { $skip: skip },
         { $limit: limit }
       ]);
 
@@ -324,19 +327,30 @@ const postCtrl = {
         result: fullPosts.length,
         posts: fullPosts
       });
+
     } catch (err) {
       console.error('Discover Error:', err.message);
       return res.status(500).json({ msg: err.message });
     }
   },
 
-  resetDiscover: async (req, res) => {
+  batchSeenDiscover: async (req, res) => {
     try {
-      await userModel.findByIdAndUpdate(req.user._id, {
-        $set: { seenDiscoverPosts: [] }
+      const { postIds } = req.body;
+      if (!Array.isArray(postIds)) return res.status(400).json({ msg: 'Invalid data' });
+
+      const seenDocs = postIds.map(id => ({
+        postId: id,
+        seenAt: new Date()
+      }));
+
+      await Users.findByIdAndUpdate(req.user._id, {
+        $push: {
+          seenDiscoverPosts: { $each: seenDocs, $position: 0, $slice: 1000 }
+        }
       });
 
-      return res.json({ msg: 'Discover feed reset.' });
+      res.json({ msg: 'Seen posts updated' });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }

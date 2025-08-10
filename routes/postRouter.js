@@ -17,7 +17,7 @@ router.patch('/post/:id/unlike', auth, postCtrl.unLikePost)
 router.get('/user_posts/:id', auth, postCtrl.getUserPosts)
 
 router.get('/post_discover', auth, postCtrl.getPostDiscover)
-router.patch('/reset_discover', auth, postCtrl.resetDiscover)
+router.post('/seen_discover_batch', auth, postCtrl.batchSeenDiscover);
 
 router.patch('/savePost/:id', auth, postCtrl.savePost)
 

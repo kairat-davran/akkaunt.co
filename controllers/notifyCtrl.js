@@ -38,12 +38,23 @@ const notifyCtrl = {
     },
     getNotifies: async (req, res) => {
         try {
-            const notifies = await Notifies.find({recipients: req.user._id})
-            .sort('-createdAt').populate('user', 'avatar username')
-            
-            return res.json({notifies})
+            const limit = parseInt(req.query.limit) || 10;
+            const page = parseInt(req.query.page) || 1;
+
+            const notifies = await Notifies.find({ recipients: req.user._id })
+            .sort('-createdAt')
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .populate('user', 'avatar username');
+
+            const total = await Notifies.countDocuments({ recipients: req.user._id });
+
+            return res.json({
+                notifies,
+                total
+            });
         } catch (err) {
-            return res.status(500).json({msg: err.message})
+            return res.status(500).json({ msg: err.message });
         }
     },
     isReadNotify: async (req, res) => {

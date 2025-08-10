@@ -163,12 +163,11 @@ export const follow = ({users, user, auth, socket}) => async (dispatch) => {
         const res = await patchDataAPI(`user/${user._id}/follow`, null, auth.token)
         socket.emit('follow', res.data.newUser)
 
-        // Notify
         const msg = {
             id: auth.user._id,
             text: 'has started to follow you.',
             recipients: [newUser._id],
-            url: `/profile/${auth.user._id}`,
+            url: `/profile/id/${auth.user._id}`,
         }
 
         dispatch(createNotify({msg, auth, socket}))

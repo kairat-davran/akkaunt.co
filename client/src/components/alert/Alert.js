@@ -3,8 +3,10 @@ import Loading from './Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import Toast from './Toast';
 import { GLOBALTYPES } from '../../redux/actions/globalTypes';
+import { useTranslation } from 'react-i18next';
 
 function Alert() {
+  const { t } = useTranslation();
   const alert = useSelector(state => state.alert);
   const auth = useSelector(state => state.auth);
   const dispatch = useDispatch();
@@ -17,7 +19,7 @@ function Alert() {
 
       {alert.error && (
         <Toast
-          msg={{ title: 'Error', body: alert.error }}
+          msg={{ title: t('errorToast'), body: alert.error }}
           handleShow={() => dispatch({ type: GLOBALTYPES.ALERT, payload: {} })}
           bgColor="bg-danger"
         />
@@ -25,7 +27,7 @@ function Alert() {
 
       {alert.success && (
         <Toast
-          msg={{ title: 'Success', body: alert.success }}
+          msg={{ title: t('success'), body: alert.success }}
           handleShow={() => dispatch({ type: GLOBALTYPES.ALERT, payload: {} })}
           bgColor="bg-success"
         />

@@ -1,10 +1,9 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-// import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Alert from './components/alert/Alert';
-// import Loading from './components/alert/Loading';
+import Loading from './components/alert/Loading';
 
 import { refreshToken } from './redux/actions/authAction';
 import { getPosts } from './redux/actions/postAction';
@@ -21,13 +20,12 @@ import AppRouter from './customRouter/AppRouter';
 function App() {
   const auth = useSelector(state => state.auth);
   const dispatch = useDispatch();
-  // const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(refreshToken());
-    // dispatch(refreshToken()).finally(() => {
-    //   setIsAuthLoading(false);
-    // });
+    dispatch(refreshToken()).finally(() => {
+      setIsAuthLoading(false);
+    });
 
     const socket = io(BASE_URL, {
       transports: ['websocket', 'polling'],
@@ -41,7 +39,7 @@ function App() {
     if (auth.token) {
       dispatch(getPosts(auth.token));
       dispatch(getSuggestions(auth.token));
-      dispatch(getNotifies(auth.token));
+      dispatch(getNotifies(auth.token, 1));
     }
   }, [dispatch, auth.token]);
 
@@ -50,7 +48,7 @@ function App() {
     dispatch(setPeer(newPeer));
   }, [dispatch]);
 
-  // if (isAuthLoading) return <Loading />;
+  if (isAuthLoading) return <Loading />;
 
   return (
     <Router>

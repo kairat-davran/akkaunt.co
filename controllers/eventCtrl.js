@@ -30,14 +30,19 @@ const eventCtrl = {
     try {
       const { title, description, date, location, images, category } = req.body;
 
-      if (!title || !date || !location)
-        return res.status(400).json({ msg: "Required fields are missing." });
+      if (!title || !date || !location?.coordinates || !Array.isArray(location.coordinates)) {
+        return res.status(400).json({ msg: "Required fields are missing or invalid location." });
+      }
 
       const newEvent = new Events({
         title,
         description,
         date,
-        location,
+        location: {
+          type: 'Point',
+          coordinates: location.coordinates,
+          display: location.display || ''
+        },
         images,
         category,
         organizer: req.user._id
@@ -60,8 +65,26 @@ const eventCtrl = {
 
   getEvents: async (req, res) => {
     try {
-      const features = new APIfeatures(Events.find({}), req.query).paginating();
-      const events = await features.query.sort('-createdAt')
+      const { lat, lng, radius } = req.query;
+
+      let filter = {};
+      if (lat && lng && radius) {
+        filter = {
+          location: {
+            $nearSphere: {
+              $geometry: {
+                type: "Point",
+                coordinates: [parseFloat(lng), parseFloat(lat)]
+              },
+              $maxDistance: parseInt(radius, 10)
+            }
+          }
+        };
+      }
+
+      const features = new APIfeatures(Events.find(filter), req.query).paginating();
+      const events = await features.query
+        .sort('-createdAt')
         .populate("organizer", "avatar username fullname");
 
       res.json({
@@ -98,7 +121,6 @@ const eventCtrl = {
       if (!event || event.organizer.toString() !== req.user._id.toString())
         return res.status(403).json({ msg: "Unauthorized or event not found." });
 
-      // Compare image URLs to identify removed ones
       const oldUrls = event.images.map(img => img.url);
       const newUrls = images.map(img => img.url);
       const removedUrls = oldUrls.filter(url => !newUrls.includes(url));
@@ -120,6 +142,11 @@ const eventCtrl = {
       const updatedEvent = await Events.findOneAndUpdate(
         { _id: req.params.id, organizer: req.user._id },
         { title, description, date, location, images, category },
+        { title, description, date, location: {
+          type: 'Point', coordinates: location.coordinates, display: location.display || '' },
+          images,
+          category
+        },
         { new: true }
       ).populate("organizer", "avatar username fullname");
 

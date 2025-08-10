@@ -1,4 +1,9 @@
 {
+  "// Main": "",
+  "errorToast": "Ката",
+  "success": "Ийгиликтүү",
+  "image_compression_failed": "Сүрөттү кичийретүү ишке ашкан жок.",
+
   "// Home": "",
   "no_post": "Пост жок",
   "edit_post": "Постту түзөтүү",
@@ -72,6 +77,10 @@
   "update": "Жаңыртуу",
   "no_items_found": "Сиздин издөө боюнча товарлар табылган жок.",
   "required_fields": "Аталышы, баасы жана жайгашкан жери талап кылынат.",
+  "adjust_location_radius": "Настройка радиуса поиска",
+  "search_radius": "Радиус поиска",
+  "apply": "Применить",
+  "filter_location": "Айлана",
 
   "// Search": "",
   "search": "Издөө",
@@ -115,6 +124,7 @@
   "category_education": "Билим берүү жана карьера",
   "category_wellness": "Ден соолук жана жашоо образы",
   "organizer": "Уюштуруучу",
+  "location_unknown": "Жайгашкан жери көрсөтүлгөн эмес",
 
   "// Status": "",
   "create_post": "Жаңы пост түзүү",

@@ -1,11 +1,9 @@
-/* Main page wrapper */
 .discover-page {
   padding: 20px;
   max-width: 1200px;
   margin: auto;
 }
 
-/* Grid layout: 3 columns on desktop */
 .grid-layout {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -14,7 +12,6 @@
   grid-auto-flow: dense;
 }
 
-/* Grid item */
 .grid-item {
   position: relative;
   overflow: hidden;
@@ -32,7 +29,6 @@
   border-radius: 8px;
 }
 
-/* Tall posts */
 .grid-item.tall {
   grid-row: span 2;
 }
@@ -45,12 +41,10 @@
   grid-column: 3;
 }
 
-/* Zoom effect */
 .grid-item:hover img {
   transform: scale(1.05);
 }
 
-/* Overlay on hover */
 .overlay {
   position: absolute;
   inset: 0;
@@ -79,7 +73,6 @@
   font-size: 15px;
 }
 
-/* Load More button */
 .load-more {
   display: block;
   margin: 30px auto;
@@ -97,13 +90,11 @@
   background-color: #222;
 }
 
-/* Discover Empty Block */
 .discover-empty {
   text-align: center;
   margin: 4rem auto 2rem;
   max-width: 600px;
   padding: 1.5rem;
-  background: #f9f9f9;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   animation: fadeIn 0.4s ease-in-out;
@@ -112,7 +103,6 @@
 .discover-message {
   font-size: 1.25rem;
   margin-bottom: 1.5rem;
-  color: #333;
   line-height: 1.6;
 }
 
@@ -132,7 +122,6 @@
   transform: scale(1.03);
 }
 
-/* Fade-in animation */
 @keyframes fadeIn {
   from {
     opacity: 0;

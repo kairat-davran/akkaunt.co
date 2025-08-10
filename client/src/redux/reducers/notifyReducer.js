@@ -4,15 +4,21 @@ import { EditData } from '../actions/globalTypes'
 const initialState = {
     loading: false,
     data: [],
+    total: 0,
+    page: 1,
     sound: false
-}
+};
 
 const notifyReducer = (state = initialState, action) => {
     switch (action.type){
         case NOTIFY_TYPES.GET_NOTIFIES:
             return {
                 ...state,
-                data: action.payload.notifies,
+                data: action.payload.page === 1
+                    ? action.payload.data
+                    : [...state.data, ...action.payload.data],
+                total: action.payload.total,
+                page: action.payload.page
             };
         case NOTIFY_TYPES.CREATE_NOTIFY:
             return {

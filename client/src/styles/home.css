@@ -58,6 +58,35 @@
     color: crimson;
     cursor: pointer;
 }
+.carousel-indicators {
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.carousel-indicators li {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ccc;
+  margin: 0 4px;
+  transition: background-color 0.3s ease;
+  border: none;
+}
+
+.carousel-indicators .active {
+  background-color: #111;
+}
+
+.dark .carousel-indicators li {
+  background-color: #555;
+}
+
+.dark .carousel-indicators .active {
+  background-color: #fff;
+}
 
 /* ---------- Post Card Footer ---------- */
 .posts .card_icon_menu{

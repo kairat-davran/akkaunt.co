@@ -1,4 +1,9 @@
 {
+  "// Main": "",
+  "errorToast": "Ошибка",
+  "success": "Успешно",
+  "image_compression_failed": "Сжатие изображения не удалось.",
+
   "// Home": "",
   "no_post": "Нет публикаций",
   "edit_post": "Редактировать пост",
@@ -76,6 +81,10 @@
   "update": "Обновить",
   "no_items_found": "Товары по вашему запросу не найдены.",
   "required_fields": "Название, цена и местоположение обязательны.",
+  "adjust_location_radius": "Настройка радиуса поиска",
+  "search_radius": "Радиус поиска",
+  "apply": "Применить",
+  "filter_location": "Рядом",
 
   "// Search": "",
   "search": "Поиск",
@@ -101,10 +110,11 @@
 
   "// Event": "",
   "events": "События",
-  "event_tab_today": "Сегодня",
+  "event": "события",
+  "event_tab_today": "Сегодняшнее",
   "event_tab_upcoming": "Предстоящие",
   "event_tab_past": "Прошедшие",
-  "event_tab_mine": "Мои события",
+  "event_tab_mine": "Мои",
   "create_event": "Создать событие",
   "edit_event": "Редактировать событие",
   "event_title": "Название события",
@@ -123,6 +133,7 @@
   "category_education": "Образование и карьера",
   "category_wellness": "Здоровье и образ жизни",
   "organizer": "Организатор",
+  "location_unknown": "Местоположение не указано",
 
   "// Status": "",
   "create_post": "Создать публикацию",

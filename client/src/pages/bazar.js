@@ -14,39 +14,54 @@ import SearchBar from '../components/bazar/SearchBar'
 import imageCompression from 'browser-image-compression'
 import { GLOBALTYPES } from '../redux/actions/globalTypes'
 import { useTranslation } from 'react-i18next'
+import LocationPicker from '../components/LocationPicker'
+import BazarModal from '../components/bazar/BazarModal'
 
 const BazarScreen = () => {
-  const dispatch = useDispatch()
-  const { items, loading, saved } = useSelector(state => state.bazar)
-  const auth = useSelector(state => state.auth)
-  const { t } = useTranslation()
+  const dispatch = useDispatch();
+  const { items, loading, saved } = useSelector(state => state.bazar);
+  const auth = useSelector(state => state.auth);
+  const { t } = useTranslation();
 
-  const [selectedCategory, setSelectedCategory] = useState('All')
-  const [searchKeyword, setSearchKeyword] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [userLocation, setUserLocation] = useState(null);
+  const [locationModalVisible, setLocationModalVisible] = useState(false);
+  const [tempLocation, setTempLocation] = useState(null);
+  const [radius, setRadius] = useState(10000);
+  const [tempRadius, setTempRadius] = useState(null);
 
   const initialItemState = {
     title: '',
     price: '',
     description: '',
-    location: '',
+    location: {
+      type: 'Point',
+      coordinates: [],
+      display: ''
+    },
     category: ''
   }
 
-  const [itemData, setItemData] = useState(initialItemState)
-  const [images, setImages] = useState([])
-  const [modalVisible, setModalVisible] = useState(false)
-  const [editingId, setEditingId] = useState(null)
+  const [itemData, setItemData] = useState(initialItemState);
+  const [images, setImages] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
-    if (auth.token) {
-      dispatch(getItems(auth.token, searchKeyword, selectedCategory))
-      dispatch(getSavedItems(auth.token))
-    }
-  }, [dispatch, auth.token, searchKeyword, selectedCategory])
+    navigator.geolocation.getCurrentPosition(
+      pos => setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      err => console.warn("Geolocation error", err),
+      { enableHighAccuracy: true }
+    );
+  }, []);
 
-  const handleChange = e => {
-    setItemData({ ...itemData, [e.target.name]: e.target.value })
-  }
+  useEffect(() => {
+    if (auth.token && userLocation) {
+      dispatch(getItems(auth.token, searchKeyword, selectedCategory, userLocation, radius));
+      dispatch(getSavedItems(auth.token));
+    }
+  }, [dispatch, auth.token, searchKeyword, selectedCategory, userLocation, radius]);
 
   const handleImageChange = async (e) => {
     const files = [...e.target.files]
@@ -73,29 +88,50 @@ const BazarScreen = () => {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!itemData.title || !itemData.price || !itemData.location) {
       return dispatch({
         type: GLOBALTYPES.ALERT,
         payload: { error: t('required_fields') }
-      })
+      });
     }
 
-    let success
+    if (images.length === 0) {
+      return dispatch({
+        type: GLOBALTYPES.ALERT,
+        payload: { error: t('error.no_photo') }
+      });
+    }
+
+    const payload = {
+      ...itemData,
+      location: {
+        type: 'Point',
+        coordinates:
+          itemData.location.coordinates.length === 2
+            ? itemData.location.coordinates
+            : userLocation
+              ? [userLocation.lng, userLocation.lat]
+              : [0, 0],
+        display: itemData.location.display
+      }
+    };
+
+    let success;
     if (editingId) {
-      success = await dispatch(updateItem({ id: editingId, data: itemData, images, auth }))
+      success = await dispatch(updateItem({ id: editingId, data: payload, images, auth }));
     } else {
-      success = await dispatch(createItem({ data: itemData, images, auth }))
+      success = await dispatch(createItem({ data: payload, images, auth }));
     }
 
     if (success) {
-      setModalVisible(false)
-      setItemData(initialItemState)
-      setImages([])
-      setEditingId(null)
+      setModalVisible(false);
+      setItemData(initialItemState);
+      setImages([]);
+      setEditingId(null);
     }
-  }
+  };
 
   const handleEdit = (item) => {
     setItemData({
@@ -133,7 +169,58 @@ const BazarScreen = () => {
 
       <div className="bazar-filters mb-4">
         <SearchBar search={searchKeyword} setSearch={setSearchKeyword} />
-        <CategoryFilter selected={selectedCategory} setSelected={setSelectedCategory} />
+        <CategoryFilter 
+          selected={selectedCategory}
+          setSelected={setSelectedCategory}
+          onLocationClick={() => {
+            setTempLocation(userLocation);
+            setTempRadius(radius);
+            setLocationModalVisible(true);
+          }} />
+        {locationModalVisible && (
+          <div className="modal-backdrop">
+            <div className="modal-content p-4 rounded shadow" style={{ maxWidth: 600, margin: 'auto' }}>
+              <h5>{t('adjust_location_radius')}</h5>
+
+              <label className="form-label mt-2">
+                {t('search_radius')} ({(tempRadius / 1000).toFixed(1)} km)
+              </label>
+              <input
+                type="range"
+                className="form-range"
+                min={1000}
+                max={50000}
+                step={1000}
+                value={tempRadius}
+                onChange={e => setTempRadius(Number(e.target.value))}
+              />
+
+              <div style={{ height: '300px' }} className="my-3">
+                <LocationPicker
+                  position={tempLocation}
+                  setPosition={(latlng) => setTempLocation({ lat: latlng[0], lng: latlng[1] })}
+                  radius={tempRadius}
+                />
+              </div>
+
+              <div className="d-flex justify-content-end mt-3">
+                <button className="btn btn-secondary me-2" onClick={() => setLocationModalVisible(false)}>
+                  {t('cancel')}
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    setUserLocation(tempLocation);
+                    setRadius(tempRadius);
+                    setLocationModalVisible(false);
+                  }}
+                >
+                  {t('apply')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {loading ? (
@@ -168,79 +255,22 @@ const BazarScreen = () => {
       )}
 
       {modalVisible && (
-        <div className="modal-backdrop">
-          <div className="modal-content p-4 rounded shadow">
-            <h5>{editingId ? t('edit_item') : t('create_item')}</h5>
-
-            <input name="title" className="form-control my-2" placeholder={t('title')} value={itemData.title} onChange={handleChange} />
-            <input name="price" className="form-control my-2" placeholder={t('price')} type="number" value={itemData.price} onChange={handleChange} />
-            <textarea name="description" className="form-control my-2" placeholder={t('description')} rows="3" value={itemData.description} onChange={handleChange} />
-            <input name="location" className="form-control my-2" placeholder={t('location')} value={itemData.location} onChange={handleChange} />
-
-            <select name="category" className="form-select my-2" value={itemData.category} onChange={handleChange}>
-              <option value="">{t('select_category')}</option>
-              <option value="foods">{t('category_foods')}</option>
-              <option value="services">{t('category_services')}</option>
-              <option value="vehicles">{t('category_vehicles')}</option>
-              <option value="furniture">{t('category_furniture')}</option>
-              <option value="electronics">{t('category_electronics')}</option>
-              <option value="etc">{t('category_etc')}</option>
-            </select>
-
-            <label className="form-label mt-3">{t('images')}</label>
-            <div className="custom-file-upload mt-2">
-              <label htmlFor="event-images" className="btn">
-                <span className="material-icons me-1">upload</span> {t('choose_images')}
-              </label>
-              <input
-                type="file"
-                id="event-images"
-                name="file"
-                accept="image/*"
-                multiple
-                style={{ display: 'none' }}
-                onChange={handleImageChange}
-              />
-            </div>
-
-            <div className="d-flex flex-wrap">
-              {images.map((img, i) => (
-                <div key={i} className="m-2 position-relative">
-                  <img
-                    src={img.url ? img.url : URL.createObjectURL(img)}
-                    className="img-thumbnail"
-                    style={{ width: 100, height: 100, objectFit: 'cover' }}
-                    alt="preview"
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-danger position-absolute top-0 end-0"
-                    onClick={() => setImages(prev => prev.filter((_, idx) => idx !== i))}
-                  >
-                    &times;
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <div className="d-flex justify-content-end mt-3">
-              <button
-                className="btn btn-secondary me-2"
-                onClick={() => {
-                  setModalVisible(false)
-                  setItemData(initialItemState)
-                  setImages([])
-                  setEditingId(null)
-                }}
-              >
-                {t('cancel')}
-              </button>
-              <button className="btn btn-success" onClick={handleSubmit}>
-                {editingId ? t('update') : t('post')}
-              </button>
-            </div>
-          </div>
-        </div>
+        <BazarModal
+          visible={modalVisible}
+          onClose={() => {
+            setModalVisible(false);
+            setItemData(initialItemState);
+            setImages([]);
+            setEditingId(null);
+          }}
+          onSubmit={handleSubmit}
+          itemData={itemData}
+          setItemData={setItemData}
+          images={images}
+          setImages={setImages}
+          editing={!!editingId}
+          handleImageChange={handleImageChange}
+        />
       )}
     </div>
   )

@@ -1,4 +1,9 @@
 {
+  "// Main": "",
+  "errorToast": "Error",
+  "success": "Success",
+  "image_compression_failed": "Image compression failed.",
+
   "// Home": "",
   "no_post": "No Posts",
   "edit_post": "Edit Post",
@@ -76,6 +81,10 @@
   "update": "Update",
   "no_items_found": "No items found for your search.",
   "required_fields": "Title, price, and location are required.",
+  "adjust_location_radius": "Adjust location radius",
+  "search_radius": "Search radius",
+  "apply": "Apply",
+  "filter_location": "Nearby",
 
   "// Search": "",
   "search": "Search",
@@ -121,6 +130,7 @@
   "category_education": "Education & Career",
   "category_wellness": "Wellness & Lifestyle",
   "organizer": "Organizer",
+  "location_unknown": "Location not specified",
 
   "// Status": "",
   "create_post": "Create Post",

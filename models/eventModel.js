@@ -11,8 +11,20 @@ const eventSchema = new mongoose.Schema({
     required: true,
   },
   location: {
-    type: String,
-    required: true,
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point',
+      required: true
+    },
+    coordinates: {
+      type: [Number],
+      required: true
+    },
+    display: {
+      type: String,
+      default: ''
+    }
   },
   images: {
     type: Array,
@@ -30,5 +42,7 @@ const eventSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+eventSchema.index({ location: '2dsphere' });
 
 module.exports = mongoose.model('event', eventSchema);

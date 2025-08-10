@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { getDiscoverPosts } from '../redux/actions/discoverAction';
-import { useNavigate } from 'react-router-dom';
 import { patchDataAPI } from '../utils/fetchData';
 
+import DiscoverPostCard from '../components/DiscoverPostCard';
+
 const Discover = () => {
+  const { t } = useTranslation();
   const auth = useSelector(state => state.auth);
   const discover = useSelector(state => state.discover);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [loadMore, setLoadMore] = useState(false);
+  const [seenPostIds, setSeenPostIds] = useState([]);
+  const [sentPostIds, setSentPostIds] = useState([]);
 
   useEffect(() => {
     if (auth.token && !discover.firstLoad) {
@@ -17,20 +21,38 @@ const Discover = () => {
     }
   }, [dispatch, auth.token, discover.firstLoad]);
 
-  const handleLoadMore = async () => {
+  const handleLoadMore = useCallback(async () => {
     if (loadMore || discover.loading) return;
+
+    const unseen = seenPostIds.filter(id => !sentPostIds.includes(id));
+    if (unseen.length > 0) {
+      await patchDataAPI('seen_discover_batch', { postIds: unseen }, auth.token);
+      setSentPostIds(prev => [...prev, ...unseen]);
+    }
+
     setLoadMore(true);
     await dispatch(getDiscoverPosts(auth.token, discover.page));
     setLoadMore(false);
-  };
+  }, [loadMore, discover.loading, seenPostIds, sentPostIds, auth.token, dispatch, discover.page]);
 
-  const handleResetDiscover = async () => {
-    try {
-      await patchDataAPI('reset_discover', null, auth.token);
-      dispatch(getDiscoverPosts(auth.token, 1));
-    } catch (err) {
-      alert('Failed to reset discover');
-    }
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 300 &&
+        !loadMore &&
+        !discover.loading &&
+        discover.result >= 10
+      ) {
+        handleLoadMore();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loadMore, handleLoadMore, discover.loading, discover.result]);
+
+  const handleSeen = (postId) => {
+    setSeenPostIds(prev => [...prev, postId]);
   };
 
   return (
@@ -41,14 +63,9 @@ const Discover = () => {
         </div>
       )}
 
-      {discover.posts.length === 0 && !discover.loading ? (
-        <div className="discover-empty">
-          <p className="discover-message">
-            🎉 You’ve seen all new content. Check back later!
-          </p>
-          <button onClick={handleResetDiscover} className="reset-btn">
-            🔁 Reset Discover
-          </button>
+      {discover.posts.length === 0 && discover.page === 1 && !discover.loading ? (
+        <div className="text-center my-5">
+          <p>{t('no_posts_available', 'No posts available right now.')}</p>
         </div>
       ) : (
         <div className="grid-layout">
@@ -58,37 +75,21 @@ const Discover = () => {
             else if (i % 10 === 5) layoutClass = 'tall left';
 
             return (
-              <div
+              <DiscoverPostCard
                 key={post._id}
-                className={`grid-item ${layoutClass}`}
-                onClick={() => navigate(`/post/${post._id}`)}
-              >
-                <img src={post.images[0]?.url} alt="post" />
-                <div className="overlay">
-                  <div className="icon-info">
-                    <span className="material-icons">favorite_border</span>
-                    <span>{post.likes.length}</span>
-                  </div>
-                  <div className="icon-info">
-                    <span className="material-icons">chat_bubble_outline</span>
-                    <span>{post.comments.length}</span>
-                  </div>
-                </div>
-              </div>
+                post={post}
+                layoutClass={layoutClass}
+                onSeen={handleSeen}
+              />
             );
           })}
         </div>
       )}
 
-      {loadMore &&
+      {loadMore && (
         <div className="text-center py-5">
           <div className="spinner-border text-primary" role="status" />
         </div>
-      }
-      {!discover.loading && discover.result >= 10 && (
-        <button className="load-more" onClick={handleLoadMore}>
-          Load More
-        </button>
       )}
     </div>
   );

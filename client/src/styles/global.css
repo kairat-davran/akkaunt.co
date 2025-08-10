@@ -19,12 +19,18 @@ html::-webkit-scrollbar {
 }
 
 body {
-  overflow-y: scroll;              /* ensures vertical scroll works */
+  overflow-y: scroll;
 }
-  
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 200px;
 }
   
 #theme {
@@ -355,7 +361,11 @@ hr {
     color: #f0f0f0;
 }
 .dark .comment_card .comment_content {
-  background-color: #2f3e4d; /* Matches other dark containers */
+  background-color: #2f3e4d;
+  color: #f0f0f0;
+}
+.dark .follow_box {
+  background-color: #2f3e4d;
   color: #f0f0f0;
 }
 /* Bazar */

@@ -38,7 +38,7 @@ const app = express()
 app.use(express.json())
 app.use(cors(corsOptions));
 app.use(cookieParser())
-app.options('*', cors(corsOptions)); // include before other routes
+app.options('*', cors(corsOptions));
 
 // Socket
 const http = require('http').createServer(app)
@@ -84,12 +84,3 @@ const port = process.env.PORT || 5000
 http.listen(port, () => {
     console.log('Server is running on port', port)
 })
-
-// === CRON JOB: Reset seenDiscoverPosts Monthly ===
-const cron = require('node-cron');
-const clearSeenDiscoverMonthly = require('./cronJobs/clearSeenDiscover');
-
-cron.schedule('0 3 1 * *', async () => {
-    console.log('[CRON] 🕒 Running monthly reset for seenDiscoverPosts...');
-    await clearSeenDiscoverMonthly();
-});

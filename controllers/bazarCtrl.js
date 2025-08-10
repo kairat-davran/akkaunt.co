@@ -1,4 +1,6 @@
+// controllers/bazarCtrl.js (full updated)
 const Bazar = require('../models/bazarModel');
+const SellerProfile = require('../models/sellerProfileModel');
 const User = require('../models/userModel');
 
 const { S3Client, DeleteObjectCommand } = require('@aws-sdk/client-s3');
@@ -29,13 +31,14 @@ const bazarCtrl = {
   createItem: async (req, res) => {
     try {
       const { title, description, price, location, images, category } = req.body;
-      if (!title || !price || !location)
-        return res.status(400).json({ msg: 'Required fields are missing.' });
+      if (!title || !price || !location?.coordinates || !Array.isArray(location.coordinates))
+        return res.status(400).json({ msg: 'Required fields are missing or invalid location.' });
 
       const currentCount = await Bazar.countDocuments({ seller: req.user._id });
-
       const FREE_LIMIT = 10;
-      const isTrusted = req.user?.seller?.isTrusted;
+
+      const profile = await SellerProfile.findOne({ user: req.user._id });
+      const isTrusted = profile?.isTrusted;
 
       if (currentCount >= FREE_LIMIT && !isTrusted) {
         return res.status(403).json({
@@ -43,33 +46,36 @@ const bazarCtrl = {
         });
       }
 
-      // 1. Save the new item
       const newItem = await new Bazar({
         title,
         description,
         price,
-        location,
+        location: {
+          type: 'Point',
+          coordinates: location.coordinates,
+          display: location.display || ''
+        },
         images,
         category,
         seller: req.user._id,
       }).save();
 
-      // 2. Update user (only if first item)
-      if (currentCount === 0) {
-        await User.findByIdAndUpdate(req.user._id, {
-          $set: { 'seller.sellerSince': new Date() }
-        });
+      if (currentCount === 0 && !profile) {
+        const newProfile = await new SellerProfile({ user: req.user._id }).save();
+        await User.findByIdAndUpdate(req.user._id, { sellerProfile: newProfile._id });
       }
 
-      // 3. Populate seller before returning
       const populatedItem = await Bazar.findById(newItem._id)
-        .populate('seller', 'avatar username fullname seller');
+        .populate({
+          path: 'seller',
+          select: 'avatar username fullname sellerProfile',
+          populate: {
+            path: 'sellerProfile',
+            model: 'sellerProfile',
+          }
+        });
 
-      return res.json({
-        msg: 'Created Item!',
-        newItem: populatedItem,
-      });
-
+      return res.json({ msg: 'Created Item!', newItem: populatedItem });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }
@@ -77,37 +83,49 @@ const bazarCtrl = {
 
   getItems: async (req, res) => {
     try {
-      const { search = '', category = '' } = req.query;
+      const { search = '', category = '', lat, lng, radius = 50000 } = req.query;
 
-      // Global search across fields
       const keywordFilter = search
         ? {
             $or: [
               { title: { $regex: search, $options: 'i' } },
               { description: { $regex: search, $options: 'i' } },
-              { location: { $regex: search, $options: 'i' } },
               { category: { $regex: search, $options: 'i' } }
             ]
           }
         : {};
 
-      // Category filter (exact match unless All or empty)
       const categoryFilter =
         category && category !== 'All'
           ? { category: { $regex: category, $options: 'i' } }
           : {};
 
-      // Merge filters
-      const filters = {
-        ...keywordFilter,
-        ...categoryFilter
-      };
+      const geoFilter = lat && lng ? {
+        location: {
+          $nearSphere: {
+            $geometry: {
+              type: 'Point',
+              coordinates: [parseFloat(lng), parseFloat(lat)]
+            },
+            $maxDistance: parseInt(radius)
+          }
+        }
+      } : {};
+
+      const filters = { ...keywordFilter, ...categoryFilter, ...geoFilter };
 
       const features = new APIfeatures(Bazar.find(filters), req.query).paginating();
 
       const items = await features.query
         .sort('-createdAt')
-        .populate('seller', 'avatar username fullname seller');
+        .populate({
+          path: 'seller',
+          select: 'avatar username fullname sellerProfile',
+          populate: {
+            path: 'sellerProfile',
+            model: 'sellerProfile',
+          }
+        });
 
       res.json({ msg: 'Success!', result: items.length, items });
     } catch (err) {
@@ -118,7 +136,14 @@ const bazarCtrl = {
   getItemById: async (req, res) => {
     try {
       const item = await Bazar.findById(req.params.id)
-        .populate('seller', 'avatar username fullname seller');
+        .populate({
+          path: 'seller',
+          select: 'avatar username fullname sellerProfile',
+          populate: {
+            path: 'sellerProfile',
+            model: 'sellerProfile',
+          }
+        });
 
       if (!item) {
         return res.status(404).json({ msg: 'Item not found' });
@@ -135,7 +160,14 @@ const bazarCtrl = {
       const sellerId = req.params.id;
 
       const items = await Bazar.find({ seller: sellerId })
-        .populate('seller', 'avatar username fullname seller')
+        .populate({
+          path: 'seller',
+          select: 'avatar username fullname sellerProfile',
+          populate: {
+            path: 'sellerProfile',
+            model: 'sellerProfile',
+          }
+        })
         .sort('-createdAt');
 
       const seller = items[0]?.seller || null;
@@ -176,7 +208,14 @@ const bazarCtrl = {
         { _id: req.params.id, seller: req.user._id },
         { title, description, price, location, images, category },
         { new: true }
-      ).populate('seller', 'avatar username fullname');
+      ).populate({
+        path: 'seller',
+        select: 'avatar username fullname sellerProfile',
+        populate: {
+          path: 'sellerProfile',
+          model: 'sellerProfile',
+        }
+      });
 
       res.json({ msg: 'Updated Item!', updatedItem });
     } catch (err) {
@@ -199,9 +238,7 @@ const bazarCtrl = {
       if (item.images && item.images.length > 0) {
         for (const image of item.images) {
           if (image.url && image.url.includes('.amazonaws.com/')) {
-            // const key = image.url.split('.amazonaws.com/')[1];
             const key = decodeURIComponent(new URL(image.url).pathname.slice(1));
-
             if (key) {
               try {
                 await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
@@ -218,7 +255,7 @@ const bazarCtrl = {
       return res.status(500).json({ msg: err.message });
     }
   },
-  
+
   saveItem: async (req, res) => {
     try {
       const user = await User.findById(req.user._id);
@@ -255,7 +292,14 @@ const bazarCtrl = {
     try {
       const user = await User.findById(req.user._id).populate({
         path: 'savedBazarItems',
-        populate: { path: 'seller', select: 'avatar username fullname seller' }
+        populate: {
+          path: 'seller',
+          select: 'avatar username fullname sellerProfile',
+          populate: {
+            path: 'sellerProfile',
+            model: 'sellerProfile',
+          }
+        }
       });
 
       res.json({ items: user.savedBazarItems });

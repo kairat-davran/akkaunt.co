@@ -4,10 +4,10 @@ const Toast = ({ msg, handleShow, bgColor }) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      handleShow(); // auto-dismiss after 3 seconds
+      handleShow();
     }, 3000);
 
-    return () => clearTimeout(timer); // cleanup on unmount
+    return () => clearTimeout(timer);
   }, [handleShow]);
 
   return (

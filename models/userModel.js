@@ -34,13 +34,9 @@ const userSchema = new mongoose.Schema({
   savedBazarItems: [{ type: mongoose.Types.ObjectId, ref: 'bazar' }],
 
   // 📦 Seller profile
-  seller: {
-    isTrusted: { type: Boolean, default: false },
-    sellerSince: { type: Date },
-    rating: { type: Number, default: 0 },
-    reviews: { type: Number, default: 0 },
-    lockedAt: { type: Date },
-    lockedReason: { type: String, default: '' }
+  sellerProfile: {
+    type: mongoose.Types.ObjectId,
+    ref: 'sellerProfile'
   }
 }, {
   timestamps: true
