@@ -7,7 +7,8 @@ export const NOTIFY_TYPES = {
     REMOVE_NOTIFY: 'REMOVE_NOTIFY',
     UPDATE_NOTIFY: 'UPDATE_NOTIFY',
     UPDATE_SOUND: 'UPDATE_SOUND',
-    DELETE_ALL_NOTIFIES: 'DELETE_ALL_NOTIFIES'
+    DELETE_ALL_NOTIFIES: 'DELETE_ALL_NOTIFIES',
+    MARK_ALL_AS_READ: 'MARK_ALL_AS_READ'
 }
 
 export const createNotify = ({msg, auth, socket}) => async (dispatch) => {
@@ -64,6 +65,19 @@ export const isReadNotify = ({msg, auth}) => async (dispatch) => {
         dispatch({type: GLOBALTYPES.ALERT, payload: {error: err.response.data.msg}})
     }
 }
+
+export const markAllAsReadNotify = (auth) => async (dispatch, getState) => {
+    dispatch({ type: NOTIFY_TYPES.MARK_ALL_AS_READ });
+
+    try {
+        await patchDataAPI('markAllRead', null, auth.token);
+    } catch (err) {
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: { error: err.response?.data?.msg }
+        });
+    }
+};
 
 export const deleteAllNotifies = (token) => async (dispatch) => {
     dispatch({type: NOTIFY_TYPES.DELETE_ALL_NOTIFIES, payload: []})

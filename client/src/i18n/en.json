@@ -57,6 +57,8 @@
   "back": "Back",
 
   "// Bazar": "",
+  "bazar_chat_title": "Bazar Chat",
+  "select_conversation": "Select a conversation",
   "bazar_title": "Bazar",
   "add_item": "Add Item",
   "edit_item": "Edit Item",
@@ -93,7 +95,7 @@
   "// Item Detail": "",
   "delete": "Delete",
   "message": "Message",
-  "loading": "Loading...",
+  "loading": "Loading",
 
   "// Seller Profile": "",
   "loading_seller": "Loading seller profile...",
@@ -167,6 +169,12 @@
   "all_caught_up": "You're all caught up!",
   "no_notifications": "You don’t have any notifications right now. Check back later.",
   "confirm_delete_all": "You have {{count}} unread notices. Are you sure you want to delete all?",
+  "notify_added_post": "added a new post.",
+  "notify_liked_post": "liked your post.",
+  "notify_deleted_post": "deleted a post.",
+  "notify_commented_post": "has commented on your post.",
+  "notify_mentioned_comment": "mentioned you in a comment.",
+   "notify_followed_you": "has started to follow you.",
 
   "// Right Sidebar": "",
   "suggestions_title": "Suggestions for you",

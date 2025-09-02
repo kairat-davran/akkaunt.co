@@ -58,6 +58,8 @@
 
   "// Bazar": "",
   "bazar_title": "Базар",
+  "bazar_chat_title": "Базар Чат",
+  "select_conversation": "Выберите разговор",
   "add_item": "Добавить товар",
   "edit_item": "Редактировать товар",
   "create_item": "Создать новый товар",
@@ -170,6 +172,12 @@
   "all_caught_up": "Вы в курсе всех событий!",
   "no_notifications": "У вас пока нет уведомлений. Проверьте позже.",
   "confirm_delete_all": "У вас {{count}} непрочитанных уведомлений. Удалить всё?",
+  "notify_added_post": "добавил(а) новый пост.",
+  "notify_liked_post": "понравился ваш пост.",
+  "notify_deleted_post": "удалил(а) пост.",
+  "notify_commented_post": "прокомментировал(а) ваш пост.",
+  "notify_mentioned_comment": "упомянул(а) вас в комментарии.",
+  "notify_followed_you": "подписался(ась) на вас.",
 
   "// Right Sidebar": "",
   "suggestions_title": "Рекомендации для вас",

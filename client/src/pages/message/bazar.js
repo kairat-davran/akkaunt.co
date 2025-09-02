@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import BazarLeftSide from '../../components/message/BazarLeftSide';
+import { useTranslation } from 'react-i18next';
 
 const BazarMessage = () => {
+  const { t } = useTranslation();
   const [isLeftOpen, setIsLeftOpen] = useState(() => window.innerWidth <= 768);
 
   useEffect(() => {
@@ -22,8 +24,8 @@ const BazarMessage = () => {
         {window.innerWidth > 768 && (
           <div className="text-center d-flex flex-column justify-content-center align-items-center h-100">
             <span className="material-icons" style={{ fontSize: '5rem' }}>storefront</span>
-            <h4>Bazar Chat</h4>
-            <p>Select a conversation</p>
+            <h4>{t('bazar_chat_title')}</h4>
+            <p>{t('select_conversation')}</p>
           </div>
         )}
       </div>

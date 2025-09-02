@@ -1,13 +1,15 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { NOTIFY_TYPES, getNotifies, isReadNotify } from '../redux/actions/notifyAction';
+import { NOTIFY_TYPES, getNotifies, isReadNotify, markAllAsReadNotify } from '../redux/actions/notifyAction';
 import Avatar from './Avatar';
 import moment from 'moment';
+import 'moment/locale/ru';
+import 'moment/locale/ky';
 import { useTranslation } from 'react-i18next';
 
 const NotifyModal = ({ onClose = () => {} }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const auth = useSelector(state => state.auth);
   const notify = useSelector(state => state.notify);
@@ -28,6 +30,17 @@ const NotifyModal = ({ onClose = () => {} }) => {
       dispatch(getNotifies(auth.token, 1));
     }
   }, [dispatch, auth.token, notify.page, notify.data.length]);
+
+  useEffect(() => {
+    if (notify.data.some(n => !n.isRead)) {
+      dispatch(markAllAsReadNotify(auth));
+    }
+  }, [dispatch, auth, notify.data]);
+
+  useEffect(() => {
+    const lng = i18n.language.split('-')[0];
+    moment.locale(lng);
+  }, [i18n.language]);
 
   const handleScroll = useCallback(() => {
     const el = scrollRef.current;
@@ -83,7 +96,8 @@ const NotifyModal = ({ onClose = () => {} }) => {
 
       <div
         ref={scrollRef}
-        style={{ height: 'calc(100vh - 130px)', overflow: 'auto' }}
+        className="scroll-hidden"
+        style={{ height: 'calc(100vh - 130px)', overflowY: 'auto', overflowX: 'hidden' }}
       >
         {notify.data.length === 0 ? (
           <div className="text-center text-muted" style={{ padding: '40px 10px' }}>
@@ -100,15 +114,13 @@ const NotifyModal = ({ onClose = () => {} }) => {
             <div key={msg._id || index} className="px-2 mb-3">
               <Link
                 to={`${msg.url}`}
-                className="d-flex text-dark align-items-center"
+                className="d-flex align-items-center"
                 onClick={() => handleIsRead(msg)}
               >
                 <Avatar src={msg.user.avatar} size="big-avatar" />
                 <div className="mx-1 flex-fill">
-                  <div>
-                    <strong className="mr-1">{msg.user.username}</strong>
-                    <span>{msg.text}</span>
-                  </div>
+                  <strong className="mr-1">{msg.user.username}</strong>
+                  <span>{t(msg.text)}</span>
                   {msg.content && <small>{msg.content.slice(0, 20)}...</small>}
                 </div>
 

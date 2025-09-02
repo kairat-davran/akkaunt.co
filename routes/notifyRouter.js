@@ -8,6 +8,8 @@ router.delete('/notify/:id', auth, notifyCtrl.removeNotify)
 
 router.get('/notifies', auth, notifyCtrl.getNotifies)
 
+router.patch('/markAllRead', auth, notifyCtrl.markAllAsRead);
+
 router.patch('/isReadNotify/:id', auth, notifyCtrl.isReadNotify)
 
 router.delete('/deleteAllNotify', auth, notifyCtrl.deleteAllNotifies)

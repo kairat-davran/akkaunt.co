@@ -72,6 +72,14 @@ img {
   margin: 0 5px;
 }
 
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+}
+.scroll-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* ========= GLOBAL LIGHT THEME ========== */
 /* Base Elements */
 body {
@@ -103,9 +111,11 @@ button:hover {
 /* Links */
 a {
   color: #2563eb;
+  text-decoration: none;
 }
 a:hover {
   color: #1d4ed8;
+  text-decoration: none;
 }
 
 /* Status */

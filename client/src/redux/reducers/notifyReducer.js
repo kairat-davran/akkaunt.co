@@ -20,6 +20,11 @@ const notifyReducer = (state = initialState, action) => {
                 total: action.payload.total,
                 page: action.payload.page
             };
+        case NOTIFY_TYPES.MARK_ALL_AS_READ:
+            return {
+                ...state,
+                data: state.data.map(n => ({ ...n, isRead: true }))
+            };
         case NOTIFY_TYPES.CREATE_NOTIFY:
             return {
                 ...state,

@@ -54,6 +54,8 @@
 
   "// Bazar": "",
   "bazar_title": "Базар",
+  "bazar_chat_title": "Базар Чат",
+  "select_conversation": "Сүйлөшүүнү тандаңыз",
   "add_item": "Жаңы товар кошуу",
   "edit_item": "Товарды өзгөртүү",
   "create_item": "Жаңы товар түзүү",
@@ -161,6 +163,12 @@
   "all_caught_up": "Сиз бардык жаңылыктарды көрдүңүз!",
   "no_notifications": "Азырынча эч кандай кабарлама жок. Кийинчерээк текшериңиз.",
   "confirm_delete_all": "{{count}} окула элек билдирүүңүз бар. Бардыгын өчүрүүнү каалайсызбы?",
+  "notify_added_post": "жаңы билдирүү кошту.",
+  "notify_liked_post": "сиздин билдирүүңүздү жактырды.",
+  "notify_deleted_post": "билдирүүнү өчүрдү.",
+  "notify_commented_post": "сиздин билдирүүгө комментарий калтырды.",
+  "notify_mentioned_comment": "сизди комментарийде белгиледи.",
+  "notify_followed_you": "сизге катталды.",
 
   "// Right Sidebar": "",
   "suggestions_title": "Сиз үчүн сунуштар",

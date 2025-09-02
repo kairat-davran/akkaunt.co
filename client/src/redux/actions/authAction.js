@@ -109,6 +109,8 @@ export const refreshToken = () => async (dispatch) => {
           error: "Session expired. Please log in again."
         }
       });
+
+      localStorage.removeItem("firstLogin");
     }
   }
 };

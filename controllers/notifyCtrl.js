@@ -68,6 +68,18 @@ const notifyCtrl = {
             return res.status(500).json({msg: err.message})
         }
     },
+    markAllAsRead: async (req, res) => {
+        try {
+            const result = await Notifies.updateMany(
+                { recipients: req.user._id, isRead: false },
+                { $set: { isRead: true } }
+            );
+
+            return res.json({ msg: 'All notifications marked as read', updatedCount: result.modifiedCount });
+        } catch (err) {
+            return res.status(500).json({ msg: err.message });
+        }
+    },
     deleteAllNotifies: async (req, res) => {
         try {
             const notifies = await Notifies.deleteMany({recipients: req.user._id})

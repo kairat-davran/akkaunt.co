@@ -93,7 +93,7 @@ const Settings = ({ setShowSettings, setOnEdit }) => {
                 >
                   <option value="en">English</option>
                   <option value="ru">Русский</option>
-                  <option value="kg">Кыргызча</option>
+                  <option value="ky">Кыргызча</option>
                 </select>
               </div>
             </div>

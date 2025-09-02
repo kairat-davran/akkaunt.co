@@ -165,7 +165,7 @@ export const follow = ({users, user, auth, socket}) => async (dispatch) => {
 
         const msg = {
             id: auth.user._id,
-            text: 'has started to follow you.',
+            text: 'notify_followed_you',
             recipients: [newUser._id],
             url: `/profile/id/${auth.user._id}`,
         }
@@ -211,9 +211,9 @@ export const unfollow = ({users, user, auth, socket}) => async (dispatch) => {
         // Notify
         const msg = {
             id: auth.user._id,
-            text: 'has started to follow you.',
+            text: 'notify_followed_you',
             recipients: [newUser._id],
-            url: `/profile/${auth.user._id}`,
+            url: `/profile/id/${auth.user._id}`,
         }
 
         dispatch(removeNotify({msg, auth, socket}))

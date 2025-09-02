@@ -32,9 +32,9 @@ export const createPost = ({content, images, auth, socket}) => async (dispatch) 
         // Notify
         const msg = {
             id: res.data.newPost._id,
-            text: 'added a new post.',
+            text: 'notify_added_post',
             recipients: res.data.newPost.user.followers,
-            url: `/post/${res.data.newPost._id}`,
+            url: `/post/id/${res.data.newPost._id}`,
             content, 
             image: media.length > 0 ? media[0].url : null
         }
@@ -108,9 +108,9 @@ export const likePost = ({post, auth, socket}) => async (dispatch) => {
         // Notify
         const msg = {
             id: auth.user._id,
-            text: 'like your post.',
+            text: 'notify_liked_post',
             recipients: [post.user._id],
-            url: `/post/${post._id}`,
+            url: `/post/id/${post._id}`,
             content: post.content, 
             image: post.images[0].url
         }
@@ -136,9 +136,9 @@ export const unLikePost = ({post, auth, socket}) => async (dispatch) => {
         // Notify
         const msg = {
             id: auth.user._id,
-            text: 'like your post.',
+            text: 'notify_liked_post',
             recipients: [post.user._id],
-            url: `/post/${post._id}`,
+            url: `/post/id/${post._id}`,
         }
         dispatch(removeNotify({msg, auth, socket}))
 
@@ -176,9 +176,9 @@ export const deletePost = ({post, auth, socket}) => async (dispatch) => {
     
         const msg = {
             id: post._id,
-            text: 'deleted a post.',
+            text: 'notify_deleted_post',
             recipients: res.data.deletedPost?.user?.followers || [],
-            url: `/post/${post._id}`,
+            url: `/post/id/${post._id}`,
         };
         dispatch(removeNotify({ msg, auth, socket }));
     
