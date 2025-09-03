@@ -20,9 +20,9 @@ const Followers = ({users, setShowFollowers}) => {
                     ))
                 }
 
-                <div className="close" onClick={() => setShowFollowers(false)}>
+                <span className="followers_close" onClick={() => setShowFollowers(false)}>
                     &times;
-                </div>
+                </span>
             </div>
         </div>
     )

@@ -211,7 +211,7 @@ const StatusModal = () => {
         </div>
 
         <div className="status_footer">
-          <button className="btn btn-secondary w-100" type="submit">
+          <button className="btn btn-success w-100" type="submit">
             {status.onEdit ? t('update') : t('post')}
           </button>
         </div>

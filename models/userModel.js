@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
     unique: true,
     match: [/^\+\d{1,4}\d{6,14}$/, 'Invalid phone number format.']
   },
-  email: { type: String, trim: true, unique: true },
   password: { type: String, required: true },
   avatar: {
     type: String,
@@ -17,7 +16,6 @@ const userSchema = new mongoose.Schema({
   },
   role: { type: String, default: 'user' },
   gender: { type: String, default: 'male' },
-  mobile: { type: String, default: '' },
   story: { type: String, default: '', maxLength: 200 },
   website: { type: String, default: '' },
   theme: { type: Boolean, default: false },

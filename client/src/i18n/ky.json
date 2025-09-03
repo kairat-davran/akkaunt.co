@@ -5,7 +5,7 @@
   "image_compression_failed": "Сүрөттү кичийретүү ишке ашкан жок.",
 
   "// Home": "",
-  "no_post": "Пост жок",
+  "no_post": "Азырынча пост жок, катталыңыз",
   "edit_post": "Постту түзөтүү",
   "remove_post": "Постту өчүрүү",
   "copy_link": "Шилтемени көчүрүү",
@@ -29,8 +29,8 @@
   "not_implemented": "Аккаунтту өчүрүү функциясы ишке ашырыла элек.",
 
   "// Profile Info": "",
-  "followers": "Катталгандар",
-  "following": "Катталгандар тизмеси",
+  "followers": "Жазылгандар",
+  "following": "Жазылуулар",
 
   "// Post Thumb": "",
   "no_posts_found": "Жарыялар табылган жок",
@@ -75,7 +75,7 @@
   "category_etc": "Башка",
   "cancel": "Жокко чыгаруу",
   "reply": "Жооп берүү",
-  "post": "Жариялоо",
+  "post": "Жарыялоо",
   "update": "Жаңыртуу",
   "no_items_found": "Сиздин издөө боюнча товарлар табылган жок.",
   "required_fields": "Аталышы, баасы жана жайгашкан жери талап кылынат.",
@@ -130,7 +130,7 @@
 
   "// Status": "",
   "create_post": "Жаңы пост түзүү",
-  "thinking_placeholder": "{{username}}, эмне ойлоп жатасың?",
+  "thinking_placeholder": "{{username}}, эмне ойлоп жатасыз?",
   "upload_image": "Сүрөт жүктөө",
   "open_camera": "Камераны ачуу",
   "capture_photo": "Сүрөт тартуу",

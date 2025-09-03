@@ -60,7 +60,6 @@ const Settings = ({ setShowSettings, setOnEdit }) => {
           <ChangePassword setShowChangePass={setShowChangePass} />
         ) : (
           <>
-            {/* Profile Section */}
             <div className="settings_section">
               <div
                 className="settings_item"
@@ -77,7 +76,6 @@ const Settings = ({ setShowSettings, setOnEdit }) => {
               </div>
             </div>
 
-            {/* Preferences Section */}
             <div className="settings_section">
               <div className="settings_item" onClick={handleToggleTheme}>
                 <span className="material-icons settings_icon_item">brightness_6</span> 
@@ -98,7 +96,6 @@ const Settings = ({ setShowSettings, setOnEdit }) => {
               </div>
             </div>
 
-            {/* Actions */}
             <div className="settings_section">
               <div className="settings_item" onClick={handleLogout}>
                 <span className="material-icons settings_icon_item">logout</span> {t('logout')}

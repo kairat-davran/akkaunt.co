@@ -110,7 +110,7 @@ export const refreshToken = () => async (dispatch) => {
         }
       });
 
-      localStorage.removeItem("firstLogin");
+      // localStorage.removeItem("firstLogin");
     }
   }
 };

@@ -3,9 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { NOTIFY_TYPES, getNotifies, isReadNotify, markAllAsReadNotify } from '../redux/actions/notifyAction';
 import Avatar from './Avatar';
-import moment from 'moment';
-import 'moment/locale/ru';
-import 'moment/locale/ky';
+import Moment from 'react-moment';
 import { useTranslation } from 'react-i18next';
 
 const NotifyModal = ({ onClose = () => {} }) => {
@@ -36,11 +34,6 @@ const NotifyModal = ({ onClose = () => {} }) => {
       dispatch(markAllAsReadNotify(auth));
     }
   }, [dispatch, auth, notify.data]);
-
-  useEffect(() => {
-    const lng = i18n.language.split('-')[0];
-    moment.locale(lng);
-  }, [i18n.language]);
 
   const handleScroll = useCallback(() => {
     const el = scrollRef.current;
@@ -135,7 +128,9 @@ const NotifyModal = ({ onClose = () => {} }) => {
                 )}
               </Link>
               <small className="text-muted d-flex justify-content-between px-2">
-                {moment(msg.createdAt).fromNow()}
+                <Moment fromNow locale={i18n.language}>
+                  {msg.createdAt}
+                </Moment>
                 {!msg.isRead && <i className="fas fa-circle text-primary" />}
               </small>
             </div>

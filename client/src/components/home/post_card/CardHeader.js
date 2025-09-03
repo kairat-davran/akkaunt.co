@@ -1,7 +1,9 @@
 import React from 'react';
 import Avatar from '../../Avatar';
 import { Link, useNavigate } from 'react-router-dom';
-import moment from 'moment';
+import Moment from 'react-moment';
+import 'moment/locale/ru';
+import 'moment/locale/ky';
 import { useDispatch, useSelector } from 'react-redux';
 import { GLOBALTYPES } from '../../../redux/actions/globalTypes';
 import { deletePost } from '../../../redux/actions/postAction';
@@ -9,7 +11,7 @@ import { BASE_URL } from '../../../utils/config';
 import { useTranslation } from 'react-i18next';
 
 const CardHeader = ({ post }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const auth = useSelector(state => state.auth);
   const socket = useSelector(state => state.communication.socket);
   const dispatch = useDispatch();
@@ -41,7 +43,9 @@ const CardHeader = ({ post }) => {
             </Link>
           </h6>
           <small className="text-muted">
-            {moment(post.createdAt).fromNow()}
+            <Moment fromNow locale={i18n.language}>
+              {post.createdAt}
+            </Moment>
           </small>
         </div>
       </div>
