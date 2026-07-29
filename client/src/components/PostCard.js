@@ -8,7 +8,7 @@ import Comments from './home/Comments'
 const PostCard = ({post}) => {
     
     return (
-        <div className="card my-3">
+        <div className="card">
             <CardHeader post={post} />
             <CardBody post={post} />
             <CardFooter post={post} />

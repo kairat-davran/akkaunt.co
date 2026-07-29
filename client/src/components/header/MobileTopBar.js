@@ -70,12 +70,14 @@ const MobileTopBar = () => {
             >
               <span
                 className="material-icons"
-                style={{ color: notify.data.length > 0 ? 'crimson' : '' }}
+                style={{ color: notify.data.some(n => !n.isRead) ? 'crimson' : '' }}
               >
                 favorite
               </span>
-              {notify.data.length > 0 && (
-                <span className="notify_length">{notify.data.length}</span>
+              {notify.data.filter(n => !n.isRead).length > 0 && (
+                <span className="notify_length">
+                  {notify.data.filter(n => !n.isRead).length}
+                </span>
               )}
             </Link>
           </div>

@@ -147,7 +147,7 @@ const EventsScreen = () => {
   }) || [];
 
   return (
-    <div className="events-screen container py-5">
+    <div className="events-screen py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="fw-semibold">{t(`event_tab_${activeTab}`)} {t('event')}</h3>
         <button className="btn btn-primary" onClick={() => setModalVisible(true)}>
@@ -155,8 +155,8 @@ const EventsScreen = () => {
         </button>
       </div>
 
-      <div className="d-flex flex-wrap justify-content-between align-items-center">
-        <ul className="events-tabs nav nav-pills my-4">
+      <div className="events-tabs d-flex flex-wrap justify-content-between align-items-center">
+        <ul className="nav nav-pills">
           {tabs.map(tab => (
             <li className="nav-item" key={tab.key}>
               <button

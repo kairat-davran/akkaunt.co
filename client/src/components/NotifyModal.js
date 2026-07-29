@@ -62,7 +62,7 @@ const NotifyModal = ({ onClose = () => {} }) => {
         <div style={{ width: '32px' }}>
           {typeof onClose === 'function' && window.innerWidth <= 768 && (
             <span className="dm-back-btn" onClick={onClose}>
-              <i className="fas fa-arrow-left"></i>
+              <span className="material-icons">arrow_back</span>
             </span>
           )}
         </div>
@@ -71,17 +71,19 @@ const NotifyModal = ({ onClose = () => {} }) => {
 
         <div style={{ width: '32px', textAlign: 'right' }}>
           {notify.sound ? (
-            <i
-              className="fas fa-bell text-danger"
-              style={{ fontSize: '1.2rem', cursor: 'pointer' }}
+            <span
+              className="material-icons text-danger"
               onClick={handleSound}
-            />
+            >
+              notifications
+            </span>
           ) : (
-            <i
-              className="fas fa-bell-slash text-danger"
-              style={{ fontSize: '1.2rem', cursor: 'pointer' }}
+            <span
+              className="material-icons text-danger"
               onClick={handleSound}
-            />
+            >
+              notifications_off
+            </span>
           )}
         </div>
       </div>
@@ -131,7 +133,11 @@ const NotifyModal = ({ onClose = () => {} }) => {
                 <Moment fromNow locale={i18n.language}>
                   {msg.createdAt}
                 </Moment>
-                {!msg.isRead && <i className="fas fa-circle text-primary" />}
+                {!msg.isRead && (
+                  <span className="material-icons text-primary" style={{ fontSize: '0.8rem' }}>
+                    circle
+                  </span>
+                )}
               </small>
             </div>
           ))

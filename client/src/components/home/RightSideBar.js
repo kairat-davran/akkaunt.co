@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import UserCard from '../UserCard';
 import FollowBtn from '../FollowBtn';
@@ -41,14 +42,9 @@ const RightSideBar = () => {
       )}
 
       <div style={{ opacity: 0.5 }} className="my-2">
-        <a
-          href="https://www.akkaunt.co"
-          target="_blank"
-          rel="noreferrer"
-          style={{ wordBreak: 'break-all' }}
-        >
+        <Link to="/about" style={{ wordBreak: 'break-all' }}>
           {t('footer_link_text')}
-        </a>
+        </Link>
         <small className="d-block">{t('footer_message')}</small>
         <small>&copy; 2025 akkaunt {t('footer_from')}</small>
       </div>
